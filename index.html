@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendrier</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
+
+
+    <script src="https://code.jquery.com/jquery-3.6.2.js" integrity="sha256-pkn2CUZmheSeyssYw3vMp1+xyub4m+e+QK4sQskvuo4=" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <div data-name="container">
+        <div cclass="container-fluid" data-name="container-calendrier">
+            <div class="row" data-name="row-calendrier">
+                <div class="col-12 col-lg-4" data-name="legende-calendrier">
+                    <button>Aujourd'hui</button>
+                    <button>Cette semaine</button>
+                    <button>2 prochains jours</button>
+                    <button>3 prochains jours</button>
+                    <button>Le weekend prochain</button>
+                    <button>Quelle période ? </button>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4" data-name="calendrier">
+
+                    <table class="col-12">
+                        <thead>
+                            <tr>
+                                <th class="col-1"><i class="fa-solid fa-arrow-left"></i></th>
+                                <th colspan="5">Décembre</th>
+                                <th class="col-1"><i class="fa-solid fa-arrow-right"></i></th>
+                            </tr>
+                            <tr>
+                                <th>lu</th>
+                                <th>ma</th>
+                                <th>me</th>
+                                <th>je</th>
+                                <th>ve</th>
+                                <th>sa</th>
+                                <th>di</th>
+                            </tr>
+                            <tbody>
+                                <tr>
+                                    <td data-name="day-before"><span>28</span></td>
+                                    <td data-name="day-before"><span>29</span></td>
+                                    <td data-name="day-before"><span>30</span></td>
+                                    <td data-name="day-before"><span>1</span></td>
+                                    <td data-name="day-before"><span>2</span></td>
+                                    <td data-name="day-before"><span>3</span></td>
+                                    <td data-name="day-before"><span>4</span></td>
+                                </tr>
+                                <tr>
+                                    <td data-name="day-before"><span>5</span></td>
+                                    <td data-name="day-before"><span>6</span></td>
+                                    <td data-name="day-before"><span>7</span></td>
+                                    <td data-name="day-before"><span>8</span></td>
+                                    <td><span>9</span></td>
+                                    <td><span>10</span></td>
+                                    <td><span>11</span></td>
+                                </tr>
+                                <tr>
+                                    <td><span>12</span></td>
+                                    <td><span>13</span></td>
+                                    <td><span>14</span></td>
+                                    <td><span>15</span></td>
+                                    <td><span>16</span></td>
+                                    <td><span>17</span></td>
+                                    <td><span>18</span></td>
+                                </tr>
+                                <tr>
+                                    <td><span>19</span></td>
+                                    <td><span>20</span></td>
+                                    <td><span>21</span></td>
+                                    <td><span>22</span></td>
+                                    <td><span>23</span></td>
+                                    <td><span>24</span></td>
+                                    <td><span>25</span></td>
+                                </tr>
+                                <tr>
+                                    <td><span>26</span></td>
+                                    <td><span>27</span></td>
+                                    <td><span>28</span></td>
+                                    <td><span>29</span></td>
+                                    <td><span>30</span></td>
+                                    <td><span>31</span></td>
+                                    <td data-name="day-after"><span>1</span></td>
+                                </tr>
+                            </tbody>
+                        </thead>
+                    </table>
+
+
+                </div>
+                <div class="col-12 col-md-6 col-lg-4" data-name="calendrier" unselectable="on">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam hic neque minima iusto vel ratione, praesentium eligendi et sed saepe cupiditate molestiae explicabo eius tempora accusantium sit laudantium placeat error.
+                </div>
+            </div>
+            <div class="row" data-name="btn-calendrier">
+                <div class="col-0 col-lg-6"></div>
+                <button class="col-6 col-lg-3">Effacer</button>
+                <button class="col-6 col-lg-3" >Appliquer</button>
+            </div>
+        </div>
+
+        <table class="col-12"  >
+            <thead>
+                <tr>
+                    <th class="col-1"><i class="fa-solid fa-arrow-left"></i></th>
+                    <th colspan="5">Décembre</th>
+                    <th class="col-1"><i class="fa-solid fa-arrow-right"></i></th>
+                </tr>
+                <tr>
+                    <th>lu</th>
+                    <th>ma</th>
+                    <th>me</th>
+                    <th>je</th>
+                    <th>ve</th>
+                    <th>sa</th>
+                    <th>di</th>
+                </tr>
+                <tbody id="calendrier">
+    
+                </tbody>
+            </thead>
+        </table>
+
+    </div>
+
+
+
+<script>
+
+
+class Calendrier
+{
+    
+    constructor(date)
+    {
+        this.date = date ;
+        this.n1 = 0 ;
+        this.n2 = 0 ;
+        this.selectionEnCours = false;
+        this.calendrier = this.generateTab();
+        let tobjCal = this;
+        $("body").on('mousemove',document,function(){
+            if(!tobjCal.selectionEnCours)   { return;  }
+
+        }).on('mouseup',document,function(){
+
+        });
+
+        $(document).on('mouseover','td.mois_courant',function(){
+            if(!tobjCal.selectionEnCours){ return; }
+            // console.log("over",$(this));
+            // console.log("Calendrier : ",tobjCal);
+            tobjCal.n2 = $(this).attr("no");
+            tobjCal.supprimeSelection();
+            tobjCal.selectionne();
+        }).on('mouseup','.mois_courant',function(){
+            if(!tobjCal.selectionEnCours){ return ;}
+            // console.log("up",$(this));
+            // console.log("Calendrier : ",tobjCal);
+            tobjCal.n2 = $(this).attr("no");
+            tobjCal.selectionne();
+            tobjCal.selectionEnCours = false;
+
+        }).on('mousedown','.mois_courant',function(){
+            // console.log("down",$(this));
+            // console.log("Calendrier : ",tobjCal);
+            tobjCal.selectionEnCours = true;
+            tobjCal.supprimeSelection();
+            tobjCal.n1 = $(this).attr("no");
+            tobjCal.selectionne();
+        })
+
+    }
+    
+
+    generateTab()
+    {
+        let cpt = 0;
+        let firstDay = this.getFirstDayMonth(this.date) -1;
+        let nbjours = this.getNbJours();
+        let nbjoursmoisprecedent = nbjours[this.date.getMonth()-1]
+        let calendrierJours ="";
+        let calendrierRows ="<tr>";
+
+        for(let i=firstDay;i>0;i--)
+        {
+            if(cpt%7 == 0 && cpt !=0)
+            {
+                calendrierRows += calendrierJours+"</tr><tr>";
+                calendrierJours ="";
+            }
+            calendrierJours = "<td data-name=\"day-before\" no="+cpt+"><span>"+(nbjoursmoisprecedent--)+"</span></td>" + calendrierJours;
+            cpt++;
+        }
+
+        let joursPasses = this.getJoursPasses(this.date);
+        for(let i=0;i<joursPasses.length;i++){
+            if(cpt%7 == 0 && cpt !=0)
+            {
+                calendrierRows += calendrierJours+"</tr><tr>";
+                calendrierJours ="";
+            }
+            calendrierJours += "<td data-name=\"day-before\" no="+cpt+"><span>"+(i+1)+"</span></td>";
+            cpt++;
+
+        }
+        for(let i=joursPasses.length;i<nbjours[this.date.getMonth()];i++){
+            calendrierJours += "<td class=\"mois_courant\"  data-name=\"mois_courant\" no="+cpt+"><span>"+(i+1)+"</span></td>";
+            cpt++;
+            if(cpt%7 == 0 && cpt !=0)
+            {
+                calendrierRows += calendrierJours+"</tr><tr>";
+                calendrierJours ="";
+            }
+
+        }
+        let jourafter = 1
+        for(let i=cpt;i%7 != 0 ; i++)
+        {   
+            calendrierJours += "<td class=\"day_after\" data-name=\"day_after\" no="+cpt+"><span>"+(jourafter++)+"</span></td>";
+            // cpt++;
+        }
+        calendrierRows += calendrierJours+"</tr>";
+        return calendrierRows;
+    }
+    
+    getJoursPasses(date)
+    {
+        let tabJoursPasses =[];
+        let currentDay = this.date.getDate();
+        for(let i=1;i<currentDay;i++)
+        {
+            tabJoursPasses.push(i);
+        }
+        return tabJoursPasses;
+    }
+
+    getFirstDayMonth(date)
+    {
+        let date1 = new Date(date.getFullYear(),date.getMonth(),1);
+        return date1.getDay();
+    }
+
+    getNbJours(){
+
+        let tabnbjours=[];
+        for(let i=0;i<12;i++)
+        {
+            let month = (this.date.getMonth()+i)%12;
+            let year = this.date.getFullYear()+Math.floor((this.date.getMonth()+i)/12);
+            
+            let nbjours = new Date(year,month,-1).getDate()+1;
+            tabnbjours.splice(month-1,0,nbjours);
+
+        }
+
+        return tabnbjours;
+    }
+
+    selectionne(){
+        let start;
+        let end;
+        console.log(this.n1,this.n2);
+        if(this.n1>=this.n2)
+        {
+            start = this.n2;
+            end = this.n1;
+        }
+        else
+        {
+            start = this.n1;
+            end = this.n2;
+        }
+        for(let i=start;i<=end;i++)
+        {
+            $('#calendrier td').eq(i).addClass('cal-selection');
+            // console.log($('td').eq(i));
+        }
+    }
+    supprimeSelection(){
+        $('#calendrier td').removeClass('cal-selection');
+    }
+
+}
+
+const calendrier1 = new Calendrier(new Date("2022","12","2"))
+let calendrier = document.getElementById("calendrier");
+calendrier.innerHTML=calendrier1.calendrier;
+
+// $('.mois_courant').on('mouseover', function(){
+//             console.log(this);
+//         })
+
+
+// let boolSelection = false;
+
+// var $jourAVenir = $(".mois_courant, .day_after"); 
+// $jourAVenir.on("mousedown",function(){
+
+//     boolSelection = true;
+//     // console.log($end)
+
+//         var $start = $jourAVenir.index(this);
+
+
+//     // console.log($start);
+//     if(boolSelection)
+//     {
+//         $jourAVenir.eq($start).css("background-color","red");
+//         $jourAVenir.on("mouseover", function(){
+//             $currentindex = $jourAVenir.index(this);
+//             // console.log($currentindex);
+//             // $jourAVenir.css("background-color","transparent");
+//             if($start>$currentindex){
+//                 var $indexstart = $currentindex;
+//                 var $indexend = $start;
+//             }
+//             else{
+//                 var $indexstart = $start;
+//                 var $indexend = $currentindex ;
+//             }
+//             // console.log("test"+$start);
+//             for(i=$indexstart;i<=$indexend;i++)
+//             {
+//                 $jourAVenir.eq(i).addClass('cal-selection');
+//             }
+//             console.log(boolSelection);
+//         });
+
+//         $jourAVenir.on("mouseup",function(){
+//             let end = $currentindex;
+//             boolSelection = false;
+
+//             console.log("test");
+//             //console.log("test");
+//             //console.log("2 - "+boolSelection)
+//         })
+//         console.log(boolSelection);
+
+//     }
+
+
+
+// })
+
+
+// $( "mois_courant" ).on('click', function(){
+//     console.log("test");
+// });
+
+
+        // let currentDate = new Date("2025","6","5");
+        // // let currentDate = new Date();
+        // // nbjours = getNbJours(currentDate);
+        // // console.log(nbjours)
+        // joursPasses = getJoursPasses(currentDate);
+        // let calendrier = document.getElementById("calendrier");
+        // calendrier.innerHTML=generateTab(currentDate)
+
+        // function generateTab(currentDate){
+        //     let cpt = 0;
+        //     let firstDay = getFirstDayMonth(currentDate) -1;
+        //     nbjours = getNbJours(currentDate);
+        //     nbjoursmoisprecedent = nbjours[currentDate.getMonth()-1]
+        //     let calendrierJours ="";
+        //     let calendrierRows ="<tr>";
+
+        //     for(i=firstDay;i>0;i--)
+        //     {
+        //         if(cpt%7 == 0 && cpt !=0)
+        //         {
+        //             calendrierRows += calendrierJours+"</tr><tr>";
+        //             calendrierJours ="";
+        //         }
+        //         calendrierJours = "<td data-name=\"day-before\"><span>"+(nbjoursmoisprecedent--)+"</span></td>" + calendrierJours;
+        //         cpt++;
+        //     }
+
+        //     let joursPasses = getJoursPasses(currentDate);
+        //     for(i=0;i<joursPasses.length;i++){
+        //         if(cpt%7 == 0 && cpt !=0)
+        //         {
+        //             calendrierRows += calendrierJours+"</tr><tr>";
+        //             calendrierJours ="";
+        //         }
+        //         calendrierJours += "<td data-name=\"day-before\"><span>"+(i+1)+"</span></td>";
+        //         cpt++;
+
+        //     }
+        //     for(i=joursPasses.length;i<nbjours[currentDate.getMonth()];i++){
+        //         calendrierJours += "<td data-name=\"mois_courant\"><span>"+(i+1)+"</span></td>";
+        //         cpt++;
+        //         if(cpt%7 == 0 && cpt !=0)
+        //         {
+        //             calendrierRows += calendrierJours+"</tr><tr>";
+        //             calendrierJours ="";
+        //         }
+
+        //     }
+        //     let jourafter = 1
+        //     for(i=cpt;i%7 != 0 ; i++)
+        //     {
+                
+                
+        //         calendrierJours += "<td data-name=\"day-after\"><span>"+(jourafter++)+"</span></td>";
+        //         // cpt++;
+        //     }
+        //     calendrierRows += calendrierJours+"</tr>";
+        
+
+            
+
+        //     return calendrierRows;
+        // }
+
+        // function getJoursPasses(date){
+
+        //     let tabJoursPasses =[];
+        //     currentDay = date.getDate();
+        //     for(i=1;i<currentDay;i++)
+        //     {
+        //         tabJoursPasses.push(i);
+        //     }
+        //     return tabJoursPasses;
+
+        // }
+
+        // function getFirstDayMonth(date){
+        //     let date1 = new Date(date.getFullYear(),date.getMonth(),1);
+        //     return date1.getDay();
+        // }
+
+        // function getNbJours(date){
+        //     let tabnbjours=[];
+
+
+        //     for(i=0;i<12;i++)
+        //     {
+        //         let month = (date.getMonth()+i)%12;
+        //         let year = date.getFullYear()+Math.floor((date.getMonth()+i)/12);
+                
+        //         let nbjours = new Date(year,month,-1).getDate()+1;
+        //         tabnbjours.splice(month-1,0,nbjours);
+
+        //     }
+        //     return tabnbjours;
+        // }
+</script>
+</body>
+</html>
