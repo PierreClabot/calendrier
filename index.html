@@ -127,7 +127,6 @@
                 </tbody>
             </thead>
         </table>
-
     </div>
 
 
@@ -137,45 +136,63 @@
 
 class Calendrier
 {
-    
     constructor(date)
     {
         this.date = date ;
-        this.n1 = 0 ;
-        this.n2 = 0 ;
+        this.n1 ;
+        this.n2 ;
         this.selectionEnCours = false;
         this.calendrier = this.generateTab();
         let tobjCal = this;
+        // console.log(this.date.getFullYear()+"/"+this.date.getMonth()-1+"/"+ this.date.getDay() )
+
         $("body").on('mousemove',document,function(){
             if(!tobjCal.selectionEnCours)   { return;  }
 
-        }).on('mouseup',document,function(){
-
+        }).on('mouseup',document,function(event){
+            if(event.target.getAttribute("data-date")===null) {  
+                tobjCal.selectionEnCours = false;
+            }
+        
+            console.log("bool selection",this.selectionEnCours);
+            console.log("event target : ",event.target);
+            console.log(event.target.getAttribute("data-date"));
+            
+            
         });
 
         $(document).on('mouseover','td.mois_courant',function(){
             if(!tobjCal.selectionEnCours){ return; }
             // console.log("over",$(this));
             // console.log("Calendrier : ",tobjCal);
+            console.log("bool selection",tobjCal.selectionEnCours);
             tobjCal.n2 = $(this).attr("no");
             tobjCal.supprimeSelection();
             tobjCal.selectionne();
-        }).on('mouseup','.mois_courant',function(){
+        }).on('mouseup','.mois_courant',function(event){
             if(!tobjCal.selectionEnCours){ return ;}
             // console.log("up",$(this));
             // console.log("Calendrier : ",tobjCal);
             tobjCal.n2 = $(this).attr("no");
             tobjCal.selectionne();
             tobjCal.selectionEnCours = false;
+            console.log("mouseup");
+            // event.stopImmediatePropagation();
+            // event.preventDefault();
+
 
         }).on('mousedown','.mois_courant',function(){
             // console.log("down",$(this));
             // console.log("Calendrier : ",tobjCal);
             tobjCal.selectionEnCours = true;
             tobjCal.supprimeSelection();
+            tobjCal.n2 = $(this).attr("no");
             tobjCal.n1 = $(this).attr("no");
             tobjCal.selectionne();
+            console.log("mousedown");
         })
+
+
 
     }
     
@@ -185,36 +202,57 @@ class Calendrier
         let cpt = 0;
         let firstDay = this.getFirstDayMonth(this.date) -1;
         let nbjours = this.getNbJours();
-        let nbjoursmoisprecedent = nbjours[this.date.getMonth()-1]
         let calendrierJours ="";
         let calendrierRows ="<tr>";
+        let dateYear = this.date.getFullYear();
+        let dateMonth = this.date.getMonth()+1;
+        let dateDay = this.date.getDate();
 
+        let moisPrecedent = dateMonth -1;
+        console.log(nbjours);
+        console.log(moisPrecedent);
+        let nbjoursmoisprecedent = nbjours[moisPrecedent];
+        console.log(nbjoursmoisprecedent);
+
+        let jour = 0 ; 
+        let jouravant = 0;
         for(let i=firstDay;i>0;i--)
         {
-            if(cpt%7 == 0 && cpt !=0)
+            jouravant++;
+        }
+
+        for(let i=0;i<jouravant;i++)
+        {
+            if((cpt%7 == 0) && (cpt !=0))
             {
                 calendrierRows += calendrierJours+"</tr><tr>";
                 calendrierJours ="";
             }
-            calendrierJours = "<td data-name=\"day-before\" no="+cpt+"><span>"+(nbjoursmoisprecedent--)+"</span></td>" + calendrierJours;
+            console.log(i)
+            jour++;
+            calendrierJours = "<td data-name=\"day-before\" data-date=\""+dateYear+"/"+moisPrecedent+"/"+(nbjoursmoisprecedent-jour)+"\" no="+(jouravant-1-i)+"><span>"+(nbjoursmoisprecedent-jour)+"</span></td>" + calendrierJours;
             cpt++;
         }
+        
 
         let joursPasses = this.getJoursPasses(this.date);
-        for(let i=0;i<joursPasses.length;i++){
-            if(cpt%7 == 0 && cpt !=0)
+        for(let i=1;i<=joursPasses.length;i++){
+            if((cpt%7 == 0) && (cpt !=0))
             {
                 calendrierRows += calendrierJours+"</tr><tr>";
                 calendrierJours ="";
             }
-            calendrierJours += "<td data-name=\"day-before\" no="+cpt+"><span>"+(i+1)+"</span></td>";
+            calendrierJours += "<td data-name=\"day-before\" data-date=\""+dateYear+"/"+dateMonth+"/"+(dateDay-i)+"\" no="+cpt+"><span>"+(dateDay-i)+"</span></td>";
             cpt++;
 
         }
+        // let jour = 0;
         for(let i=joursPasses.length;i<nbjours[this.date.getMonth()];i++){
-            calendrierJours += "<td class=\"mois_courant\"  data-name=\"mois_courant\" no="+cpt+"><span>"+(i+1)+"</span></td>";
+            
+            calendrierJours += "<td class=\"mois_courant\" data-date=\""+dateYear+"/"+dateMonth+"/"+(dateDay+jour)+"\" no="+cpt+"><span>"+(i+1)+"</span></td>";
             cpt++;
-            if(cpt%7 == 0 && cpt !=0)
+            jour++;
+            if((cpt%7 == 0) && (cpt !=0))
             {
                 calendrierRows += calendrierJours+"</tr><tr>";
                 calendrierJours ="";
@@ -224,8 +262,15 @@ class Calendrier
         let jourafter = 1
         for(let i=cpt;i%7 != 0 ; i++)
         {   
-            calendrierJours += "<td class=\"day_after\" data-name=\"day_after\" no="+cpt+"><span>"+(jourafter++)+"</span></td>";
+            let moisSuivant = dateMonth + 1;
+            let year = dateYear;
+            if(moisSuivant>11){ 
+                moisSuivant = 1;
+                year = dateYear+1;
+            }
+            calendrierJours += "<td class=\"day_after\" data-name=\"day_after\" data-date=\""+year+"/"+moisSuivant+"/"+(jourafter)+"\" no="+cpt+"><span>"+(jourafter)+"</span></td>";
             // cpt++;
+            jourafter++
         }
         calendrierRows += calendrierJours+"</tr>";
         return calendrierRows;
@@ -251,7 +296,7 @@ class Calendrier
     getNbJours(){
 
         let tabnbjours=[];
-        for(let i=0;i<12;i++)
+        for(let i=1;i<=12;i++)
         {
             let month = (this.date.getMonth()+i)%12;
             let year = this.date.getFullYear()+Math.floor((this.date.getMonth()+i)/12);
@@ -265,21 +310,21 @@ class Calendrier
     }
 
     selectionne(){
-        let start;
-        let end;
+        if(!this.selectionEnCours){return;}
+        let start = parseInt(this.n1,10);
+        let end = parseInt(this.n2,10);
         console.log(this.n1,this.n2);
-        if(this.n1>=this.n2)
+        if(end<start)
         {
-            start = this.n2;
-            end = this.n1;
+            start = parseInt(this.n2,10);
+            end = parseInt(this.n1,10);
         }
-        else
-        {
-            start = this.n1;
-            end = this.n2;
-        }
+
+        console.log("start"+start);
+        console.log("end"+end);
         for(let i=start;i<=end;i++)
         {
+            console.log(i);
             $('#calendrier td').eq(i).addClass('cal-selection');
             // console.log($('td').eq(i));
         }
@@ -290,10 +335,11 @@ class Calendrier
 
 }
 
-const calendrier1 = new Calendrier(new Date("2022","12","2"))
+const calendrier1 = new Calendrier(new Date("2022","11","2"))
+// let test = new Date("2022","11","2");
+// console.log(test.getFullYear());
 let calendrier = document.getElementById("calendrier");
 calendrier.innerHTML=calendrier1.calendrier;
-
 // $('.mois_courant').on('mouseover', function(){
 //             console.log(this);
 //         })

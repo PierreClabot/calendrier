@@ -88,6 +88,9 @@ i{
 .mois_courant:hover, .day_after:hover{
     background-color: gray;
 }
+.cal-selection:hover{
+    background-color: rgb(152, 0, 0);
+}
 
 .cal-selection{
     background-color: red;
