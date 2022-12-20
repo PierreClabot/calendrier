@@ -1,0 +1,109 @@
+body{
+    width: 100%;
+}
+*,::after,::before{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+div[data-name="container"]{
+    background-color: grey;
+    xxheight: 100vh;
+}
+div[data-name="container-calendrier"]{
+    background-color: aqua;
+}
+div[data-name="row-calendrier"]{
+    background-color: red;
+}
+div[data-name="btn-calendrier"]{
+    background-color: green;
+    padding: 0.5rem;
+}
+div[data-name="legende-calendrier"]
+{
+    background-color: purple;
+}
+div[data-name="legende-calendrier"]>button
+{
+    margin: 0.2rem;
+    border: none;
+    outline: none;
+}
+div[data-name="calendrier"]
+{
+    background-color: brown;
+    border: black solid 1px;
+    user-select: none;
+}
+#calendrier{
+    user-select: none;
+}
+div[data-name="btn-calendrier"]>button
+{
+
+    outline: none;
+}
+table {
+    text-align: center;
+    background-color: antiquewhite;
+    
+}
+.moisSuiv, .moisPrec{
+    cursor: pointer;
+}
+table tbody td {
+    width: 14%;
+    border: black solid 1px;
+}
+.day-before
+{
+    cursor: not-allowed;
+    position: relative;
+    opacity: 0.5;
+}
+td[data-name="day-before"],td[data-name="day-after"]{
+    opacity: 0.5;
+}
+td[data-name="day-before"]>span::after
+{
+    content: "";
+    display: block;
+    width: 50%;
+    height: 1px;
+    background-color: black;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%,50%) rotate(-20deg);
+}
+
+
+table[data-calendrierno] {
+    margin:auto;
+}
+
+@media (min-width :992px) {
+    div[data-name="legende-calendrier"]
+    {
+        background-color: blue;
+        display: flex;
+        flex-direction: column;
+    }
+}
+i{
+    font-family: "Font Awesome 5 Free";
+}
+.mois_courant:hover, .day_after:hover{
+    background-color: gray;
+}
+.cal-selection:hover{
+    background-color: rgb(152, 0, 0);
+}
+
+.cal-selection{
+    background-color: red;
+}
+.cal-spectacle{
+    background-color: purple;
+}
