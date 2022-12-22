@@ -8,7 +8,7 @@ body{
 }
 div[data-name="container"]{
     background-color: grey;
-    height: 100vh;
+    xxheight: 100vh;
 }
 div[data-name="container-calendrier"]{
     background-color: aqua;
@@ -34,6 +34,7 @@ div[data-name="calendrier"]
 {
     background-color: brown;
     border: black solid 1px;
+    user-select: none;
 }
 #calendrier{
     user-select: none;
@@ -48,11 +49,14 @@ table {
     background-color: antiquewhite;
     
 }
+.moisSuiv, .moisPrec{
+    cursor: pointer;
+}
 table tbody td {
     width: 14%;
     border: black solid 1px;
 }
-td[data-name="day-before"]
+.day-before
 {
     cursor: not-allowed;
     position: relative;
@@ -61,17 +65,11 @@ td[data-name="day-before"]
 td[data-name="day-before"],td[data-name="day-after"]{
     opacity: 0.5;
 }
-td[data-name="day-before"]>span::after
-{
-    content: "";
-    display: block;
-    width: 50%;
-    height: 1px;
-    background-color: black;
-    top: 50%;
-    left: 50%;
-    position: absolute;
-    transform: translate(-50%,50%) rotate(-20deg);
+
+
+
+table[data-calendrierno] {
+    margin:auto;
 }
 
 @media (min-width :992px) {
@@ -94,4 +92,7 @@ i{
 
 .cal-selection{
     background-color: red;
+}
+.cal-spectacle{
+    background-color: purple;
 }

@@ -14,205 +14,201 @@
 
 </head>
 <body>
-    <div data-name="container">
-        <div cclass="container-fluid" data-name="container-calendrier">
-            <div class="row" data-name="row-calendrier">
-                <div class="col-12 col-lg-4" data-name="legende-calendrier">
-                    <button>Aujourd'hui</button>
-                    <button>Cette semaine</button>
-                    <button>2 prochains jours</button>
-                    <button>3 prochains jours</button>
-                    <button>Le weekend prochain</button>
-                    <button>Quelle période ? </button>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4" data-name="calendrier">
+    <div id="periode-selecteur">
 
-                    <table class="col-12">
-                        <thead>
-                            <tr>
-                                <th class="col-1"><i class="fa-solid fa-arrow-left"></i></th>
-                                <th colspan="5">Décembre</th>
-                                <th class="col-1"><i class="fa-solid fa-arrow-right"></i></th>
-                            </tr>
-                            <tr>
-                                <th>lu</th>
-                                <th>ma</th>
-                                <th>me</th>
-                                <th>je</th>
-                                <th>ve</th>
-                                <th>sa</th>
-                                <th>di</th>
-                            </tr>
-                            <tbody>
-                                <tr>
-                                    <td data-name="day-before"><span>28</span></td>
-                                    <td data-name="day-before"><span>29</span></td>
-                                    <td data-name="day-before"><span>30</span></td>
-                                    <td data-name="day-before"><span>1</span></td>
-                                    <td data-name="day-before"><span>2</span></td>
-                                    <td data-name="day-before"><span>3</span></td>
-                                    <td data-name="day-before"><span>4</span></td>
-                                </tr>
-                                <tr>
-                                    <td data-name="day-before"><span>5</span></td>
-                                    <td data-name="day-before"><span>6</span></td>
-                                    <td data-name="day-before"><span>7</span></td>
-                                    <td data-name="day-before"><span>8</span></td>
-                                    <td><span>9</span></td>
-                                    <td><span>10</span></td>
-                                    <td><span>11</span></td>
-                                </tr>
-                                <tr>
-                                    <td><span>12</span></td>
-                                    <td><span>13</span></td>
-                                    <td><span>14</span></td>
-                                    <td><span>15</span></td>
-                                    <td><span>16</span></td>
-                                    <td><span>17</span></td>
-                                    <td><span>18</span></td>
-                                </tr>
-                                <tr>
-                                    <td><span>19</span></td>
-                                    <td><span>20</span></td>
-                                    <td><span>21</span></td>
-                                    <td><span>22</span></td>
-                                    <td><span>23</span></td>
-                                    <td><span>24</span></td>
-                                    <td><span>25</span></td>
-                                </tr>
-                                <tr>
-                                    <td><span>26</span></td>
-                                    <td><span>27</span></td>
-                                    <td><span>28</span></td>
-                                    <td><span>29</span></td>
-                                    <td><span>30</span></td>
-                                    <td><span>31</span></td>
-                                    <td data-name="day-after"><span>1</span></td>
-                                </tr>
-                            </tbody>
-                        </thead>
-                    </table>
-
-
-                </div>
-                <div class="col-12 col-md-6 col-lg-4" data-name="calendrier" unselectable="on">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam hic neque minima iusto vel ratione, praesentium eligendi et sed saepe cupiditate molestiae explicabo eius tempora accusantium sit laudantium placeat error.
-                </div>
-            </div>
-            <div class="row" data-name="btn-calendrier">
-                <div class="col-0 col-lg-6"></div>
-                <button class="col-6 col-lg-3">Effacer</button>
-                <button class="col-6 col-lg-3" >Appliquer</button>
-            </div>
-        </div>
-
-        <table class="col-12"  >
-            <thead>
-                <tr>
-                    <th class="col-1"><i class="fa-solid fa-arrow-left"></i></th>
-                    <th colspan="5">Décembre</th>
-                    <th class="col-1"><i class="fa-solid fa-arrow-right"></i></th>
-                </tr>
-                <tr>
-                    <th>lu</th>
-                    <th>ma</th>
-                    <th>me</th>
-                    <th>je</th>
-                    <th>ve</th>
-                    <th>sa</th>
-                    <th>di</th>
-                </tr>
-                <tbody id="calendrier">
-    
-                </tbody>
-            </thead>
-        </table>
     </div>
 
-
+    <div style="margin:4rem">
+        <H1>J'écoute les évents...</H1>
+        <div id="PERIODEECOUTEUR"></div>
+   </div>
 
 <script>
 
 
+
 class Calendrier
 {
-    constructor(date)
+    constructor(numero,date)
     {
+        this.numero = numero;
         this.date = date ;
-        this.n1 ;
-        this.n2 ;
+        this.n1 = -1;
+        this.n2 = -1;
         this.selectionEnCours = false;
-        this.calendrier = this.generateTab();
-        let tobjCal = this;
-        // console.log(this.date.getFullYear()+"/"+this.date.getMonth()-1+"/"+ this.date.getDay() )
+        this.dernierNo = -1; 
+        this.calendrier = this.generateTab(numero,date);
+        let tobjCal = this; 
+        this.observers =[];
+        //this.dernierNo = -1; !! NON dernierNo est mis à jour dans generateTAB!!
 
-        $("body").on('mousemove',document,function(){
-            if(!tobjCal.selectionEnCours)   { return;  }
 
-        }).on('mouseup',document,function(event){
-            if(event.target.getAttribute("data-date")===null) {  
-                tobjCal.selectionEnCours = false;
+
+        $(window).mouseup(function(){
+        })
+    
+        //@TODO -- FAIT
+        // ecouter $("BOUTON MOIS SUIVANT").ON {
+            // 
+            // calcul nouvelle date
+            // this.dateRecalcule(nouvelledate)
+            //
+            // notifier le conteneur
+            // let evtPeriode={
+            //      evtSrc : event,
+            //      event : "dateAChangé",
+            //      date : nouvelleDate            
+            //  };
+            // tobjCal.fire(evtPeriode);
+        // }
+
+
+        //@TODO -- FAIT ( BUG : Le clic est fait 2 fois )
+        // ecouter $("BOUTON MOIS PRECEDENT").ON {
+            // 
+            // calcul nouvelle date
+            // this.dateRecalcule(nouvelledate)
+            //
+            // notifier le conteneur
+            // let evtPeriode={
+            //      evtSrc : event,
+            //      event : "dateAChangé",
+            //      date : nouvelleDate
+            //  };
+            // tobjCal.fire(evtPeriode);
+        // }
+
+        $(document).on('click','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] .moisPrec',(event)=>{
+
+            let jour = "1";
+            let currentDate = new Date();
+            let nouvelleDate2 = new Date(this.date.getFullYear(),this.date.getMonth()-1);
+
+            if(((nouvelleDate2.getMonth()) == currentDate.getMonth())&&(nouvelleDate2.getFullYear() == currentDate.getFullYear()))
+            {
+                jour = currentDate.getDate();
             }
-        
-            console.log("bool selection",this.selectionEnCours);
-            console.log("event target : ",event.target);
-            console.log(event.target.getAttribute("data-date"));
+
+            let nouvelleDate = new Date(this.date.getFullYear(),this.date.getMonth()-1,jour);
+            console.log(nouvelleDate);
+            this.date = nouvelleDate;
+            this.dateRecalcule(nouvelleDate);
+            let evtPeriode={
+                    evtSrc : event,
+                    event : "dateAChangé",
+                    date : nouvelleDate,
+                    mois : "precedent",
+                    };
+            this.fire(evtPeriode);
+
+        }).on('click','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] .moisSuiv',(event)=>{
+            let jour = "1";
+            let currentDate = new Date();
+
+            if(((this.date.getMonth()+1) == currentDate.getMonth())&&(this.date.getFullYear() == currentDate.getFullYear()))
+            {
+                jour = currentDate.getDate();
+            }
+            let nouvelleDate = new Date(this.date.getFullYear(),this.date.getMonth()+1,jour);
+            this.date = nouvelleDate;
+            this.dateRecalcule(nouvelleDate);
             
+            let evtPeriode={
+                    evtSrc : event,
+                    event : "dateAChangé",
+                    date : nouvelleDate,
+                    mois : "suivant",
+                    };
             
+            this.fire(evtPeriode);
         });
 
-        $(document).on('mouseover','td.mois_courant',function(){
-            if(!tobjCal.selectionEnCours){ return; }
-            // console.log("over",$(this));
-            // console.log("Calendrier : ",tobjCal);
-            console.log("bool selection",tobjCal.selectionEnCours);
-            tobjCal.n2 = $(this).attr("no");
-            tobjCal.supprimeSelection();
-            tobjCal.selectionne();
-        }).on('mouseup','.mois_courant',function(event){
-            if(!tobjCal.selectionEnCours){ return ;}
-            // console.log("up",$(this));
-            // console.log("Calendrier : ",tobjCal);
-            tobjCal.n2 = $(this).attr("no");
-            tobjCal.selectionne();
-            tobjCal.selectionEnCours = false;
-            console.log("mouseup");
-            // event.stopImmediatePropagation();
-            // event.preventDefault();
+        $("body").on('mousemove',document,function(){
+            // if(!tobjCal.selectionEnCours)   { return;  }
 
 
-        }).on('mousedown','.mois_courant',function(){
-            // console.log("down",$(this));
-            // console.log("Calendrier : ",tobjCal);
-            tobjCal.selectionEnCours = true;
-            tobjCal.supprimeSelection();
-            tobjCal.n2 = $(this).attr("no");
-            tobjCal.n1 = $(this).attr("no");
-            tobjCal.selectionne();
-            console.log("mousedown");
+        }).on('mouseup',window,function(event){
+            let evtPeriode={
+                 evtSrc : event,
+                 event : "selectFin",
+                 no    :  0
+             };
+            tobjCal.fire(evtPeriode);
+        });
+
+        $(document).on('mouseover','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
+            let evtPeriode={
+                 evtSrc : evt,
+                 event : "mouseHover",
+                 no    :  parseInt(this.getAttribute("no"),10)
+             };
+            tobjCal.fire(evtPeriode);
+
+        }).on('mouseup','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
+            let evtPeriode={
+                 evtSrc : evt,
+                 event : "mouseUp",
+                 no    :  parseInt(this.getAttribute("no"),10)
+             };
+            tobjCal.fire(evtPeriode);
+
+
+        
+        }).on('mousedown','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
+             let evtPeriode={
+                 evtSrc : evt,
+                 event : "mouseDown",
+                 no    :  parseInt(this.getAttribute("no"),10)
+             };
+             tobjCal.fire(evtPeriode);
+        }).on('touchstart','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
+            
+            let evtPeriode={
+                 evtSrc : evt,
+                 event : "mouseDown",
+                 no    :  parseInt(this.getAttribute("no"),10)
+             };
+             tobjCal.fire(evtPeriode); 
+
+        }).on('touchmove','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
+
+            let clientX = evt.touches[0].clientX;
+            let clientY = evt.touches[0].clientY;
+            let caseTouchMove = document.elementFromPoint(clientX, clientY);
+
+            let evtPeriode={
+                evtSrc : evt,
+                event : "mouseHover",
+                no    :  parseInt(caseTouchMove.getAttribute("no"),10)
+            };
+            tobjCal.fire(evtPeriode); 
+
         })
-
-
 
     }
     
 
-    generateTab()
+    generateTab(numero,dateCal)
     {
         let cpt = 0;
-        let firstDay = this.getFirstDayMonth(this.date) -1;
+        let tabMois = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"]
+        this.date = dateCal ;
+        let firstDay = this.getFirstDayMonth();
         let nbjours = this.getNbJours();
         let calendrierJours ="";
-        let calendrierRows ="<tr>";
-        let dateYear = this.date.getFullYear();
-        let dateMonth = this.date.getMonth()+1;
-        let dateDay = this.date.getDate();
+
+        let dateYear = dateCal.getFullYear();
+        let dateMonth = dateCal.getMonth()+1;
+        let dateDay = dateCal.getDate();
+
+        let calendrierEntete = "<table data-calendrierNo="+numero+"><thead><tr><th class='col-1 moisPrec' ><i class='fa-solid fa-arrow-left'></i></th><th colspan='5'>"+tabMois[dateMonth-1]+" - "+dateCal.getFullYear()+"</th><th class='col-1 moisSuiv'><i class='fa-solid fa-arrow-right'></i></th></tr><tr><th>lu</th><th>ma</th><th>me</th><th>je</th><th>ve</th><th>sa</th><th>di</th></tr></thead>";
+        let calendrierRows =calendrierEntete+"<tr>";
 
         let moisPrecedent = dateMonth -1;
-        console.log(nbjours);
-        console.log(moisPrecedent);
-        let nbjoursmoisprecedent = nbjours[moisPrecedent];
-        console.log(nbjoursmoisprecedent);
+        if(moisPrecedent<=0){
+            moisPrecedent = 12;
+        }
+        let nbjoursmoisprecedent = nbjours[moisPrecedent-1];
 
         let jour = 0 ; 
         let jouravant = 0;
@@ -228,35 +224,38 @@ class Calendrier
                 calendrierRows += calendrierJours+"</tr><tr>";
                 calendrierJours ="";
             }
-            console.log(i)
+
+            calendrierJours = "<td class=\"day-before\" data-date=\""+dateYear+"/"+moisPrecedent+"/"+(nbjoursmoisprecedent-jour)+"\" no="+(jouravant-1-i)+">"+(nbjoursmoisprecedent-jour)+"</td>" + calendrierJours;
             jour++;
-            calendrierJours = "<td data-name=\"day-before\" data-date=\""+dateYear+"/"+moisPrecedent+"/"+(nbjoursmoisprecedent-jour)+"\" no="+(jouravant-1-i)+"><span>"+(nbjoursmoisprecedent-jour)+"</span></td>" + calendrierJours;
             cpt++;
         }
         
-
+        let calendrierJourMoisPrec = calendrierJours;
         let joursPasses = this.getJoursPasses(this.date);
-        for(let i=1;i<=joursPasses.length;i++){
+        for(let i=joursPasses.length;i>0;i--){
             if((cpt%7 == 0) && (cpt !=0))
             {
                 calendrierRows += calendrierJours+"</tr><tr>";
                 calendrierJours ="";
             }
-            calendrierJours += "<td data-name=\"day-before\" data-date=\""+dateYear+"/"+dateMonth+"/"+(dateDay-i)+"\" no="+cpt+"><span>"+(dateDay-i)+"</span></td>";
+            
+            calendrierJours += "<td class=\"day-before\" data-date=\""+dateYear+"/"+dateMonth+"/"+(dateDay-i)+"\" no="+cpt+">"+(dateDay-i)+"</td>";
             cpt++;
 
-        }
-        // let jour = 0;
+        }   
+        jour = 0;
         for(let i=joursPasses.length;i<nbjours[this.date.getMonth()];i++){
             
-            calendrierJours += "<td class=\"mois_courant\" data-date=\""+dateYear+"/"+dateMonth+"/"+(dateDay+jour)+"\" no="+cpt+"><span>"+(i+1)+"</span></td>";
-            cpt++;
-            jour++;
             if((cpt%7 == 0) && (cpt !=0))
             {
                 calendrierRows += calendrierJours+"</tr><tr>";
                 calendrierJours ="";
             }
+
+            calendrierJours += "<td class=\"mois_courant\" data-date=\""+dateYear+"/"+dateMonth+"/"+(dateDay+jour)+"\" no="+cpt+">"+(i+1)+"</td>";
+            cpt++;
+            jour++;
+
 
         }
         let jourafter = 1
@@ -268,15 +267,16 @@ class Calendrier
                 moisSuivant = 1;
                 year = dateYear+1;
             }
-            calendrierJours += "<td class=\"day_after\" data-name=\"day_after\" data-date=\""+year+"/"+moisSuivant+"/"+(jourafter)+"\" no="+cpt+"><span>"+(jourafter)+"</span></td>";
-            // cpt++;
+            calendrierJours += "<td class=\"day_after\" data-name=\"day_after\" data-date=\""+year+"/"+moisSuivant+"/"+(jourafter)+"\" no="+cpt+">"+(jourafter)+"</td>";
+            this.dernierNo = cpt;
+            cpt++;
             jourafter++
         }
-        calendrierRows += calendrierJours+"</tr>";
+        calendrierRows += calendrierJours+"</tr></table>";
         return calendrierRows;
     }
     
-    getJoursPasses(date)
+    getJoursPasses()
     {
         let tabJoursPasses =[];
         let currentDay = this.date.getDate();
@@ -287,217 +287,737 @@ class Calendrier
         return tabJoursPasses;
     }
 
-    getFirstDayMonth(date)
+    getFirstDayMonth()
     {
-        let date1 = new Date(date.getFullYear(),date.getMonth(),1);
+        let date1 = new Date(this.date.getFullYear(),this.date.getMonth(),0);
         return date1.getDay();
     }
 
     getNbJours(){
 
         let tabnbjours=[];
-        for(let i=1;i<=12;i++)
+        for(let i=-1;i<11;i++)
         {
             let month = (this.date.getMonth()+i)%12;
+
             let year = this.date.getFullYear()+Math.floor((this.date.getMonth()+i)/12);
-            
-            let nbjours = new Date(year,month,-1).getDate()+1;
-            tabnbjours.splice(month-1,0,nbjours);
+
+            let nbjours = new Date(year,month+1,-1).getDate()+1;
+
+            tabnbjours.splice(month,0,nbjours);
 
         }
 
         return tabnbjours;
+        
     }
 
-    selectionne(){
-        if(!this.selectionEnCours){return;}
-        let start = parseInt(this.n1,10);
-        let end = parseInt(this.n2,10);
-        console.log(this.n1,this.n2);
-        if(end<start)
-        {
-            start = parseInt(this.n2,10);
-            end = parseInt(this.n1,10);
+    selectionne(n1,n2){ 
+        
+        if(n1<0){ n1 = 0; }
+
+        if(n2<0){
+            n2 = this.dernierNo;
         }
 
-        console.log("start"+start);
-        console.log("end"+end);
-        for(let i=start;i<=end;i++)
+        for(let i=n1;i<=n2;i++)
         {
-            console.log(i);
-            $('#calendrier td').eq(i).addClass('cal-selection');
-            // console.log($('td').eq(i));
+            $('div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td').eq(i).toggleClass('cal-selection',true);
         }
     }
+
+
+    // appelée par le conteneur
+    dateRecalcule(nouvelleDate) {
+        //@TODO -- FAIT 
+        // recalcule les cases de ce calendrier
+        
+        // changer le libellé du mois / année dans l'entête
+        // puis un truc du genre
+        
+        //  gérer changement année...        
+        // newDomJours=this.generate  : note this.dernierNo est mis à jour dans this.generate
+        // vider les cases DOM du div contenant les jours
+        // append child(newDomJours) dans la bonne div ou tbody du table
+
+        // envoyer un event au conteneur des 2 calendriers pour le tenir au courant...
+        // ce dernier pourra par exemple supprimer la sélection courante des deux calendriers , etc...
+        // let evtPeriode={
+        //          evtSrc : event,
+        //          event : "dateChange",  // <-- event à gérer dans le conteneur
+        //          nouvelleDate  :  ....  // <-- on met la nouvelle date dans le event
+        //  };
+        // tobjCal.fire(evtPeriode);
+        this.date = nouvelleDate;
+        let newDomJours = this.generateTab(this.numero,nouvelleDate);
+        $('div[data-divcalendrierno='+this.numero+']>table').remove();
+        $('div[data-divcalendrierno='+this.numero+']').append(newDomJours);
+        this.addSpectacle("2022/12/20","2022/12/21","2022/12/27","2023/1/2","2023/1/12","2023/2/4");
+        let evtPeriode={
+                  evtSrc : event,
+                  event : "dateChange",  // <-- event à gérer dans le conteneur
+                  nouvelleDate  :  nouvelleDate  // <-- on met la nouvelle date dans le event
+          };
+        this.fire(evtPeriode);
+    }
+
+    
+    casesJourAjour(date1,date2) {
+        // @TODO -- FAIT MAIS PEUT ETRE A REVOIR
+        // renvoie un objet { no1:xx , no2: yy }
+        // xx = case no de date1 si dans période
+        // yy = case no de date2 si dans période
+        // noMin=-1
+        // noMax=-1
+
+        // pour chaque idate de ce calendrier
+        //   si caseNode idate dans periode(date1,date2) et noMin=-1 alors noMin=caseNo
+        //   si caseNode idate dans periode(date1,date2) alors noMax=caseNo
+        // fin
+        // renvoyer {n1:noMin,n2:noMax};
+        
+        //  { no1:-1 , no2: -1 }  // la période demandée n'est pas du tout dans ce calendrier
+        
+        //  { no1:15, no2: 24 }   // période demandée = case 15 à 24
+
+        //  { no1:31 , no2: 34 }  // période demandée  sur 10 jours, mais seulement 4 jours correspondent dans ce calendrier
+        // let monthD1 = date1.getMonth();
+        // let monthD2 = date2.getMonth();
+        let noMin =-1 , noMax = -1;
+
+        let stringDate1 = date1.getFullYear()+"/"+(date1.getMonth()+1)+"/"+date1.getDate();
+        let stringDate2 = date2.getFullYear()+"/"+(date2.getMonth()+1)+"/"+date2.getDate();
+        let nbJoursCal = $(document).find('div[data-name=calendrier] td').length;
+        let nbCal = $(document).find('div[data-name=calendrier]').length;
+        
+        for(let i=0;i<=nbCal;i++)
+        {
+            let cal = $(document).find('div[data-name=calendrier]').eq(i);
+            let nbJoursCal = cal.find('td').length;
+
+            // console.log(nbJoursCal);
+            for(let i=0;i<nbJoursCal;i++)
+            {
+                let celulle = cal.find('td').eq(i);
+                // console.log("attr data-date ",celulle.attr("data-date"));
+                // console.log("string D1", stringDate1);
+                if(celulle.attr("data-date")==stringDate1)
+                {
+                    noMin = celulle.attr("no");
+                }
+                if(celulle.attr("data-date")==stringDate2)
+                {
+                    noMax = celulle.attr("no");
+                }
+            }
+        }
+
+        return{ no1:noMin , no2:noMax }
+    }        
+
+
+
     supprimeSelection(){
-        $('#calendrier td').removeClass('cal-selection');
+        $('div[data-name="calendrier"] td').removeClass('cal-selection');
+    }
+    getNumeroCalendrier(){
+        return this.numCalendrier ;
+    }
+
+    addSpectacle(date){
+
+        let cal = $('div[data-name=calendrier]>table').eq(0);
+        let jours = cal.find('td');
+        let nbJoursCal = jours.length;
+
+        for(let i=0;i<arguments.length;i++)
+        {
+
+            let date = arguments[i];
+            for(let jour=0;jour<nbJoursCal;jour++)
+            {
+
+                if(jours.eq(jour).attr("data-date")==date)
+                {
+                    jours.eq(jour).addClass("cal-spectacle");
+                }
+            }
+            
+        }
+    }
+    
+    subscribe(obj)
+    {
+        this.observers.push(obj);
+    }
+
+    unsubscribe(fn) {
+        this.observers = this.observers.filter(
+            function (item) {
+                if (item !== fn) {
+                    return item;
+                }
+            }
+        );
+    }
+
+    fire(evt) {
+        let thisCal = this;
+        this.observers.forEach(function (item) {
+            evt.numCal = thisCal.numero;
+            evt.sender = thisCal;
+            item.onCalendrierEvent(evt);
+        });
+        
     }
 
 }
 
-const calendrier1 = new Calendrier(new Date("2022","11","2"))
-// let test = new Date("2022","11","2");
-// console.log(test.getFullYear());
-let calendrier = document.getElementById("calendrier");
-calendrier.innerHTML=calendrier1.calendrier;
-// $('.mois_courant').on('mouseover', function(){
-//             console.log(this);
-//         })
+
+class Container{
+    constructor(calDate1,calDate2){
+
+        this.calendriers=[]
+        this.calendriers.push(calDate1);
+        this.calendriers.push(calDate2);
+        this.calendriers[0].subscribe(this);
+        this.calendriers[1].subscribe(this);
+        
+        this.selectionEnCours = false;
+        this.sel = [];
+        this.sel.push({cal:-1,no:-1});
+        this.sel.push({cal:-1,no:-1});
+        this.thisContainer = this;
+        this.ajouteGestionFiltre();
+
+        // du container
+        this.observers = [];
+        
+        $(window).mouseup(()=>{
+         this.selectionEnCours = false;   
+        });
+        
+    }
+    
+    domSelecteur()
+    {
+        let dom1 =$(`<div class="container-fluid" data-name='container'>
+            <div class="row" data-name="row-calendrier">
+
+            </div>
+        </div>`);
+
+        let domC1 = $(`<div class='col-12 col-md-6 col-lg-4' data-name='calendrier' data-divCalendrierNo='0' >`+this.calendriers[0].calendrier+`</div>`);
+        let domC2 = $(`<div class='col-12 col-md-6 col-lg-4' data-name='calendrier' data-divCalendrierNo='1' >`+this.calendriers[1].calendrier+`</div>`)
+        let domFiltre = $(`<div class='col-12 col-lg-4' data-name='legende-calendrier'>`+this.filtre()+`</div>`);
+
+        let domDiv = dom1.find('div[data-name="row-calendrier"]');
+
+        domDiv.append(domFiltre).append(domC1).append(domC2);
+        
+        return dom1;
+    }
+    
+    
+    affichageCalendrierNo(no){
+        return this.calendriers[no]
+    }
+    
+    
+    filtre()
+    {
+        return "<button class='btn_Today'>Aujourd'hui</button><button class='btn_Week'>Cette semaine</button><button class='btn_NextDay'>3 prochains jours</button><button class='btn_NextWeekEnd'>Le weekend prochain</button><button class='btn_Month'>Ce mois</button><button class=btn_Periode>Quelle période ? </button>"
+    }
+    
+
+    onCalendrierEvent(evt){
+        // evt.sender c'est le calendier qui a envoyé l'event
+        // evt.event  ="mouseUp" ou "mouseDown" ou "mouseHover"
+        // evt.no     = case où a eu lieu l'event
+        // evt.numCal = case où a eu lieu l'event
+        
+        if(evt.event == "mouseDown")
+        {
+            // un début de clic a eu lieu sur une case d'un des calendriers
+            this.selectionEnCours = true;
+            for(let i=0;i<this.calendriers.length;i++)
+            {
+                this.calendriers[i].supprimeSelection();
+            }
+            
+            console.log("evt",evt)
+            this.sel[0] = { cal:evt.numCal,no: evt.no};
+            this.sel[1] = { cal:evt.numCal,no: evt.no};
+            this.calendriers[evt.numCal].selectionne( evt.no, evt.no);
+            
+            this.fire({
+                event : "SelectionDebut",
+                // ... par exemple ajouter propriété date:date choisie
+                // ...
+            });
+
+        }
 
 
-// let boolSelection = false;
-
-// var $jourAVenir = $(".mois_courant, .day_after"); 
-// $jourAVenir.on("mousedown",function(){
-
-//     boolSelection = true;
-//     // console.log($end)
-
-//         var $start = $jourAVenir.index(this);
-
-
-//     // console.log($start);
-//     if(boolSelection)
-//     {
-//         $jourAVenir.eq($start).css("background-color","red");
-//         $jourAVenir.on("mouseover", function(){
-//             $currentindex = $jourAVenir.index(this);
-//             // console.log($currentindex);
-//             // $jourAVenir.css("background-color","transparent");
-//             if($start>$currentindex){
-//                 var $indexstart = $currentindex;
-//                 var $indexend = $start;
-//             }
-//             else{
-//                 var $indexstart = $start;
-//                 var $indexend = $currentindex ;
-//             }
-//             // console.log("test"+$start);
-//             for(i=$indexstart;i<=$indexend;i++)
-//             {
-//                 $jourAVenir.eq(i).addClass('cal-selection');
-//             }
-//             console.log(boolSelection);
-//         });
-
-//         $jourAVenir.on("mouseup",function(){
-//             let end = $currentindex;
-//             boolSelection = false;
-
-//             console.log("test");
-//             //console.log("test");
-//             //console.log("2 - "+boolSelection)
-//         })
-//         console.log(boolSelection);
-
-//     }
+        if(evt.event == "mouseUp")
+        {
+            // on a relaché la souris d'une des cases d'un des calendriers
+            this.selectionEnCours = false;
+            this.fire({
+                event : "SelectionFaite",
+                // ... par exemple envoyer date1, à date2
+                // ...
+            });
+        }
 
 
 
-// })
+        if(evt.event == "selectFin") {
+            // on a relaché la souris en dehors du calendrier !
+            this.selectionEnCours=false;
+            this.fire({
+                event : "SelectionFaite",
+                // ... par exemple envoyer date1, à date2
+                // ...
+            });
+        }
 
 
-// $( "mois_courant" ).on('click', function(){
-//     console.log("test");
-// });
+        if(evt.event == "mouseHover")
+        {
+            // on balade la souris sur une des cases du calendrier
 
 
-        // let currentDate = new Date("2025","6","5");
-        // // let currentDate = new Date();
-        // // nbjours = getNbJours(currentDate);
-        // // console.log(nbjours)
-        // joursPasses = getJoursPasses(currentDate);
-        // let calendrier = document.getElementById("calendrier");
-        // calendrier.innerHTML=generateTab(currentDate)
+            if(!this.selectionEnCours) {
+                // pas de sélection en cours...
+                this.fire({
+                event : "SelectionJhesite",
+                // ... par exemple envoyer date survolée
+                // ...
+            });
+                return;
+            }
 
-        // function generateTab(currentDate){
-        //     let cpt = 0;
-        //     let firstDay = getFirstDayMonth(currentDate) -1;
-        //     nbjours = getNbJours(currentDate);
-        //     nbjoursmoisprecedent = nbjours[currentDate.getMonth()-1]
-        //     let calendrierJours ="";
-        //     let calendrierRows ="<tr>";
+            // sinon étendre la sélection
+            for(let i=0;i<this.calendriers.length;i++)
+            {
+                this.calendriers[i].supprimeSelection();
+            }
+            this.sel[1] = {cal:evt.numCal,no:evt.no};
 
-        //     for(i=firstDay;i>0;i--)
-        //     {
-        //         if(cpt%7 == 0 && cpt !=0)
-        //         {
-        //             calendrierRows += calendrierJours+"</tr><tr>";
-        //             calendrierJours ="";
-        //         }
-        //         calendrierJours = "<td data-name=\"day-before\"><span>"+(nbjoursmoisprecedent--)+"</span></td>" + calendrierJours;
-        //         cpt++;
-        //     }
+            // on ne touche pas à sel[0] et sel[1] de l'objet en cours
+            // mais avec une copie
+            let tmpSel=[
+                Object.assign({},this.sel[0]),
+                Object.assign({},this.sel[1]),
+            ];
 
-        //     let joursPasses = getJoursPasses(currentDate);
-        //     for(i=0;i<joursPasses.length;i++){
-        //         if(cpt%7 == 0 && cpt !=0)
-        //         {
-        //             calendrierRows += calendrierJours+"</tr><tr>";
-        //             calendrierJours ="";
-        //         }
-        //         calendrierJours += "<td data-name=\"day-before\"><span>"+(i+1)+"</span></td>";
-        //         cpt++;
+            // si 2eme date choisie inférieure à 1ere date choisie 
+            if ( ((tmpSel[0].cal)*50)+(tmpSel[0].no) >  ((tmpSel[1].cal)*50)+(tmpSel[1].no) ) 
+            {
+                // on permute
+                let tmpSwap=Object.assign({},tmpSel[1]);
+                tmpSel[1]=Object.assign({},tmpSel[0]);
+                tmpSel[0]=tmpSwap;
+            }
 
-        //     }
-        //     for(i=joursPasses.length;i<nbjours[currentDate.getMonth()];i++){
-        //         calendrierJours += "<td data-name=\"mois_courant\"><span>"+(i+1)+"</span></td>";
-        //         cpt++;
-        //         if(cpt%7 == 0 && cpt !=0)
-        //         {
-        //             calendrierRows += calendrierJours+"</tr><tr>";
-        //             calendrierJours ="";
-        //         }
-
-        //     }
-        //     let jourafter = 1
-        //     for(i=cpt;i%7 != 0 ; i++)
-        //     {
+            if (tmpSel[0].cal==tmpSel[1].cal) {
+                // Sélection sur un seul calendrier
+                this.calendriers[tmpSel[0].cal].selectionne(tmpSel[0].no,tmpSel[1].no);
+            } else {
+                    // sélection à cheval sur 2 calendriers
+                    this.calendriers[tmpSel[0].cal].selectionne ( tmpSel[0].no , -1);
+                    this.calendriers[tmpSel[1].cal].selectionne (           -1 , tmpSel[1].no);
                 
+            }
+
+            this.fire({
+                event : "SelectionExtension",
+                // ... par exemple envoyer date1, à date2
+                // ...
+            });
+
+                        
+        }
+
+        
+        //@TODO
+        if(evt.event == "dateAChangé") {
+                // un calendrier a changé sa date ( mois prec ou suivnant)
+                // normalement il s'est mis à jour tout seul
+
+                // du coup supprimer sa sélection
+                //  -->cal[xx].supprimeSelection()
+                let currentDate = new Date();
+                let nextCalendrier =0;
+                if(evt.sender.numero < (this.calendriers.length-1))
+                {
+                    nextCalendrier = (evt.sender.numero+1);
+                }
+                else{
+                    nextCalendrier = (evt.sender.numero-1);
+                }
+
+                let dateChange = evt.sender.date;
+                // console.log(evt.sender);
+                this.calendriers[evt.sender.numero].supprimeSelection();  
+                // Comparaison du mois et de l'année entre les calendriers 
+                if((dateChange.getMonth()==(this.calendriers[nextCalendrier].date.getMonth())) && (dateChange.getFullYear()==(this.calendriers[nextCalendrier].date.getFullYear())) )
+                {
+                    // Le calendrier est identique ( même mois et même année)
+
+                    // Si l'event envoyé est "suivant" (lors de l'appui sur l'icone), mois incrémenté
+                    if(evt.mois == "suivant")
+                    {
+                        this.calendriers[nextCalendrier].dateRecalcule(new Date(dateChange.getFullYear(),dateChange.getMonth()+1,currentDate.getDate()));
+                    }
+                    // Si l'event envoyé est "precedent" (lors de l'appui sur l'icone), mois décrémenté
+                    if(evt.mois == "precedent")
+                    {
+                        this.calendriers[nextCalendrier].dateRecalcule(new Date(dateChange.getFullYear(),dateChange.getMonth()-1,currentDate.getDate()));
+                    }
+                }
                 
-        //         calendrierJours += "<td data-name=\"day-after\"><span>"+(jourafter++)+"</span></td>";
-        //         // cpt++;
-        //     }
-        //     calendrierRows += calendrierJours+"</tr>";
+                this.calendriers[evt.sender.numero].dateRecalcule(evt.sender.date);
+
+                // calculer nouvelleDate pour 2eme calendrier
+                // actualiser le 2eme calendrier 
+                //  -->cal[autre].dateRecalcule(nouvelleDate)
+                this.fire({
+                    event:"Changement de mois"
+                    // autres infos..
+                });
+        }
+
+    }
+
+
+    subscribe(fn)
+    {
+        this.observers.push(fn);
+    }
+
+
+    unsubscribe(fn) {
+        this.observers = this.observers.filter(
+            function (item) {
+                if (item !== fn) {
+                    return item;
+                }
+            }
+        );
+    }
+
+    fire(evt) {
+        let thisCal = this;
+        this.observers.forEach(function (item) {
+            evt.sender = thisCal;
+            item.onPeriodeEvent(evt);
+
+        });
+    }
+
+
+
+    ajouteGestionFiltre() {
+       //@TODO -- FAIT
+       //   $(boutonMoisPrecedent.on('click')          -->onChangeMoisprecedent
+       //   $(boutonMoisSuivant.on('click')          -->onChangeMoissuivant
+       //   $(boutonAujourdhui).on('click') --> onAujourdhuiCaseNo
+       //   $(boutonCetteSemaine.on('click')   -->onCetteSemaine
+       //   $(boutonCeMois.on('click')          -->onCemois
+       //   $(boutonWeekEndProchain.on('click')  -->onWeekendProchain
+        $(document).on('click','.btn_Today',()=>{
+            this.onAujourdhuiCaseNo()
+        }).on('click', '.btn_Week', ()=>{
+            this.onAcetteSemaine()
+        }).on('click', '.btn_NextDay', ()=>{
+            this.onJoursProchains(3);
+        }).on('click', '.btn_NextWeekEnd', ()=>{
+            this.onWeekEndProchain();
+        }).on('click', '.btn_Month', ()=>{
+            this.onCeMois();
+        });
+
+    //    $(document).on('click', '.btn_Periode',this.onAujourdhuiCaseNo);
+       
+
+       
+    } 
+
+    selectionnePeriode(ncal,n1,n2) {
+        //@TODO
+        // cases=this calendrier[ncal].jourAJour(dateDuJour,dateDuJour));
+        //   tester cas -1
+        //   calendrier[ncal].selectionne(cases.n1, cases.n2)  
+        let cases = this.calendriers[ncal].casesJourAjour(n1,n2);
+        this.calendriers[ncal].selectionne(cases.no1, cases.no2);
+        this.fire({
+            event:"Periode change"
+            // autres infos..
+        });
+    }
+
+    onAujourdhuiCaseNo() {
+        //@TODO -- FAIT
+        // dateJ = date du jour
+        //pour ncal=0 à 1 {
+        // selectionnePeriode(ncal,dateJ,dateJ)
+        // }
+        let date = new Date();
+        let boolMoisAffiche = false;
+        this.supprimeSelection();
+
+        for(let i=0;(i<this.calendriers.length);i++)
+        {
+
+            if(this.calendriers[i].date.getMonth()==date.getMonth())
+            {
+                this.selectionnePeriode(i,date,date);
+                boolMoisAffiche = true;
+                return;
+            }
+        }
+        if(!boolMoisAffiche)
+        {
+            let newDomJours = this.calendriers[0].generateTab(0,date);
+            $('div[data-divcalendrierno=0]>table').remove();
+            $('div[data-divcalendrierno=0]').append(newDomJours);
+            this.selectionnePeriode(0,date,date);
+        }
+
+    }
+
+    onAcetteSemaine() {
+        //@TODO -- FAIT
+        // peut être : voir si aucun calendrier ne contient la semaine, recaler calendrier de gauche sur semaine encours et droite mois d'apres
+        // dateJ1 = date du jour
+        // dateJ2 = date du jour+6
+        // pour ncal=0 à 1 {
+        //  selectionnePeriode(ncal,dateJ1,dateJ2)
+        // }
+        let boolMoisAffiche = false;
+        let date = new Date(); // Nouvelle date actuelle
+        let cpt = 0; // Compter le nombre de jour restant dans la semaine (ex : mercredi au dimanche et non mercredi au mercredi)
+        for(let i=date.getDay();i<7;i++)
+        {
+            cpt++;
+        }
+        let dateSemaine = new Date(date.getFullYear(),date.getMonth(),date.getDate()+cpt) // Date fin de semaine
+
+        this.supprimeSelection();
+        for(let i=0;(i<this.calendriers.length);i++)
+        {
+
+            if(this.calendriers[i].date.getMonth()==date.getMonth())
+            {
+                this.selectionnePeriode(i,date,dateSemaine);
+                boolMoisAffiche = true;
+                return;
+            }
+            // this.selectionnePeriode(i,date,dateSemaine);
+        }
+        if(!boolMoisAffiche)
+        {
+            let newDomJours = this.calendriers[0].generateTab(0,date);
+            $('div[data-divcalendrierno=0]>table').remove();
+            $('div[data-divcalendrierno=0]').append(newDomJours);
+            this.selectionnePeriode(0,date,dateSemaine);
+        }
+
+    }
+
+    onCeMois() {
+        //@TODO -- FAIT
+        // dateJ1 = date début de ce mois
+        // dateJ2 = date fin de ce mois
+        // pour ncal=0 à 1 {
+        //  selectionnePeriode(ncal,dateJ1,dateJ2)
+        // }
+        
+        let dateJ1 = new Date(); // Date actuelle
+        let month = dateJ1.getMonth();
+        let boolMoisAffiche = false;
+        let year = dateJ1.getFullYear()+Math.floor(dateJ1.getMonth()/12);
+        let nbJoursMois = new Date(year,month+1,-1).getDate()+1;
+        let dateJ2 = new Date(year,month,nbJoursMois); // Dernier jour du mois actuel
+
+        // console.log("dateJ1",dateJ1);
+        // console.log("dateJ2",dateJ2);
+        this.supprimeSelection();
+
+        for(let i=0;(i<this.calendriers.length);i++)
+        {
+
+
+            if(this.calendriers[i].date.getMonth()==dateJ1.getMonth())
+            {
+                this.selectionnePeriode(i,dateJ1,dateJ2);
+                boolMoisAffiche = true;
+                return;
+            }
+        }
+
+        if(!boolMoisAffiche)
+        {
+            let newDomJours = this.calendriers[0].generateTab(0,dateJ1);
+            $('div[data-divcalendrierno=0]>table').remove();
+            $('div[data-divcalendrierno=0]').append(newDomJours);
+            this.selectionnePeriode(0,dateJ1,dateJ2);
+        }
+            
+    }    
+    onJoursProchains(days){
+
+        let date = new Date();
+        let date2 = new Date(date.getFullYear(),date.getMonth(),(date.getDate()+days));
+        let boolMoisAffiche = false;
+        this.supprimeSelection();
+
+        for(let i=0;(i<this.calendriers.length);i++)
+        {
+            if(this.calendriers[i].date.getMonth()==date.getMonth())
+            {   
+                this.selectionnePeriode(i,date,date2);
+                boolMoisAffiche = true;
+                return;
+            }
+        }
+        if(!boolMoisAffiche)
+        {
+            let newDomJours = this.calendriers[0].generateTab(0,date);
+            $('div[data-divcalendrierno=0]>table').remove();
+            $('div[data-divcalendrierno=0]').append(newDomJours);
+            this.selectionnePeriode(0,date,date2);
+        }
+
+    }
+    onWeekEndProchain() {
+        //@TODO -- FAIT
+        // dateJ1=calcul date samedi prochain
+        // dateJ2=date1+1 jour (dimanche)
+        // pour ncal=0 à 1 {
+        //  selectionnePeriode(ncal,dateJ1,dateJ2)
+        // }
+        let boolMoisAffiche = false;
+        let date = new Date(); // Date actuelle
+        let dateJ1;
+        let cpt=0;
+
+        for(let i=date.getDay();i<7;i++)
+        {
+            dateJ1 = new Date(date.getFullYear(),date.getMonth(),date.getDate()+cpt)
+            cpt++;
+        }
+
+        let dateJ2 = new Date(dateJ1.getFullYear(),dateJ1.getMonth(),+dateJ1.getDate()+1);
+
+        this.supprimeSelection();
+
+        for(let i=0;(i<this.calendriers.length);i++)
+        {
+
+            if(this.calendriers[i].date.getMonth()==date.getMonth())
+            {
+                this.selectionnePeriode(i,dateJ1,dateJ2);
+                boolMoisAffiche = true;
+                return;
+            }
+        }
+
+        if(!boolMoisAffiche)
+        {
+            let newDomJours = this.calendriers[0].generateTab(0,date);
+            $('div[data-divcalendrierno=0]>table').remove();
+            $('div[data-divcalendrierno=0]').append(newDomJours);
+            this.selectionnePeriode(0,dateJ1,dateJ2);
+        }
+
+
+    }  
+
+    onMoisProchain() {
+        //@TODO
+        // dateJ1=calcul date mois prochaine
+        // dateJ2=fin du mois
+        // this.selectionnePeriode(0,dateJ1,dateJ2);
+        // this.selectionnePeriode(1,dateJ3,dateJ4); (mois +1 ??)
+
+    }  
+
+    onMoisPrecedent() {
+        //@TODO
+        // dateJ1=calcul date mois précédent
+        // dateJ2=fin du mois
+        // this.selectionnePeriode(0,dateJ1,dateJ2);
+        // this.selectionnePeriode(1,dateJ3,dateJ4); (mois +1 ??)
+
+    }      
+
+    supprimeSelection(){
+        for(let i = 0;i<this.calendriers.length;i++)
+        {
+            this.calendriers[i].supprimeSelection();
+        }
+    }
+    
+
+
+
+
+
+}
+
+
+class EcouteurApplication  {
+    
+    constructor(calDate1,calDate2){
+
+       
+        const calendrier1 = new Calendrier(0,new Date());
+        const calendrier2 = new Calendrier(1,new Date("2023","2","2"))
+
         
 
-            
+        const Container1 = new Container(calendrier1, calendrier2);
 
-        //     return calendrierRows;
-        // }
+        // let test = new Date("2022","11","2");
+        // console.log(test.getFullYear());
+        let periode = document.getElementById("periode-selecteur");
+        $(periode).append(Container1.domSelecteur());
 
-        // function getJoursPasses(date){
+        calendrier1.addSpectacle("2022/12/20","2022/12/21","2022/12/27","2023/1/2","2023/1/12","2023/2/4");
 
-        //     let tabJoursPasses =[];
-        //     currentDay = date.getDate();
-        //     for(i=1;i<currentDay;i++)
-        //     {
-        //         tabJoursPasses.push(i);
-        //     }
-        //     return tabJoursPasses;
+        Container1.subscribe(this);
+        
+    }
 
-        // }
-
-        // function getFirstDayMonth(date){
-        //     let date1 = new Date(date.getFullYear(),date.getMonth(),1);
-        //     return date1.getDay();
-        // }
-
-        // function getNbJours(date){
-        //     let tabnbjours=[];
+    onPeriodeEvent(evt) {
+        $('#PERIODEECOUTEUR').html('Event reçu <br>'+evt.event);
+        // selon evt.event
+        // traiter evt.date1 ou date 2 , etcc...
+    }
 
 
-        //     for(i=0;i<12;i++)
-        //     {
-        //         let month = (date.getMonth()+i)%12;
-        //         let year = date.getFullYear()+Math.floor((date.getMonth()+i)/12);
-                
-        //         let nbjours = new Date(year,month,-1).getDate()+1;
-        //         tabnbjours.splice(month-1,0,nbjours);
+   
+   
+}
 
-        //     }
-        //     return tabnbjours;
-        // }
+
+
+var appEcouteur=new EcouteurApplication();
+
+
+
+
+
+
 </script>
+
+
+
 </body>
+
+
+
 </html>
