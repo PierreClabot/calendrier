@@ -183,6 +183,14 @@ class Calendrier
             };
             tobjCal.fire(evtPeriode); 
 
+        }).on('touchend','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
+            let evtPeriode={
+                 evtSrc : evt,
+                 event : "mouseUp",
+                 no    :  parseInt(this.getAttribute("no"),10)
+             };
+            tobjCal.fire(evtPeriode);
+
         })
 
     }
