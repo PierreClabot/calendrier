@@ -291,6 +291,7 @@ class Calendrier
         return calendrierRows;
     }
     
+
     getJoursPasses()
     {
         let tabJoursPasses =[];
@@ -355,14 +356,6 @@ class Calendrier
         // vider les cases DOM du div contenant les jours
         // append child(newDomJours) dans la bonne div ou tbody du table
 
-        // envoyer un event au conteneur des 2 calendriers pour le tenir au courant...
-        // ce dernier pourra par exemple supprimer la sélection courante des deux calendriers , etc...
-        // let evtPeriode={
-        //          evtSrc : event,
-        //          event : "dateChange",  // <-- event à gérer dans le conteneur
-        //          nouvelleDate  :  ....  // <-- on met la nouvelle date dans le event
-        //  };
-        // tobjCal.fire(evtPeriode);
         this.date = nouvelleDate;
         let newDomJours = this.generateTab(this.numero,nouvelleDate);
         $('div[data-divcalendrierno='+this.numero+']>table').remove();
@@ -1055,8 +1048,6 @@ class EcouteurApplication  {
 
 
 var appEcouteur=new EcouteurApplication();
-
-
 
 
 
