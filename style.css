@@ -57,15 +57,15 @@ table tbody td {
     border: black solid 1px;
     touch-action: none;
 }
-.day-before
+.day_before
 {
+    opacity: 0.5;
     cursor: not-allowed;
-    position: relative;
+}
+.day_after{
     opacity: 0.5;
 }
-td[data-name="day-before"],td[data-name="day-after"]{
-    opacity: 0.5;
-}
+
 
 
 

@@ -90,6 +90,11 @@ class Calendrier
             }
 
             let nouvelleDate = new Date(this.date.getFullYear(),this.date.getMonth()-1,jour);
+            if(nouvelleDate.getTime()<currentDate.getTime())
+            {
+                nouvelleDate = currentDate;
+            }
+
             console.log(nouvelleDate);
             this.date = nouvelleDate;
             this.dateRecalcule(nouvelleDate);
@@ -235,7 +240,7 @@ class Calendrier
                 calendrierJours ="";
             }
 
-            calendrierJours = "<td class=\"day-before\" data-date=\""+dateYear+"/"+moisPrecedent+"/"+(nbjoursmoisprecedent-jour)+"\" no="+(jouravant-1-i)+" numCal="+this.numero+">"+(nbjoursmoisprecedent-jour)+"</td>" + calendrierJours;
+            calendrierJours = "<td class=\"day_before\" data-date=\""+dateYear+"/"+moisPrecedent+"/"+(nbjoursmoisprecedent-jour)+"\" no="+(jouravant-1-i)+" numCal="+this.numero+">"+(nbjoursmoisprecedent-jour)+"</td>" + calendrierJours;
             jour++;
             cpt++;
         }
@@ -249,7 +254,7 @@ class Calendrier
                 calendrierJours ="";
             }
             
-            calendrierJours += "<td class=\"day-before\" data-date=\""+dateYear+"/"+dateMonth+"/"+(dateDay-i)+"\" no="+cpt+" numCal="+this.numero+">"+(dateDay-i)+"</td>";
+            calendrierJours += "<td class=\"day_before\" data-date=\""+dateYear+"/"+dateMonth+"/"+(dateDay-i)+"\" no="+cpt+" numCal="+this.numero+">"+(dateDay-i)+"</td>";
             cpt++;
 
         }   
@@ -362,7 +367,7 @@ class Calendrier
         let newDomJours = this.generateTab(this.numero,nouvelleDate);
         $('div[data-divcalendrierno='+this.numero+']>table').remove();
         $('div[data-divcalendrierno='+this.numero+']').append(newDomJours);
-        this.addSpectacle("2022/12/20","2022/12/21","2022/12/27","2023/1/2","2023/1/12","2023/2/4");
+        // this.addSpectacle("2022/12/20","2022/12/21","2022/12/27","2023/1/2","2023/1/12","2023/2/4");
         let evtPeriode={
                   evtSrc : event,
                   event : "dateChange",  // <-- event à gérer dans le conteneur
@@ -686,12 +691,12 @@ class Container{
                     // Si l'event envoyé est "suivant" (lors de l'appui sur l'icone), mois incrémenté
                     if(evt.mois == "suivant")
                     {
-                        this.calendriers[nextCalendrier].dateRecalcule(new Date(dateChange.getFullYear(),dateChange.getMonth()+1,currentDate.getDate()));
+                        this.calendriers[nextCalendrier].dateRecalcule(new Date(dateChange.getFullYear(),dateChange.getMonth()+1,"1"));
                     }
                     // Si l'event envoyé est "precedent" (lors de l'appui sur l'icone), mois décrémenté
                     if(evt.mois == "precedent")
                     {
-                        this.calendriers[nextCalendrier].dateRecalcule(new Date(dateChange.getFullYear(),dateChange.getMonth()-1,currentDate.getDate()));
+                        this.calendriers[nextCalendrier].dateRecalcule(new Date(dateChange.getFullYear(),dateChange.getMonth()-1,"1"));
                     }
                 }
                 
