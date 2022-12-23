@@ -367,7 +367,7 @@ class Calendrier
         let newDomJours = this.generateTab(this.numero,nouvelleDate);
         $('div[data-divcalendrierno='+this.numero+']>table').remove();
         $('div[data-divcalendrierno='+this.numero+']').append(newDomJours);
-        // this.addSpectacle("2022/12/20","2022/12/21","2022/12/27","2023/1/2","2023/1/12","2023/2/4");
+        this.addSpectacle("2022/12/20","2022/12/21","2022/12/27","2023/1/2","2023/1/12","2023/2/4");
         let evtPeriode={
                   evtSrc : event,
                   event : "dateChange",  // <-- event à gérer dans le conteneur
