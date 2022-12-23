@@ -216,7 +216,7 @@ class Calendrier
         let dateMonth = dateCal.getMonth()+1;
         let dateDay = dateCal.getDate();
 
-        let calendrierEntete = "<table data-calendrierNo="+numero+" data-calMois="+dateMonth+" data-calYear="+dateYear+"><thead><tr><th class='col-1 moisPrec' ><i class='fa-solid fa-arrow-left'></i></th><th colspan='5'>"+tabMois[dateMonth-1]+" - "+dateCal.getFullYear()+"</th><th class='col-1 moisSuiv'><i class='fa-solid fa-arrow-right'></i></th></tr><tr><th>lu</th><th>ma</th><th>me</th><th>je</th><th>ve</th><th>sa</th><th>di</th></tr></thead>";
+        let calendrierEntete = "<table data-calendrierNo="+numero+" data-calMois="+dateMonth+" data-calYear="+dateYear+"><thead><tr><th colspan='1' class='moisPrec' ><i class='fa-solid fa-arrow-left'></i></th><th colspan='5'>"+tabMois[dateMonth-1]+" - "+dateCal.getFullYear()+"</th><th colspan='1'  class='moisSuiv'><i class='fa-solid fa-arrow-right'></i></th></tr><tr><th>lu</th><th>ma</th><th>me</th><th>je</th><th>ve</th><th>sa</th><th>di</th></tr></thead>";
         let calendrierRows =calendrierEntete+"<tr>";
 
         let moisPrecedent = dateMonth -1;
