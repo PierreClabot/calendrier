@@ -88,14 +88,14 @@ class Calendrier
             {
                 jour = currentDate.getDate();
             }
-
             let nouvelleDate = new Date(this.date.getFullYear(),this.date.getMonth()-1,jour);
+
             if(nouvelleDate.getTime()<currentDate.getTime())
             {
                 nouvelleDate = currentDate;
             }
 
-            console.log(nouvelleDate);
+            // console.log(nouvelleDate);
             this.date = nouvelleDate;
             this.dateRecalcule(nouvelleDate);
             let evtPeriode={
@@ -216,7 +216,7 @@ class Calendrier
         let dateMonth = dateCal.getMonth()+1;
         let dateDay = dateCal.getDate();
 
-        let calendrierEntete = "<table data-calendrierNo="+numero+"><thead><tr><th class='col-1 moisPrec' ><i class='fa-solid fa-arrow-left'></i></th><th colspan='5'>"+tabMois[dateMonth-1]+" - "+dateCal.getFullYear()+"</th><th class='col-1 moisSuiv'><i class='fa-solid fa-arrow-right'></i></th></tr><tr><th>lu</th><th>ma</th><th>me</th><th>je</th><th>ve</th><th>sa</th><th>di</th></tr></thead>";
+        let calendrierEntete = "<table data-calendrierNo="+numero+" data-calMois="+dateMonth+" data-calYear="+dateYear+"><thead><tr><th class='col-1 moisPrec' ><i class='fa-solid fa-arrow-left'></i></th><th colspan='5'>"+tabMois[dateMonth-1]+" - "+dateCal.getFullYear()+"</th><th class='col-1 moisSuiv'><i class='fa-solid fa-arrow-right'></i></th></tr><tr><th>lu</th><th>ma</th><th>me</th><th>je</th><th>ve</th><th>sa</th><th>di</th></tr></thead>";
         let calendrierRows =calendrierEntete+"<tr>";
 
         let moisPrecedent = dateMonth -1;
@@ -697,16 +697,32 @@ class Container{
                     if(evt.mois == "precedent")
                     {
                         this.calendriers[nextCalendrier].dateRecalcule(new Date(dateChange.getFullYear(),dateChange.getMonth()-1,"1"));
+                        
+                        
                     }
                 }
-                
+                // console.log('div[data-name=calendrier divcalendrierno=0]');
+                if(evt.mois == "precedent")
+                {
+                    let moisCal = $('div[data-divcalendrierno=0] table').attr("data-calmois");
+                    let yearCal = $('div[data-divcalendrierno=0] table').attr("data-calyear");
+                    let dateCal = new Date(yearCal,moisCal,"1");
+                    console.log(moisCal);
+                    if(dateCal < currentDate )
+                    {
+
+                        $('div[data-divcalendrierno=0]').find('td').toggleClass('day_before',true); // Pour le mois passé en cliquant sur mois précédent
+                    }
+                }
                 this.calendriers[evt.sender.numero].dateRecalcule(evt.sender.date);
+                
+                
 
                 // calculer nouvelleDate pour 2eme calendrier
                 // actualiser le 2eme calendrier 
                 //  -->cal[autre].dateRecalcule(nouvelleDate)
                 this.fire({
-                    event:"Changement de mois"
+                    event:"Changement de mois",
                     // autres infos..
                 });
         }
