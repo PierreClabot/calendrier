@@ -20,8 +20,10 @@ div[data-name="legende-calendrier"]
 {
     display: flex;
     justify-content: space-around;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
 }
-div[data-name="legende-calendrier"]>button
+div[data-name="legende-calendrier"]>input[type=submit]
 {
     margin: 0.2rem;
     border: none;
@@ -29,8 +31,9 @@ div[data-name="legende-calendrier"]>button
     padding: 0.2rem 0.5rem;
     border-radius: 10px;
     border: #1d1d1d solid 1px;
+    width: 30%;
 }
-div[data-name="legende-calendrier"]>button:hover
+div[data-name="legende-calendrier"]>input[type=submit]:hover
 {
     background-color: rgb(193, 193, 193);
 }
@@ -42,9 +45,8 @@ div[data-name="legende-calendrier"]>button:hover
 
 div[data-name="calendrier"]
 {
-
-
     user-select: none;
+    margin-bottom: 1rem;
 }
 #calendrier{
     user-select: none;
@@ -90,6 +92,18 @@ table[data-calendrierno] {
     div[data-name="legende-calendrier"]
     {   
         flex-direction: column;
+    }
+    div[data-name="legende-calendrier"]>input[type=submit]
+    {   
+        width: 100%;
+    }
+}
+@media (max-width :576px) {
+
+    div[data-name="legende-calendrier"]>input[type=submit]
+    {   
+        font-size: 0.7rem;
+        width: 40%;
     }
 }
 i{
