@@ -7,54 +7,67 @@ body{
     box-sizing: border-box;
 }
 div[data-name="container"]{
-    background-color: grey;
-    xxheight: 100vh;
+
 }
 div[data-name="container-calendrier"]{
-    background-color: aqua;
+
 }
 div[data-name="row-calendrier"]{
-    background-color: red;
+
 }
-div[data-name="btn-calendrier"]{
-    background-color: green;
-    padding: 0.5rem;
-}
+
 div[data-name="legende-calendrier"]
 {
-    background-color: purple;
+    display: flex;
+    justify-content: space-around;
 }
 div[data-name="legende-calendrier"]>button
 {
     margin: 0.2rem;
     border: none;
     outline: none;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    border: #1d1d1d solid 1px;
 }
+div[data-name="legende-calendrier"]>button:hover
+{
+    background-color: rgb(193, 193, 193);
+}
+.btn_active
+{
+    background-color: #1d1d1d82;
+}
+
+
 div[data-name="calendrier"]
 {
-    background-color: brown;
-    border: black solid 1px;
+
+
     user-select: none;
 }
 #calendrier{
     user-select: none;
 }
-div[data-name="btn-calendrier"]>button
-{
 
-    outline: none;
-}
 table {
     text-align: center;
-    background-color: antiquewhite;
-    
+    background-color: #e3e3e3;   
+    width: 100%;
+    border: black solid 1px;
 }
 .moisSuiv, .moisPrec{
     cursor: pointer;
+    background-color: #8e1b2c;
+    margin: auto;
+}
+table thead{
+    border-bottom : solid 1px black ;
+    background-color: #1d1d1d;
+    color: #f1f1f1;
 }
 table tbody td {
     width: 14%;
-    border: black solid 1px;
     touch-action: none;
 }
 .day_before
@@ -75,9 +88,7 @@ table[data-calendrierno] {
 
 @media (min-width :992px) {
     div[data-name="legende-calendrier"]
-    {
-        background-color: blue;
-        display: flex;
+    {   
         flex-direction: column;
     }
 }
@@ -85,15 +96,17 @@ i{
     font-family: "Font Awesome 5 Free";
 }
 .mois_courant:hover, .day_after:hover{
-    background-color: gray;
+    background-color: rgb(204, 204, 204);
 }
 .cal-selection:hover{
-    background-color: rgb(152, 0, 0);
+    background-color: #1d1d1d;
 }
 
 .cal-selection{
-    background-color: red;
+    background-color: #1d1d1d82;
+    color: #f1f1f1;
 }
 .cal-spectacle{
-    background-color: purple;
+    background-color: #8e1b2c;
+    color: #f1f1f1;
 }

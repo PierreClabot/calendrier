@@ -749,16 +749,26 @@ class Container{
        //   $(boutonCetteSemaine.on('click')   -->onCetteSemaine
        //   $(boutonCeMois.on('click')          -->onCemois
        //   $(boutonWeekEndProchain.on('click')  -->onWeekendProchain
-        $(document).on('click','.btn_Today',()=>{
-            this.onAujourdhuiCaseNo()
-        }).on('click', '.btn_Week', ()=>{
-            this.onAcetteSemaine()
-        }).on('click', '.btn_NextDay', ()=>{
+        $(document).on('click','.btn_Today',(evt)=>{
+            this.onAujourdhuiCaseNo();
+            $(".btn_active").toggleClass('btn_active',false);
+            evt.target.classList.add('btn_active');
+        }).on('click', '.btn_Week', (evt)=>{
+            this.onAcetteSemaine();
+            $(".btn_active").toggleClass('btn_active',false);
+            evt.target.classList.add('btn_active');
+        }).on('click', '.btn_NextDay', (evt)=>{
             this.onJoursProchains(3);
-        }).on('click', '.btn_NextWeekEnd', ()=>{
+            $(".btn_active").toggleClass('btn_active',false);
+            evt.target.classList.add('btn_active');
+        }).on('click', '.btn_NextWeekEnd', (evt)=>{
             this.onWeekEndProchain();
-        }).on('click', '.btn_Month', ()=>{
+            $(".btn_active").toggleClass('btn_active',false);
+            evt.target.classList.add('btn_active');
+        }).on('click', '.btn_Month', (evt)=>{
             this.onCeMois();
+            $(".btn_active").toggleClass('btn_active',false);
+            evt.target.classList.add('btn_active');
         });
 
     //    $(document).on('click', '.btn_Periode',this.onAujourdhuiCaseNo);
@@ -786,6 +796,7 @@ class Container{
         //pour ncal=0 à 1 {
         // selectionnePeriode(ncal,dateJ,dateJ)
         // }
+        console.log(this);
         let date = new Date();
         let boolMoisAffiche = false;
         this.supprimeSelection();
