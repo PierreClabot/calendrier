@@ -140,7 +140,8 @@ class Calendrier
             let evtPeriode={
                  evtSrc : evt,
                  event : "mouseHover",
-                 no    :  parseInt(this.getAttribute("no"),10)
+                 no    :  parseInt(this.getAttribute("no"),10),
+                 cal    :  parseInt(this.getAttribute("numCal"),10)
              };
             tobjCal.fire(evtPeriode);
 
@@ -179,7 +180,8 @@ class Calendrier
             let evtPeriode={
                 evtSrc : evt,
                 event : "mouseHover",
-                no    :  parseInt(caseTouchMove.getAttribute("no"),10)
+                no    :  parseInt(caseTouchMove.getAttribute("no"),10),
+                cal : parseInt(caseTouchMove.getAttribute("numCal"),10)
             };
             tobjCal.fire(evtPeriode); 
 
@@ -233,7 +235,7 @@ class Calendrier
                 calendrierJours ="";
             }
 
-            calendrierJours = "<td class=\"day-before\" data-date=\""+dateYear+"/"+moisPrecedent+"/"+(nbjoursmoisprecedent-jour)+"\" no="+(jouravant-1-i)+">"+(nbjoursmoisprecedent-jour)+"</td>" + calendrierJours;
+            calendrierJours = "<td class=\"day-before\" data-date=\""+dateYear+"/"+moisPrecedent+"/"+(nbjoursmoisprecedent-jour)+"\" no="+(jouravant-1-i)+" numCal="+this.numero+">"+(nbjoursmoisprecedent-jour)+"</td>" + calendrierJours;
             jour++;
             cpt++;
         }
@@ -247,7 +249,7 @@ class Calendrier
                 calendrierJours ="";
             }
             
-            calendrierJours += "<td class=\"day-before\" data-date=\""+dateYear+"/"+dateMonth+"/"+(dateDay-i)+"\" no="+cpt+">"+(dateDay-i)+"</td>";
+            calendrierJours += "<td class=\"day-before\" data-date=\""+dateYear+"/"+dateMonth+"/"+(dateDay-i)+"\" no="+cpt+" numCal="+this.numero+">"+(dateDay-i)+"</td>";
             cpt++;
 
         }   
@@ -260,7 +262,7 @@ class Calendrier
                 calendrierJours ="";
             }
 
-            calendrierJours += "<td class=\"mois_courant\" data-date=\""+dateYear+"/"+dateMonth+"/"+(dateDay+jour)+"\" no="+cpt+">"+(i+1)+"</td>";
+            calendrierJours += "<td class=\"mois_courant\" data-date=\""+dateYear+"/"+dateMonth+"/"+(dateDay+jour)+"\" no="+cpt+" numCal="+this.numero+">"+(i+1)+"</td>";
             cpt++;
             jour++;
 
@@ -275,7 +277,7 @@ class Calendrier
                 moisSuivant = 1;
                 year = dateYear+1;
             }
-            calendrierJours += "<td class=\"day_after\" data-name=\"day_after\" data-date=\""+year+"/"+moisSuivant+"/"+(jourafter)+"\" no="+cpt+">"+(jourafter)+"</td>";
+            calendrierJours += "<td class=\"day_after\" data-name=\"day_after\" data-date=\""+year+"/"+moisSuivant+"/"+(jourafter)+"\" no="+cpt+" numCal="+this.numero+">"+(jourafter)+"</td>";
             this.dernierNo = cpt;
             cpt++;
             jourafter++
@@ -553,7 +555,6 @@ class Container{
                 this.calendriers[i].supprimeSelection();
             }
             
-            console.log("evt",evt)
             this.sel[0] = { cal:evt.numCal,no: evt.no};
             this.sel[1] = { cal:evt.numCal,no: evt.no};
             this.calendriers[evt.numCal].selectionne( evt.no, evt.no);
@@ -595,7 +596,7 @@ class Container{
         {
             // on balade la souris sur une des cases du calendrier
 
-
+            // console.log(evt.numCal);
             if(!this.selectionEnCours) {
                 // pas de sélection en cours...
                 this.fire({
@@ -605,45 +606,53 @@ class Container{
             });
                 return;
             }
-
             // sinon étendre la sélection
             for(let i=0;i<this.calendriers.length;i++)
             {
                 this.calendriers[i].supprimeSelection();
             }
-            this.sel[1] = {cal:evt.numCal,no:evt.no};
+            this.sel[1] = {cal:evt.cal,no:evt.no};
 
             // on ne touche pas à sel[0] et sel[1] de l'objet en cours
             // mais avec une copie
-            let tmpSel=[
+
+            if(!isNaN(evt.cal)) // On vérifie qu'il est sur un calendrier (pour le touchmove)
+            {
+                let tmpSel=[
                 Object.assign({},this.sel[0]),
                 Object.assign({},this.sel[1]),
-            ];
+                ];
+            
+                // si 2eme date choisie inférieure à 1ere date choisie 
+                if ( ((tmpSel[0].cal)*50)+(tmpSel[0].no) >  ((tmpSel[1].cal)*50)+(tmpSel[1].no) ) 
+                {
+                    // on permute
+                    let tmpSwap=Object.assign({},tmpSel[1]);
+                    tmpSel[1]=Object.assign({},tmpSel[0]);
+                    tmpSel[0]=tmpSwap;
+                }
 
-            // si 2eme date choisie inférieure à 1ere date choisie 
-            if ( ((tmpSel[0].cal)*50)+(tmpSel[0].no) >  ((tmpSel[1].cal)*50)+(tmpSel[1].no) ) 
-            {
-                // on permute
-                let tmpSwap=Object.assign({},tmpSel[1]);
-                tmpSel[1]=Object.assign({},tmpSel[0]);
-                tmpSel[0]=tmpSwap;
+                if (tmpSel[0].cal==tmpSel[1].cal) {
+                    // Sélection sur un seul calendrier
+
+                    this.calendriers[tmpSel[0].cal].selectionne(tmpSel[0].no,tmpSel[1].no);
+                    
+
+                } else {
+                    
+                        this.calendriers[tmpSel[0].cal].selectionne ( tmpSel[0].no , -1);
+                        this.calendriers[tmpSel[1].cal].selectionne (           -1 , tmpSel[1].no);
+                        // sélection à cheval sur 2 calendriers
+
+                    
+                }
+
+                this.fire({
+                    event : "SelectionExtension",
+                    // ... par exemple envoyer date1, à date2
+                    // ...
+                });
             }
-
-            if (tmpSel[0].cal==tmpSel[1].cal) {
-                // Sélection sur un seul calendrier
-                this.calendriers[tmpSel[0].cal].selectionne(tmpSel[0].no,tmpSel[1].no);
-            } else {
-                    // sélection à cheval sur 2 calendriers
-                    this.calendriers[tmpSel[0].cal].selectionne ( tmpSel[0].no , -1);
-                    this.calendriers[tmpSel[1].cal].selectionne (           -1 , tmpSel[1].no);
-                
-            }
-
-            this.fire({
-                event : "SelectionExtension",
-                // ... par exemple envoyer date1, à date2
-                // ...
-            });
 
                         
         }
