@@ -55,6 +55,7 @@ table {
 table tbody td {
     width: 14%;
     border: black solid 1px;
+    touch-action: none;
 }
 .day-before
 {
