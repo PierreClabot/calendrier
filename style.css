@@ -33,6 +33,7 @@ div[data-name="legende-calendrier"]>input[type=submit]
     border: #1d1d1d solid 1px;
     width: 30%;
     background-color: rgb(213, 213, 213) !important;
+    color: #1d1d1d !important;
 
 }
 div[data-name="legende-calendrier"]>input[type=submit]:hover
