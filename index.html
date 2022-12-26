@@ -831,13 +831,6 @@ class Container{
 
     // Container Class
     ajouteGestionFiltre() {
-       //@TODO -- FAIT
-       //   $(boutonMoisPrecedent.on('click')          -->onChangeMoisprecedent
-       //   $(boutonMoisSuivant.on('click')          -->onChangeMoissuivant
-       //   $(boutonAujourdhui).on('click') --> onAujourdhuiCaseNo
-       //   $(boutonCetteSemaine.on('click')   -->onCetteSemaine
-       //   $(boutonCeMois.on('click')          -->onCemois
-       //   $(boutonWeekEndProchain.on('click')  -->onWeekendProchain
         $(document).on('click','div[data-name=legende-calendrier] input[type=submit]',(evt)=>{
 
             let btn = evt.target.getAttribute("data-calbtn"); // Récupère la valeur du bouton

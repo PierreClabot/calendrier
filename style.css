@@ -1,3 +1,6 @@
+body{
+    width: 100%;
+}
 *,::after,::before{
     margin: 0;
     padding: 0;
@@ -11,11 +14,10 @@ div[data-name="legende-calendrier"]
     flex-wrap: wrap;
     margin-bottom: 1rem;
 }
-.btn_active
+div[data-name="legende-calendrier"]>input[type=submit].btn_active
 {
     background-color: #1d1d1d82 !important;
 }
-
 div[data-name="legende-calendrier"]>input[type=submit]
 {
     margin: 0.2rem;
@@ -25,8 +27,8 @@ div[data-name="legende-calendrier"]>input[type=submit]
     border-radius: 10px;
     border: #1d1d1d solid 1px;
     width: 30%;
-    background-color: rgb(213, 213, 213);
-    color: #1d1d1d !important;
+    background-color: rgb(213, 213, 213) ;
+    color: #1d1d1d ;
 
 }
 div[data-name="legende-calendrier"]>input[type=submit]:hover
