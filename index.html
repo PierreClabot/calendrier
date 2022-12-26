@@ -22,7 +22,7 @@
         <H1>J'écoute les évents...</H1>
         <div id="PERIODEECOUTEUR"></div>
         <div>
-            
+
         </div>
    </div>
 
@@ -43,43 +43,10 @@ class Calendrier
         this.calendrier = this.generateTab(numero,date);
         let tobjCal = this; 
         this.observers =[];
-        //this.dernierNo = -1; !! NON dernierNo est mis à jour dans generateTAB!!
-
-
 
         $(window).mouseup(function(){
         })
     
-        //@TODO -- FAIT
-        // ecouter $("BOUTON MOIS SUIVANT").ON {
-            // 
-            // calcul nouvelle date
-            // this.dateRecalcule(nouvelledate)
-            //
-            // notifier le conteneur
-            // let evtPeriode={
-            //      evtSrc : event,
-            //      event : "dateAChangé",
-            //      date : nouvelleDate            
-            //  };
-            // tobjCal.fire(evtPeriode);
-        // }
-
-
-        //@TODO -- FAIT ( BUG : Le clic est fait 2 fois )
-        // ecouter $("BOUTON MOIS PRECEDENT").ON {
-            // 
-            // calcul nouvelle date
-            // this.dateRecalcule(nouvelledate)
-            //
-            // notifier le conteneur
-            // let evtPeriode={
-            //      evtSrc : event,
-            //      event : "dateAChangé",
-            //      date : nouvelleDate
-            //  };
-            // tobjCal.fire(evtPeriode);
-        // }
 
         $(document).on('click','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] .moisPrec',(event)=>{
 
@@ -98,7 +65,6 @@ class Calendrier
                 nouvelleDate = currentDate;
             }
 
-            // console.log(nouvelleDate);
             this.date = nouvelleDate;
             this.dateRecalcule(nouvelleDate);
             let evtPeriode={
@@ -132,8 +98,6 @@ class Calendrier
         });
 
         $("body").on('mousemove',document,function(){
-            // if(!tobjCal.selectionEnCours)   { return;  }
-
 
         }).on('mouseup',window,function(event){
             let evtPeriode={
@@ -348,16 +312,6 @@ class Calendrier
 
     // appelée par le conteneur
     dateRecalcule(nouvelleDate) {
-        //@TODO -- FAIT 
-        // recalcule les cases de ce calendrier
-        
-        // changer le libellé du mois / année dans l'entête
-        // puis un truc du genre
-        
-        //  gérer changement année...        
-        // newDomJours=this.generate  : note this.dernierNo est mis à jour dans this.generate
-        // vider les cases DOM du div contenant les jours
-        // append child(newDomJours) dans la bonne div ou tbody du table
 
         this.date = nouvelleDate;
         let newDomJours = this.generateTab(this.numero,nouvelleDate);
@@ -374,26 +328,7 @@ class Calendrier
 
     
     casesJourAjour(date1,date2) {
-        // @TODO -- FAIT MAIS PEUT ETRE A REVOIR
-        // renvoie un objet { no1:xx , no2: yy }
-        // xx = case no de date1 si dans période
-        // yy = case no de date2 si dans période
-        // noMin=-1
-        // noMax=-1
-
-        // pour chaque idate de ce calendrier
-        //   si caseNode idate dans periode(date1,date2) et noMin=-1 alors noMin=caseNo
-        //   si caseNode idate dans periode(date1,date2) alors noMax=caseNo
-        // fin
-        // renvoyer {n1:noMin,n2:noMax};
-        
-        //  { no1:-1 , no2: -1 }  // la période demandée n'est pas du tout dans ce calendrier
-        
-        //  { no1:15, no2: 24 }   // période demandée = case 15 à 24
-
-        //  { no1:31 , no2: 34 }  // période demandée  sur 10 jours, mais seulement 4 jours correspondent dans ce calendrier
-        // let monthD1 = date1.getMonth();
-        // let monthD2 = date2.getMonth();
+ 
         let noMin =-1 , noMax = -1;
 
         let stringDate1 = date1.getFullYear()+"/"+(date1.getMonth()+1)+"/"+date1.getDate();
@@ -406,12 +341,9 @@ class Calendrier
             let cal = $(document).find('div[data-name=calendrier]').eq(i);
             let nbJoursCal = cal.find('td').length;
 
-            // console.log(nbJoursCal);
             for(let i=0;i<nbJoursCal;i++)
             {
                 let celulle = cal.find('td').eq(i);
-                // console.log("attr data-date ",celulle.attr("data-date"));
-                // console.log("string D1", stringDate1);
                 if(celulle.attr("data-date")==stringDate1)
                 {
                     noMin = celulle.attr("no");
@@ -542,10 +474,6 @@ class Container{
     
 
     onCalendrierEvent(evt){
-        // evt.sender c'est le calendier qui a envoyé l'event
-        // evt.event  ="mouseUp" ou "mouseDown" ou "mouseHover"
-        // evt.no     = case où a eu lieu l'event
-        // evt.numCal = case où a eu lieu l'event
         
         if(evt.event == "mouseDown")
         {
@@ -661,11 +589,7 @@ class Container{
         
         //@TODO
         if(evt.event == "dateAChangé") {
-                // un calendrier a changé sa date ( mois prec ou suivnant)
-                // normalement il s'est mis à jour tout seul
 
-                // du coup supprimer sa sélection
-                //  -->cal[xx].supprimeSelection()
                 let currentDate = new Date();
                 let nextCalendrier =0;
                 if(evt.sender.numero < (this.calendriers.length-1))
@@ -712,11 +636,6 @@ class Container{
                 }
                 this.calendriers[evt.sender.numero].dateRecalcule(evt.sender.date);
                 
-                
-
-                // calculer nouvelleDate pour 2eme calendrier
-                // actualiser le 2eme calendrier 
-                //  -->cal[autre].dateRecalcule(nouvelleDate)
                 this.fire({
                     event:"Changement de mois",
                     // autres infos..
@@ -754,13 +673,7 @@ class Container{
 
 
     ajouteGestionFiltre() {
-       //@TODO -- FAIT
-       //   $(boutonMoisPrecedent.on('click')          -->onChangeMoisprecedent
-       //   $(boutonMoisSuivant.on('click')          -->onChangeMoissuivant
-       //   $(boutonAujourdhui).on('click') --> onAujourdhuiCaseNo
-       //   $(boutonCetteSemaine.on('click')   -->onCetteSemaine
-       //   $(boutonCeMois.on('click')          -->onCemois
-       //   $(boutonWeekEndProchain.on('click')  -->onWeekendProchain
+
         $(document).on('click','.btn_Today',(evt)=>{
             this.onAujourdhuiCaseNo();
             $(".btn_active").toggleClass('btn_active',false);
@@ -783,17 +696,12 @@ class Container{
             evt.target.classList.add('btn_active');
         });
 
-    //    $(document).on('click', '.btn_Periode',this.onAujourdhuiCaseNo);
        
 
        
     } 
 
     selectionnePeriode(ncal,n1,n2) {
-        //@TODO
-        // cases=this calendrier[ncal].jourAJour(dateDuJour,dateDuJour));
-        //   tester cas -1
-        //   calendrier[ncal].selectionne(cases.n1, cases.n2)  
         let cases = this.calendriers[ncal].casesJourAjour(n1,n2);
         this.calendriers[ncal].selectionne(cases.no1, cases.no2);
         this.fire({
@@ -803,11 +711,7 @@ class Container{
     }
 
     onAujourdhuiCaseNo() {
-        //@TODO -- FAIT
-        // dateJ = date du jour
-        //pour ncal=0 à 1 {
-        // selectionnePeriode(ncal,dateJ,dateJ)
-        // }
+
         console.log(this);
         let date = new Date();
         let boolMoisAffiche = false;
@@ -834,13 +738,7 @@ class Container{
     }
 
     onAcetteSemaine() {
-        //@TODO -- FAIT
-        // peut être : voir si aucun calendrier ne contient la semaine, recaler calendrier de gauche sur semaine encours et droite mois d'apres
-        // dateJ1 = date du jour
-        // dateJ2 = date du jour+6
-        // pour ncal=0 à 1 {
-        //  selectionnePeriode(ncal,dateJ1,dateJ2)
-        // }
+
         let boolMoisAffiche = false;
         let date = new Date(); // Nouvelle date actuelle
         let cpt = 0; // Compter le nombre de jour restant dans la semaine (ex : mercredi au dimanche et non mercredi au mercredi)
@@ -853,14 +751,12 @@ class Container{
         this.supprimeSelection();
         for(let i=0;(i<this.calendriers.length);i++)
         {
-
             if(this.calendriers[i].date.getMonth()==date.getMonth())
             {
                 this.selectionnePeriode(i,date,dateSemaine);
                 boolMoisAffiche = true;
                 return;
             }
-            // this.selectionnePeriode(i,date,dateSemaine);
         }
         if(!boolMoisAffiche)
         {
@@ -873,13 +769,7 @@ class Container{
     }
 
     onCeMois() {
-        //@TODO -- FAIT
-        // dateJ1 = date début de ce mois
-        // dateJ2 = date fin de ce mois
-        // pour ncal=0 à 1 {
-        //  selectionnePeriode(ncal,dateJ1,dateJ2)
-        // }
-        
+
         let dateJ1 = new Date(); // Date actuelle
         let month = dateJ1.getMonth();
         let boolMoisAffiche = false;
@@ -887,8 +777,6 @@ class Container{
         let nbJoursMois = new Date(year,month+1,-1).getDate()+1;
         let dateJ2 = new Date(year,month,nbJoursMois); // Dernier jour du mois actuel
 
-        // console.log("dateJ1",dateJ1);
-        // console.log("dateJ2",dateJ2);
         this.supprimeSelection();
 
         for(let i=0;(i<this.calendriers.length);i++)
@@ -938,12 +826,7 @@ class Container{
 
     }
     onWeekEndProchain() {
-        //@TODO -- FAIT
-        // dateJ1=calcul date samedi prochain
-        // dateJ2=date1+1 jour (dimanche)
-        // pour ncal=0 à 1 {
-        //  selectionnePeriode(ncal,dateJ1,dateJ2)
-        // }
+
         let boolMoisAffiche = false;
         let date = new Date(); // Date actuelle
         let dateJ1;
@@ -978,7 +861,6 @@ class Container{
             this.selectionnePeriode(0,dateJ1,dateJ2);
         }
 
-
     }  
 
     onMoisProchain() {
@@ -1005,11 +887,6 @@ class Container{
             this.calendriers[i].supprimeSelection();
         }
     }
-    
-
-
-
-
 
 }
 
@@ -1021,18 +898,12 @@ class EcouteurApplication  {
        
         const calendrier1 = new Calendrier(0,new Date());
         const calendrier2 = new Calendrier(1,new Date("2023","2","2"))
-
-        
-
         const Container1 = new Container(calendrier1, calendrier2);
 
-        // let test = new Date("2022","11","2");
-        // console.log(test.getFullYear());
         let periode = document.getElementById("periode-selecteur");
         $(periode).append(Container1.domSelecteur());
 
         calendrier1.addSpectacle("2022/12/20","2022/12/21","2022/12/27","2023/1/2","2023/1/12","2023/2/4");
-
         Container1.subscribe(this);
         
     }
@@ -1048,11 +919,7 @@ class EcouteurApplication  {
    
 }
 
-
-
 var appEcouteur=new EcouteurApplication();
-
-
 
 
 </script>
