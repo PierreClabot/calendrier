@@ -886,12 +886,7 @@ class Container{
 
     // Container Class
     onAujourdhuiCaseNo() {
-        //@TODO -- FAIT
-        // dateJ = date du jour
-        //pour ncal=0 à 1 {
-        // selectionnePeriode(ncal,dateJ,dateJ)
-        // }
-        console.log(this);
+
         let date = new Date();
         let boolMoisAffiche = false;
         this.supprimeSelection();
@@ -1140,12 +1135,9 @@ class EcouteurApplication  {
 
         const Container1 = new Container(calendrier1, calendrier2);
 
-        // let test = new Date("2022","11","2");
-        // console.log(test.getFullYear());
         let periode = document.getElementById("periode-selecteur");
         $(periode).append(Container1.domSelecteur());
 
-        //calendrier1.addSpectacle("2022/12/20","2022/12/21","2022/12/27","2023/1/2","2023/1/12","2023/2/4");
         Container1.spectaclesAjoute(["20221220","20221221","20221227","20230111","20230112","20230310"]);
           
 
