@@ -6,15 +6,6 @@ body{
     padding: 0;
     box-sizing: border-box;
 }
-div[data-name="container"]{
-
-}
-div[data-name="container-calendrier"]{
-
-}
-div[data-name="row-calendrier"]{
-
-}
 
 div[data-name="legende-calendrier"]
 {
