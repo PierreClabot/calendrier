@@ -17,7 +17,9 @@ body{
     margin-bottom: 1rem;
     padding: 0.5rem;
     width: 100%;
-    height: 40px;
+}
+.btn-date1{
+    visibility: hidden;
 }
 .dates{
     display: flex;
@@ -50,20 +52,24 @@ div[data-name="container-calendrier"]
 div[data-name="enteteContainer"]
 {
     width: 100%;
+    padding: 0 !important;
 }
 
 div[data-name="legende-calendrier"]
 {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+    display: none;
     margin-bottom: 1rem;
 }
-div[data-name="legende-calendrier"]>input[type=submit].btn_active
+div[data-name="boutons"]{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+div[data-name="boutons"]>input[type=submit].btn_active
 {
     background-color: #1d1d1d82 !important;
 }
-div[data-name="legende-calendrier"]>input[type=submit]
+div[data-name="boutons"]>input[type=submit]
 {
     margin: 0.2rem;
     border: none;
@@ -73,9 +79,10 @@ div[data-name="legende-calendrier"]>input[type=submit]
     border: #1d1d1d solid 1px;
     background-color: rgb(213, 213, 213) ;
     color: #1d1d1d ;
+    font-size: 0.8rem;
 
 }
-div[data-name="legende-calendrier"]>input[type=submit]:hover
+div[data-name="boutons"]>input[type=submit]:hover
 {
     background-color: rgb(193, 193, 193);
 }
@@ -84,6 +91,7 @@ div[data-name="legende-calendrier"]>input[type=submit]:hover
 
 div[data-name="calendrier"]
 {
+    display: none;
     user-select: none;
     margin-bottom: 1rem;
 }
@@ -136,24 +144,16 @@ table[data-calendrierno] {
         flex-direction: column !important;
         
     }
-    div[data-name="legende-calendrier"]>input[type=submit]
-    {   
-        width: 100%;
-    }
 }
 @media (max-width :576px) {
 
-    div[data-name="legende-calendrier"]>input[type=submit]
+    div[data-name="boutons"]>input[type=submit]
     {   
         font-size: 0.7rem;
         width: 40%;
     }
     .dates{
         margin-top: 2rem;
-    }
-    .icones{
-        left: 50%;
-        transform: translateX(-50%);
     }
 }
 
@@ -176,7 +176,7 @@ i{
 }
 
 
-/******* toggle switch *****/
+/*************** toggle switch ***************/
 /* The switch - the box around the slider */
 .switch {
     position: relative;
