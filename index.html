@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
     <title>Calendrier</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -106,8 +107,8 @@ class Calendrier
         let tobjCal = this; 
         this.observers =[];
 
-        $(window).mouseup(function(){
-        })
+        // $(window).mouseup(function(){
+        // })
     
 
         $(document).on('click','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] .moisPrec',(event)=>{
@@ -192,6 +193,8 @@ class Calendrier
 
         
         }).on('mousedown','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
+
+            $(".btn_active").toggleClass('btn_active',false); // Supprime le btn active si cliqué -- saisie manuelle
              let evtPeriode={
                  evtSrc : evt,
                  event : "mouseDown",
@@ -585,7 +588,7 @@ class Container{
         let domC1 = $(`<div class='col-12 col-md-6 col-lg-4' data-name='calendrier' data-divCalendrierNo='0' >`+this.calendriers[0].calendrier+`</div>`);
         let domC2 = $(`<div class='col-12 col-md-6 col-lg-4' data-name='calendrier' data-divCalendrierNo='1' >`+this.calendriers[1].calendrier+`</div>`);
         let domFiltre = $(`<div class='col-12 col-lg-4' data-name='legende-calendrier'>`+this.filtre()+`</div>`);
-        let domEntete = $(`<div class='col-12' data-name='enteteContainer'>`+this.entete()+`</div><div class=col-12 data-name="container-calendrier"></div>`);
+        let domEntete = $(`<div data-name='enteteContainer'>`+this.entete()+`</div><div class=col-12 data-name="container-calendrier"></div>`);
 
   
         let domDiv = dom1.find('div[data-name="row-calendrier"]');
@@ -605,16 +608,14 @@ class Container{
     {
         return `<div class="row-selection">
                     <div class="dates">
-                        <div class="btn-date1">2022/12/05</div>
-                        <div class="btn-date2">2023/05/12</div>
+                        <div class="btn-date1"></div>
+                        <div class="btn-date2"></div>
                     </div>
                     <div class="icones">
-                        <div class="croix">
-                            <label class="switch">
-                                <input class="checkbox" type="checkbox">
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
+                        <label class="switch">
+                            <input class="checkbox" type="checkbox">
+                            <span class="slider round"></span>
+                        </label>
                         <div class="icone-calendrier">
                             <i class="fas fa-calendar-alt"></i>
                         </div>
@@ -624,9 +625,26 @@ class Container{
     // Container Class
     filtre()
     {
-        return `<input type=submit data-calbtn="jourencours" value="Aujourd'hui" /><input type=submit data-calbtn="semaineencours" value="Cette semaine" /><input type=submit data-calbtn="joursprochains" value="3 prochains jours" /><input type=submit data-calbtn="weekendprochain" value="Le weekend prochain" /><input type=submit data-calbtn="moisencours" value="Ce mois" /><input type=submit class='btn_Periode' value="Quelle période ?" />`;
+        return `<input class="col-3 col-lg-12" type=submit data-calbtn="jourencours" value="Aujourd'hui" /><input class="col-3 col-lg-12" type=submit data-calbtn="semaineencours" value="Cette semaine" /><input type=submit class="col-3 col-lg-12" data-calbtn="joursprochains" value="3 prochains jours" /><input type=submit class="col-3 col-lg-12" data-calbtn="weekendprochain" value="Le weekend prochain" /><input type=submit class="col-3 col-lg-12" data-calbtn="moisencours" value="Ce mois" /><input type=submit class="col-3 col-lg-12" value="Quelle période ?" />`;
     }
-    
+    caseDate(date)
+    {
+        let dateWD = DateAdapInfo.versDateWeb(date);
+        console.log(dateWD);
+        let calendrier;
+        let numero;
+        for(let i=0;i<this.calendriers.length;i++)
+        {
+            $(document).find("div[data-divcalendrierno="+i+"] td").each(function(){
+                if(this.getAttribute("data-datewd") == dateWD )
+                {
+                    calendrier = i;
+                    numero = parseInt(this.getAttribute("no"));
+                }
+            })
+        }
+        return {cal: calendrier, no: numero}
+    }
     // Container Class
     onCalendrierEvent(evt){
         // evt.sender c'est le calendier qui a envoyé l'event
@@ -918,7 +936,9 @@ class Container{
         let boolMoisAffiche = false;
         this.supprimeSelection();
         console.log("this aujourd'hui",this);
-
+        console.log(this.caseDate(date))
+        this.sel[0] = this.caseDate(date);
+        this.sel[1] = this.caseDate(date);
         for(let i=0;(i<this.calendriers.length);i++)
         {
 
@@ -950,7 +970,8 @@ class Container{
             cpt++;
         }
         let dateSemaine = new Date(date.getFullYear(),date.getMonth(),date.getDate()+cpt) // Date fin de semaine
-
+        this.sel[0] = this.caseDate(date);
+        this.sel[1] = this.caseDate(dateSemaine);
         this.supprimeSelection();
         for(let i=0;(i<this.calendriers.length);i++)
         {
@@ -983,6 +1004,9 @@ class Container{
         let nbJoursMois = new Date(year,month+1,-1).getDate()+1;
         let dateJ2 = new Date(year,month,nbJoursMois); // Dernier jour du mois actuel
 
+        this.sel[0] = this.caseDate(dateJ1);
+        this.sel[1] = this.caseDate(dateJ2);
+
         this.supprimeSelection();
 
         for(let i=0;(i<this.calendriers.length);i++)
@@ -1014,6 +1038,9 @@ class Container{
         let date2 = new Date(date.getFullYear(),date.getMonth(),(date.getDate()+days));
         let boolMoisAffiche = false;
         this.supprimeSelection();
+
+        this.sel[0] = this.caseDate(date);
+        this.sel[1] = this.caseDate(date2);
 
         for(let i=0;(i<this.calendriers.length);i++)
         {
@@ -1049,6 +1076,9 @@ class Container{
         }
 
         let dateJ2 = new Date(dateJ1.getFullYear(),dateJ1.getMonth(),+dateJ1.getDate()+1);
+
+        this.sel[0] = this.caseDate(dateJ1);
+        this.sel[1] = this.caseDate(dateJ2);
 
         this.supprimeSelection();
 
@@ -1123,7 +1153,7 @@ class Container{
     
     deplier()
     {
-        $('div[data-name="container-calendrier"]').css("display","flex")
+        $('div[data-name="container-calendrier"]').css("display","block")
         this.affichageCal = true;
     }
 
@@ -1147,11 +1177,11 @@ class EcouteurApplication  {
 
         this.boolCheckbox = true;
 
-        let date1 = -1;
-        let date2 = -1;
+        let date1 ;
+        let date2 ;
         
-        this.affichageDate1;
-        this.affichageDate2;
+        this.date1;
+        this.date2;
         const Container1 = new Container(calendrier1, calendrier2);
 
         let periode = document.getElementById("periode-selecteur");
@@ -1163,30 +1193,40 @@ class EcouteurApplication  {
         checkbox.change(()=>{
             if(this.boolCheckbox == true)
             {
-                this.boolCheckbox = false;   
-                calendrier1.supprimeSelection();
-                calendrier2.supprimeSelection();
+                if(Container1.dernierSelection.length != 0)
+                {
+                     
+                    calendrier1.supprimeSelection();
+                    calendrier2.supprimeSelection();
+                }
+                this.boolCheckbox = false;  
+                
             }
             else{
 
                 this.boolCheckbox = true;
-                let tmpSel = Container1.dernierSelection ;
+
+                if(Container1.dernierSelection.length != 0)
+                {
+                    let tmpSel = Container1.dernierSelection ;
                 
 
-                if (tmpSel[0].cal==tmpSel[1].cal) {
-                    // Sélection sur un seul calendrier
+                    if (tmpSel[0].cal==tmpSel[1].cal) {
+                        // Sélection sur un seul calendrier
 
-                    Container1.calendriers[tmpSel[0].cal].selectionne(tmpSel[0].no,tmpSel[1].no);
-                    
+                        Container1.calendriers[tmpSel[0].cal].selectionne(tmpSel[0].no,tmpSel[1].no);
+                        
 
-                } else {
-                    
-                        Container1.calendriers[tmpSel[0].cal].selectionne ( tmpSel[0].no , -1);
-                        Container1.calendriers[tmpSel[1].cal].selectionne (           -1 , tmpSel[1].no);
-                        // sélection à cheval sur 2 calendriers
+                    } else {
+                        
+                            Container1.calendriers[tmpSel[0].cal].selectionne ( tmpSel[0].no , -1);
+                            Container1.calendriers[tmpSel[1].cal].selectionne (           -1 , tmpSel[1].no);
+                            // sélection à cheval sur 2 calendriers
 
-                    
+                        
+                    }  
                 }
+                
             }
         })
 
@@ -1199,9 +1239,8 @@ class EcouteurApplication  {
         $('#PERIODEECOUTEUR').html('Event reçu <br>'+evt.event);
         // selon evt.event
         // traiter evt.date1 ou date 2 , etcc...
-        let jourSelection;
-        let moisSelection;
-        let anneeSelection;
+        var date1 = this.date1;
+        var date2 =this.date2;
 
         if(evt.event == "SelectionDebut")
         {
@@ -1211,61 +1250,55 @@ class EcouteurApplication  {
 
             let cal = evt.sender.sel[0].cal;
             let no = evt.sender.sel[0].no;
-            // console.log("cal",cal,"no",no);
-            let jour = $('div[data-divcalendrierno='+cal+']').find('td').eq(no).attr("data-datewd");
 
-            this.date1 = new DateAdapInfo(jour).dateJS;
-            jourSelection = this.date1.getDate();
-            if(jourSelection<10)
-            {
-                jourSelection = "0"+jourSelection;
-            }
-            moisSelection = this.date1.getMonth()+1;
-            if(moisSelection<10)
-            {
-                moisSelection = "0"+moisSelection;
-            }
-            anneeSelection = this.date1.getFullYear();
-            this.affichageDate1 = jourSelection+"/"+moisSelection+"/"+anneeSelection;
-            // console.log(affichageDate1);
+            let date1 = $('div[data-divcalendrierno='+cal+'] td').eq(no).attr("data-datewd");
 
+            this.date1 =DateAdapInfo.versDateJS(date1);
+            this.date2 = -1;
         }
 
         if(evt.event == "SelectionExtension")
         {
             let cal = evt.sender.sel[1].cal;
             let no = evt.sender.sel[1].no;
-            // console.log("cal",cal,"no",no);
-            let jour = $('div[data-divcalendrierno='+cal+']').find('td').eq(no).attr("data-datewd");
-            this.date2 = new DateAdapInfo(jour).dateJS;
-            jourSelection = this.date2.getDate();
-            if(jourSelection<10)
-            {
-                jourSelection = "0"+jourSelection;
-            }
-            moisSelection = this.date2.getMonth()+1;
-            if(moisSelection<10)
-            {
-                moisSelection = "0"+moisSelection;
-            }
-            anneeSelection = this.date2.getFullYear();
-            if(this.date1<this.date2)
-            {
-                this.affichageDate2 = jourSelection+"/"+moisSelection+"/"+anneeSelection;
-            }
-            else{
-                this.affichageDate2 = this.affichageDate1;
-                this.affichageDate1 = jourSelection+"/"+moisSelection+"/"+anneeSelection;
-            }
-            // console.log("date1",this.affichageDate1);
-            // console.log("date2",this.affichageDate2);
 
+
+            let casedate2 = $('div[data-divcalendrierno='+cal+'] td').eq(no).attr("data-datewd");
+            date2=DateAdapInfo.versDateJS(casedate2);
+            
         }
         
         if(evt.event == "SelectionFaite")
         {
-            $(".btn-date1").html(this.affichageDate1);
-            $(".btn-date2").html(this.affichageDate2);
+
+            if(date2 == -1)
+            {
+                date2 = date1;
+            }
+
+            if(date1>date2)
+            {
+                this.date1 = date2;
+                this.date2 = date1;
+                console.log("date1>date2");
+            }
+            else{
+                this.date1 = date1;
+                this.date2 = date2;
+                console.log("date2>date1");
+            }
+            
+            if(this.date1 == this.date2)
+            {
+                $(".btn-date2").css("display","none");
+            }
+            else{
+                let affichage2 = this.date2.getDate().toString().padStart(2, '0')+"/"+(this.date2.getMonth() + 1).toString().padStart(2, '0')+"/"+this.date2.getFullYear();
+                $(".btn-date2").html(affichage2);
+            }
+            let affichage1 = this.date1.getDate().toString().padStart(2, '0')+"/"+(this.date1.getMonth() + 1).toString().padStart(2, '0')+"/"+this.date1.getFullYear();
+            $(".btn-date1").html(affichage1);
+
             evt.sender.replier();
 
         }
@@ -1287,7 +1320,6 @@ var appEcouteur=new EcouteurApplication();
 
 
 </body>
-
 
 
 </html>
