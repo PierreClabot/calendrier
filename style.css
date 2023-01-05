@@ -61,9 +61,9 @@ div[data-name="legende-calendrier"]
     margin-bottom: 1rem;
 }
 div[data-name="boutons"]{
-    display: flex;
+    /* display: flex;
     justify-content: space-around;
-    flex-wrap: wrap;
+    flex-wrap: wrap; */
 }
 div[data-name="boutons"]>input[type=submit].btn_active
 {

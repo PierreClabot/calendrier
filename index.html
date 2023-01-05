@@ -106,11 +106,8 @@ class Calendrier
         this.calendrier = this.generateTab(numero,date);
         let tobjCal = this; 
         this.observers =[];
-
-        // $(window).mouseup(function(){
-        // })
+        this.derniereCaseTouchMove;
     
-
         $(document).on('click','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] .moisPrec',(event)=>{
 
             let jour = "1";
@@ -160,11 +157,7 @@ class Calendrier
             this.fire(evtPeriode);
         });
 
-        $("body").on('mousemove',document,function(){
-            // if(!tobjCal.selectionEnCours)   { return;  }
-
-
-        }).on('mouseup',window,function(event){
+        $("body").on('mouseup',window,function(event){
             let evtPeriode={
                  evtSrc : event,
                  event : "selectFin",
@@ -215,17 +208,22 @@ class Calendrier
             let clientX = evt.touches[0].clientX;
             let clientY = evt.touches[0].clientY;
             let caseTouchMove = document.elementFromPoint(clientX, clientY);
-
-            let evtPeriode={
+            if(this.derniereCaseTouchMove != caseTouchMove)
+            {
+                this.derniereCaseTouchMove = caseTouchMove;
+                let evtPeriode={
                 evtSrc : evt,
                 event : "mouseHover",
                 no    :  parseInt(caseTouchMove.getAttribute("no"),10),
                 cal : parseInt(caseTouchMove.getAttribute("numCal"),10)
-            };
-            if(!isNaN(evtPeriode.no))
-            {
-                tobjCal.fire(evtPeriode);
+                };
+                if(!isNaN(evtPeriode.no))
+                {
+                    tobjCal.fire(evtPeriode);
+                }
             }
+
+            
              
 
         }).on('touchend','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
@@ -524,12 +522,18 @@ class Calendrier
 class Container{
 
     // Container Class
-    constructor(calDate1,calDate2){
+    constructor(cal1,cal2,boolActif){
 
         this.spectaclesDates=[];
         this.calendriers=[]
-        this.calendriers.push(calDate1);
-        this.calendriers.push(calDate2);
+        let dateCal1 = new Date();
+        let dateCal2 = new Date(dateCal1.getFullYear(),dateCal1.getMonth()+1,"1")
+        if(cal2 == null)
+        {
+            cal2 = new Calendrier(2,dateCal2)
+        }
+        this.calendriers.push(cal1);
+        this.calendriers.push(cal2);
         this.calendriers[0].subscribe(this);
         this.calendriers[1].subscribe(this);
         
@@ -541,18 +545,45 @@ class Container{
         this.ajouteGestionFiltre();
 
         this.dernierSelection = [];
+        this.date1 = -1;
+        this.date2 = -1;
+
+        var date1;
+        var date2;
 
         // du container
         this.observers = [];
-        this.affichageCal = false;
+        this.boolActif = boolActif;
+        this.boolContainerVisible = false;
+        this.spectaclesAjoute(["20221230","20230106","20221220","20221221","20221227","20230111","20230112","20230310"]);
         
+        $("#periode-selecteur").append(this.domSelecteur()); // Ajouter le container
+
         $(window).mouseup(()=>{
          this.selectionEnCours = false;   
         });
+        
+        let checkbox = $(document).find('.checkbox');
+        checkbox.prop("checked",false);
+        checkbox.change(()=>{ // On change l'état du bouton
+
+            this.boolActif = !this.boolActif; // Inverse booléen
+            this.activer(this.boolActif); 
+            
+            let evt={
+                event : "Activation",
+                actif : this.boolActif,
+                date1 : this.date1,
+                date2 : this.date2
+            }
+            this.fire(evt); // On prévient l'état actif ou non
+         
+         })
+
 
         
         $('#periode-selecteur').on("click",".icone-calendrier",()=>{
-            if(this.affichageCal==false)
+            if(this.boolContainerVisible==false)
             {
                 this.deplier();
 
@@ -563,15 +594,7 @@ class Container{
             
         })
     }
-    // domEntete(){
 
-    // }
-
-    // domContainer(){
-    //     let domDiv = dom1.find('div[data-name="row-calendrier"]');
-    //     let domEntete = $(`<div class='col-12' data-name='enteteContainer'>`+this.entete()+`</div><div data-name=container-calendrier></div>`);
-    //     domDiv.append(domEntete)
-    // }
     // Container Class
     domSelecteur()
     {
@@ -582,15 +605,13 @@ class Container{
 
         let domC1 = $(`<div class='col-12 col-md-6 col-lg-4' data-name='calendrier' data-divCalendrierNo='0' >`+this.calendriers[0].calendrier+`</div>`);
         let domC2 = $(`<div class='col-12 col-md-6 col-lg-4' data-name='calendrier' data-divCalendrierNo='1' >`+this.calendriers[1].calendrier+`</div>`);
-        let domFiltre = $(`<div class='col-12 col-lg-4' data-name='legende-calendrier'><div data-name=boutons>`+this.filtre()+`</div></div>`);
+        let domFiltre = $(`<div class='col-12 col-lg-4' data-name='legende-calendrier'><div class="row justify-content-around" data-name=boutons>`+this.filtre()+`</div></div>`);
         let domEntete = $(`<div class='col-12' data-name='enteteContainer'>`+this.entete()+`</div>`);
 
   
         let domDiv = dom1.find('div[data-name="row-calendrier"]');
         domDiv.append(domEntete).append(domFiltre).append(domC1).append(domC2);
-        // let domCal = dom1.find('div[data-name="container-calendrier"]');
-        // domCal.append(domFiltre).append(domC1).append(domC2);
-        
+
         return dom1;
     }
     
@@ -638,6 +659,50 @@ class Container{
         }
         return {cal: calendrier, no: numero}
     }
+
+    // Container class
+    activer(boolContainer)
+    {
+        if(boolContainer == false) // Switch à off
+            {
+
+                for(let i=0;i<this.calendriers.length;i++) // Supprime selection
+                {
+                    this.calendriers[i].supprimeSelection();
+                }
+
+                 $(".btn-date1").css("visibility","hidden"); // On cache les affichages date dans l'entête
+                 $(".btn-date2").css("visibility","hidden");
+          
+            }
+            else{ // switch à on
+                
+                 if($(".btn-date1").text() != "date") // vérifier qu'une date a été choisi pour rendre les champs visible
+                 {
+                     $(".btn-date1").css("visibility","visible"); // Si saisit, on rend visible les champs
+                     $(".btn-date2").css("visibility","visible");
+                 }
+                 if(this.dernierSelection.length) // On sélectionne la saisie
+                 {
+                     let tmpSel = this.dernierSelection ;
+        
+                     if (tmpSel[0].cal==tmpSel[1].cal) {
+                         // Sélection sur un seul calendrier
+                         this.calendriers[tmpSel[0].cal].selectionne(tmpSel[0].no,tmpSel[1].no);
+                
+                     } else {
+                  
+                             this.calendriers[tmpSel[0].cal].selectionne ( tmpSel[0].no , -1);
+                             this.calendriers[tmpSel[1].cal].selectionne (           -1 , tmpSel[1].no);
+                             // sélection à cheval sur 2 calendrier
+                  
+                     }  
+                 }
+          
+             
+            }
+    }
+
     // Container Class
     onCalendrierEvent(evt){
         // evt.sender c'est le calendier qui a envoyé l'event
@@ -660,9 +725,15 @@ class Container{
             this.sel[0] = { cal:evt.numCal,no: evt.no};
             this.sel[1] = { cal:evt.numCal,no: evt.no};
             this.calendriers[evt.numCal].selectionne( evt.no, evt.no);
+            this.date1 = this.calendriers[evt.numCal].dateWDDeCase(evt.no);
+            this.date2 = this.date1;
+            this.boolActif = true;
+            $('.checkbox').prop("checked",this.boolActif);
             
             this.fire({
                 event : "SelectionDebut",
+                date1 : this.date1,
+                date2 : this.date2,
                 // ... par exemple ajouter propriété date:date choisie
                 // ...
             });
@@ -677,11 +748,11 @@ class Container{
         
             this.fire({
                 event : "SelectionFaite",
-                // date1 : this.calendriers[tmpSel[0].cal ].dateWDDeCase(tmpSel[0].no),
-                // date2 : this.calendriers[tmpSel[1].cal ].dateWDDeCase(tmpSel[1].no) 
-                // ... par exemple envoyer date1, à date2
-                // ...
+                date1 : this.calendriers[tmpSel[0].cal ].dateWDDeCase(tmpSel[0].no),
+                date2 : this.calendriers[tmpSel[1].cal ].dateWDDeCase(tmpSel[1].no) 
             });
+            console.log("here");
+            this.replier();
         }
 
 
@@ -691,12 +762,36 @@ class Container{
             this.selectionEnCours=false;
 
             this.dernierSelection = this.selectionTriée();
-
-            this.fire({
+            this.date1 = this.calendriers[this.dernierSelection[0].cal ].dateWDDeCase(this.dernierSelection[0].no);
+            this.date2 = this.calendriers[this.dernierSelection[1].cal ].dateWDDeCase(this.dernierSelection[1].no) 
+            let evt = {
                 event : "SelectionFaite",
-                date1 : this.calendriers[this.dernierSelection[0].cal ].dateWDDeCase(this.dernierSelection[0].no),
-                date2 : this.calendriers[this.dernierSelection[1].cal ].dateWDDeCase(this.dernierSelection[1].no) 
-            });
+                date1 : this.date1,
+                date2 : this.date2
+            }
+            
+            let date1JS = DateAdapInfo.versDateJS(evt.date1);
+            let date2JS = DateAdapInfo.versDateJS(evt.date2);
+
+            let affichageD1 = date1JS.getDate().toString().padStart(2, '0')+"/"+(date1JS.getMonth() + 1).toString().padStart(2, '0')+"/"+date1JS.getFullYear();
+            let affichageD2 = date2JS.getDate().toString().padStart(2, '0')+"/"+(date2JS.getMonth() + 1).toString().padStart(2, '0')+"/"+date2JS.getFullYear();
+
+            if(affichageD1 == affichageD2)
+            {
+                $(".btn-date2").css("display","none");
+            }
+            else
+            {
+                $(".btn-date2").css("display","block");
+                $(".btn-date2").css("visibility","visible")
+            }
+
+            $(".btn-date1").css("visibility","visible")
+            $(".btn-date1").html(affichageD1);
+            $(".btn-date2").html(affichageD2);
+
+            this.fire(evt);
+            this.replier();
         }
 
          // Container Class
@@ -742,9 +837,26 @@ class Container{
                     
                 }
 
+                let cal = this.sel[1].cal;
+                let no = this.sel[1].no;
+
+                let date2WD = $('div[data-divcalendrierno='+cal+'] td').eq(no).attr("data-datewd");
+                // this.date2 =date2WD;
+
+                var date2 = DateAdapInfo.versDateJS(date2WD)
+                var date1 = DateAdapInfo.versDateJS(this.date1);
+
+                if(date1>date2)
+                {
+                    let dateSwap = date1;
+                    date1 = date2;
+                    date2 = dateSwap;
+                }
+
                 this.fire({
                     event : "SelectionExtension",
-                    // ... par exemple envoyer date1, à date2
+                    date1 : DateAdapInfo.versDateWeb(date1),
+                    date2 : DateAdapInfo.versDateWeb(date2),
                     // ...
                 });
             }
@@ -754,7 +866,7 @@ class Container{
 
         
         //@TODO
-         // Container Class
+        // Container Class
         if(evt.event == "dateAChangé") {
                 // un calendrier a changé sa date ( mois prec ou suivnant)
                 // normalement il s'est mis à jour tout seul
@@ -877,7 +989,9 @@ class Container{
             evt.target.classList.add('btn_active');
 
             let checkbox = $(document).find('.checkbox');
-            checkbox.prop("checked",true);
+            this.boolActif = true;
+            checkbox.prop("checked",this.boolActif);
+            
 
             if(btn == "jourencours")
             {
@@ -909,11 +1023,38 @@ class Container{
         let cases = this.calendriers[ncal].casesJourAjour(n1,n2);
         this.calendriers[ncal].selectionne(cases.no1, cases.no2);
         this.dernierSelection = this.selectionTriée();
-        this.fire({
+        this.date1 = this.calendriers[this.dernierSelection[0].cal ].dateWDDeCase(this.dernierSelection[0].no) ; // date au format WD
+        this.date2 = this.calendriers[this.dernierSelection[1].cal ].dateWDDeCase(this.dernierSelection[1].no) ;
+        let evt = {
             event:"SelectionFaite",
-            date1 : this.calendriers[this.dernierSelection[0].cal ].dateWDDeCase(this.dernierSelection[0].no),
-            date2 : this.calendriers[this.dernierSelection[1].cal ].dateWDDeCase(this.dernierSelection[1].no) 
-        });
+            date1 : this.date1,
+            date2 : this.date2 
+        }
+
+        // Pour affichage JJ/MM/AAAA dans l'entête )
+        let date1JS = DateAdapInfo.versDateJS(evt.date1);
+        let date2JS = DateAdapInfo.versDateJS(evt.date2);
+
+        let affichageD1 = date1JS.getDate().toString().padStart(2, '0')+"/"+(date1JS.getMonth() + 1).toString().padStart(2, '0')+"/"+date1JS.getFullYear();
+        let affichageD2 = date2JS.getDate().toString().padStart(2, '0')+"/"+(date2JS.getMonth() + 1).toString().padStart(2, '0')+"/"+date2JS.getFullYear();
+
+        if(affichageD1 == affichageD2) // Si on choisit qu'un jour
+        {
+            $(".btn-date2").css("display","none"); // On cache le 2eme champ
+        }
+        else // Sinon on affiche le 2eme
+        {
+            $(".btn-date2").css("display","block");
+            $(".btn-date2").css("visibility","visible")
+        }
+
+        $(".btn-date1").css("visibility","visible")
+        $(".btn-date1").html(affichageD1); // Injection dans l'html
+        $(".btn-date2").html(affichageD2);
+
+        this.fire(evt);
+
+        this.replier();
  
     }
 
@@ -1087,6 +1228,13 @@ class Container{
             this.selectionnePeriode(0,dateJ1,dateJ2);
         }
 
+        let evt={
+            event:"PeriodeSelection",
+            date1 : xxxx,
+            date2 : yyyyy
+        }
+        this.fire(evt)
+
 
     }  
 
@@ -1136,97 +1284,40 @@ class Container{
             this.calendriers[i].spectaclesPeindre();
         }
     }
-    
+
+    // Container class
     deplier()
     {
         $('div[data-name="calendrier"]').css("display","block");
         $('div[data-name="legende-calendrier"]').css("display","block");
-        this.affichageCal = true;
+        this.boolContainerVisible = !this.boolContainerVisible;
     }
 
+    // Container class
     replier()
     {
         $('div[data-name="calendrier"]').css("display","none");
         $('div[data-name="legende-calendrier"]').css("display","none");
-        this.affichageCal = false;
+        this.boolContainerVisible = !this.boolContainerVisible;
     }
 
 }
 
+
+
+
+
+
+
 class EcouteurApplication  {
     
-    //EcouteurApplicatin Class
-    constructor(calDate1,calDate2){
+    //EcouteurApplication Class
+    constructor(){
 
-       
         const calendrier1 = new Calendrier(0,new Date());
-        const calendrier2 = new Calendrier(1,new Date("2023","1","1"))
-
-        this.boolCheckbox = true;
-
-        let date1;
-        let date2; 
-
-        this.boolSelectionManuel = false;
         
-        this.date1;
-        this.date2;
-        const Container1 = new Container(calendrier1, calendrier2);
-
-        let periode = document.getElementById("periode-selecteur");
-        $(periode).append(Container1.domSelecteur());
-
-        Container1.spectaclesAjoute(["20221230","20230106","20221220","20221221","20221227","20230111","20230112","20230310"]);
-        let checkbox = $(document).find('.checkbox');
-        checkbox.prop("checked",true);
-        checkbox.change(()=>{
-            if(this.boolCheckbox == true)
-            {
-                if(Container1.dernierSelection.length != 0)
-                {
-                     
-                    calendrier1.supprimeSelection();
-                    calendrier2.supprimeSelection();
-                }
-                $(".btn-date1").css("visibility","hidden");
-                $(".btn-date2").css("visibility","hidden");
-                this.boolCheckbox = false;  
-                
-            }
-            else{
-                if($(".btn-date1").text() != "date") // vérifier qu'une date a été choisi pour rendre les champs visible
-                {
-                    $(".btn-date1").css("visibility","visible");
-                    $(".btn-date2").css("visibility","visible");
-                }
-
-                this.boolCheckbox = true;
-
-                if(Container1.dernierSelection.length != 0)
-                {
-                    let tmpSel = Container1.dernierSelection ;
-                
-
-                    if (tmpSel[0].cal==tmpSel[1].cal) {
-                        // Sélection sur un seul calendrier
-
-                        Container1.calendriers[tmpSel[0].cal].selectionne(tmpSel[0].no,tmpSel[1].no);
-                        
-
-                    } else {
-                        
-                            Container1.calendriers[tmpSel[0].cal].selectionne ( tmpSel[0].no , -1);
-                            Container1.calendriers[tmpSel[1].cal].selectionne (           -1 , tmpSel[1].no);
-                            // sélection à cheval sur 2 calendriers
-
-                        
-                    }  
-                }
-                
-            }
-        })
-
-        Container1.subscribe(this);
+        let appCal = new Container(calendrier1,null,false)
+        appCal.subscribe(this)
         
     }
 
@@ -1236,114 +1327,35 @@ class EcouteurApplication  {
         $('#PERIODEECOUTEUR').html('Event reçu <br>'+evt.event);
         // selon evt.event
         // traiter evt.date1 ou date 2 , etcc...
-        var date1 = this.date1;
-        var date2 =this.date2;
         
 
         if(evt.event == "SelectionDebut")
         {
-            this.boolSelectionManuel = true;
-            this.boolCheckbox = true;  // Changer l'état du bouton à on si sélection et bouton à false
-            let checkbox = $(document).find('.checkbox');
-            checkbox.prop("checked",this.boolCheckbox);
-
-            let cal = evt.sender.sel[0].cal;
-            let no = evt.sender.sel[0].no;
-
-            let date1 = $('div[data-divcalendrierno='+cal+'] td').eq(no).attr("data-datewd");
-
-            this.date1 =DateAdapInfo.versDateJS(date1);
-            this.date2 = -1;
+            console.log(evt);
         }
 
         if(evt.event == "SelectionExtension")
         {
-            let cal = evt.sender.sel[1].cal;
-            let no = evt.sender.sel[1].no;
-
-            let casedate2 = $('div[data-divcalendrierno='+cal+'] td').eq(no).attr("data-datewd");
-            date2=DateAdapInfo.versDateJS(casedate2);
-            this.date2 = date2;
-            
+            console.log(evt);
         }
         
         if(evt.event == "SelectionFaite")
         {
-            let date1JS = DateAdapInfo.versDateJS(evt.date1);
-
-            if(this.boolSelectionManuel) // On choisit une date manuellement avec la souris
-            {
-
-                if(date2 == -1)
-                {
-                    date2 = date1;
-                }
-
-                if(date1>date2)
-                {
-                    this.date1 = date2;
-                    this.date2 = date1;
-                }
-                else{
-                    this.date1 = date1;
-                    this.date2 = date2;
-                }
-
-                if(this.date1 == this.date2)
-                {
-                    $(".btn-date2").css("display","none");
-                }
-                else{
-                    let affichage2 = this.date2.getDate().toString().padStart(2, '0')+"/"+(this.date2.getMonth() + 1).toString().padStart(2, '0')+"/"+this.date2.getFullYear();
-                    $(".btn-date2").css("display","block");
-                    $(".btn-date2").css("visibility","visible");
-                    $(".btn-date2").html(affichage2);
-                }
-                let affichage1 = this.date1.getDate().toString().padStart(2, '0')+"/"+(this.date1.getMonth() + 1).toString().padStart(2, '0')+"/"+this.date1.getFullYear();
-                $(".btn-date1").css("visibility","visible")
-                $(".btn-date1").html(affichage1);
-                
-            }
-            else // La date a été choisie par les boutons du calendrier
-            {
-                let date1JS = DateAdapInfo.versDateJS(evt.date1);
-                let date2JS = DateAdapInfo.versDateJS(evt.date2);
-
-                let affichageD1 = date1JS.getDate().toString().padStart(2, '0')+"/"+(date1JS.getMonth() + 1).toString().padStart(2, '0')+"/"+date1JS.getFullYear();
-                let affichageD2 = date2JS.getDate().toString().padStart(2, '0')+"/"+(date2JS.getMonth() + 1).toString().padStart(2, '0')+"/"+date2JS.getFullYear();
-
-                if(affichageD1 == affichageD2)
-                {
-                    $(".btn-date2").css("display","none");
-                }
-                else
-                {
-                    $(".btn-date2").css("display","block");
-                    $(".btn-date2").css("visibility","visible")
-                }
-
-                $(".btn-date1").css("visibility","visible")
-                $(".btn-date1").html(affichageD1);
-                $(".btn-date2").html(affichageD2);
-
-            }
-            
-
-            evt.sender.replier();
-
-            this.boolSelectionManuel = false;
+            console.log(evt);
+        }
+        if(evt.event == "Activation")
+        {
+            console.log(evt);
         }
     }
-
-
    
    
 }
 
 // Application
 //DateAdapInfo.testUnitaire();
-var appEcouteur=new EcouteurApplication();
 
+var appEcouteur=new EcouteurApplication();
 
 
 </script>
