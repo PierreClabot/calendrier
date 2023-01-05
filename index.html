@@ -88,7 +88,6 @@ class DateAdapInfo {
         console.log("dateAI format JS=",dateAI.dateJS);
     }
 
-    
 }
 
 class Calendrier
@@ -106,14 +105,12 @@ class Calendrier
         this.calendrier = this.generateTab(numero,date);
         let tobjCal = this; 
         this.observers =[];
-        this.derniereCaseTouchMove;
-    
+        this.derniereCaseTouchMove
         $(document).on('click','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] .moisPrec',(event)=>{
-
+            
             let jour = "1";
             let currentDate = new Date();
             let nouvelleDate2 = new Date(this.date.getFullYear(),this.date.getMonth()-1);
-
             if(((nouvelleDate2.getMonth()) == currentDate.getMonth())&&(nouvelleDate2.getFullYear() == currentDate.getFullYear()))
             {
                 jour = currentDate.getDate();
@@ -127,12 +124,13 @@ class Calendrier
 
             this.date = nouvelleDate;
             this.dateRecalcule(nouvelleDate);
+
             let evtPeriode={
-                    evtSrc : event,
-                    event : "dateAChangé",
-                    date : nouvelleDate,
-                    mois : "precedent",
-                    };
+                evtSrc : event,
+                event : "dateAChangé",
+                date : nouvelleDate,
+                mois : "precedent",
+            };
             this.fire(evtPeriode);
 
         }).on('click','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] .moisSuiv',(event)=>{
@@ -148,11 +146,11 @@ class Calendrier
             this.dateRecalcule(nouvelleDate);
             
             let evtPeriode={
-                    evtSrc : event,
-                    event : "dateAChangé",
-                    date : nouvelleDate,
-                    mois : "suivant",
-                    };
+                evtSrc : event,
+                event : "dateAChangé",
+                date : nouvelleDate,
+                mois : "suivant"
+            };
             
             this.fire(evtPeriode);
         });
@@ -168,11 +166,11 @@ class Calendrier
 
         $(document).on('mouseover','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
             let evtPeriode={
-                 evtSrc : evt,
-                 event : "mouseHover",
-                 no    :  parseInt(this.getAttribute("no"),10),
-                 cal    :  parseInt(this.getAttribute("numCal"),10)
-             };
+                evtSrc : evt,
+                event : "mouseHover",
+                no    :  parseInt(this.getAttribute("no"),10),
+                cal    :  parseInt(this.getAttribute("numCal"),10)
+            };
             tobjCal.fire(evtPeriode);
 
         }).on('mouseup','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
@@ -183,18 +181,16 @@ class Calendrier
              };
             tobjCal.fire(evtPeriode);
 
-
-        
         }).on('mousedown','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
-
+            
             $(".btn_active").toggleClass('btn_active',false); // Supprime le btn active si cliqué -- saisie manuelle
-             let evtPeriode={
-                 evtSrc : evt,
-                 event : "mouseDown",
-                 no    :  parseInt(this.getAttribute("no"),10)
-             };
-             tobjCal.fire(evtPeriode);
-        }).on('touchstart','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
+            let evtPeriode={
+                evtSrc : evt,
+                event : "mouseDown",
+                no    :  parseInt(this.getAttribute("no"),10)
+            };
+            tobjCal.fire(evtPeriode);
+        }).on('touchstart','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){ // Portable
             $(".btn_active").toggleClass('btn_active',false);
             let evtPeriode={
                  evtSrc : evt,
@@ -203,7 +199,7 @@ class Calendrier
              };
              tobjCal.fire(evtPeriode); 
 
-        }).on('touchmove','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
+        }).on('touchmove','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){ // Portable
 
             let clientX = evt.touches[0].clientX;
             let clientY = evt.touches[0].clientY;
@@ -212,10 +208,10 @@ class Calendrier
             {
                 this.derniereCaseTouchMove = caseTouchMove;
                 let evtPeriode={
-                evtSrc : evt,
-                event : "mouseHover",
-                no    :  parseInt(caseTouchMove.getAttribute("no"),10),
-                cal : parseInt(caseTouchMove.getAttribute("numCal"),10)
+                    evtSrc : evt,
+                    event : "mouseHover",
+                    no    :  parseInt(caseTouchMove.getAttribute("no"),10),
+                    cal : parseInt(caseTouchMove.getAttribute("numCal"),10)
                 };
                 if(!isNaN(evtPeriode.no))
                 {
@@ -223,15 +219,13 @@ class Calendrier
                 }
             }
 
-            
-             
-
-        }).on('touchend','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
+        }).on('touchend','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){ // Portable
             let evtPeriode={
-                 evtSrc : evt,
-                 event : "selectFin",
-                 no    :  parseInt(this.getAttribute("no"),10)
-             };
+                evtSrc : evt,
+                event : "selectFin",
+                no    :  parseInt(this.getAttribute("no"),10)
+            };
+            
             tobjCal.fire(evtPeriode);
 
         })
@@ -335,7 +329,6 @@ class Calendrier
             let tmpDateWD=DateAdapInfo.versDateWeb(tmpDate);
             
             calendrierJours += `<td class="day_after" data-name="day_after"  data-datewd="${tmpDateWD}" no="${cpt}" numCal="${this.numero}">${jourafter}</td>`;
-            //calendrierJours += "<td class=\"day_after\" data-name=\"day_after\" data-date=\""+year+"/"+moisSuivant+"/"+(jourafter)+"\" no="+cpt+" numCal="+this.numero+">"+(jourafter)+"</td>";
             this.dernierNo = cpt;
             cpt++;
             jourafter++
@@ -398,21 +391,10 @@ class Calendrier
         }
     }
 
-
     // Calendrier Class
     // appelée par le conteneur
     dateRecalcule(nouvelleDate) {
         //@TODO -- FAIT 
-        // recalcule les cases de ce calendrier
-        
-        // changer le libellé du mois / année dans l'entête
-        // puis un truc du genre
-        
-        //  gérer changement année...        
-        // newDomJours=this.generate  : note this.dernierNo est mis à jour dans this.generate
-        // vider les cases DOM du div contenant les jours
-        // append child(newDomJours) dans la bonne div ou tbody du table
-
         this.date = nouvelleDate;
         let newDomJours = this.generateTab(this.numero,nouvelleDate);
         $('div[data-divcalendrierno='+this.numero+']>table').remove();
@@ -420,8 +402,8 @@ class Calendrier
         
         let evtPeriode={
                   evtSrc : event,
-                  event : "dateChange",  // <-- event à gérer dans le conteneur
-                  nouvelleDate  :  nouvelleDate  // <-- on met la nouvelle date dans le event
+                  event : "dateChange", 
+                  nouvelleDate  :  nouvelleDate 
           };
         this.fire(evtPeriode);
     }
@@ -429,15 +411,11 @@ class Calendrier
     // Calendrier Class
     casesJourAjour(date1,date2) {
 
-        // @TODO -- FAIT MAIS PEUT ETRE A REVOIR // REVU(eric)
         let noMin =-1 , noMax = -1;
-         
         let dateAI1=new DateAdapInfo(date1);
         let dateAI2=new DateAdapInfo(date2);
+        let cal = $('div[data-divcalendrierno="'+this.numero+'"]>table').eq(0);
 
-        let selc='div[data-divcalendrierno="'+this.numero+'"]>table';
-        let cal = $(selc).eq(0);
-        let tcal=this;
         cal.find('td').each(function() {
            let tmpDateWd = $(this).attr('data-datewd');
            let no=parseInt($(this).attr('no'),10);
@@ -448,7 +426,6 @@ class Calendrier
         
         return{ no1:noMin , no2:noMax }
     }        
-
 
     // Calendrier Class
     supprimeSelection(){
@@ -513,11 +490,8 @@ class Calendrier
             evt.sender = thisCal;
             item.onCalendrierEvent(evt);
         });
-        
     }
-
 }
-
 
 class Container{
 
@@ -532,11 +506,11 @@ class Container{
         {
             cal2 = new Calendrier(1,dateCal2)
         }
+
         this.calendriers.push(cal1);
         this.calendriers.push(cal2);
         this.calendriers[0].subscribe(this);
-        this.calendriers[1].subscribe(this);
-        
+        this.calendriers[1].subscribe(this);        
         this.selectionEnCours = false;
         this.sel = [];
         this.sel.push({cal:-1,no:-1});
@@ -548,9 +522,6 @@ class Container{
         this.date1 = -1;
         this.date2 = -1;
 
-        var date1;
-        var date2;
-
         // du container
         this.observers = [];
         this.boolActif = boolActif;
@@ -560,7 +531,7 @@ class Container{
         $("#periode-selecteur").append(this.domSelecteur()); // Ajouter le container
 
         $(window).mouseup(()=>{
-         this.selectionEnCours = false;   
+            this.selectionEnCours = false;   
         });
         
         let checkbox = $(document).find('.checkbox');
@@ -586,6 +557,7 @@ class Container{
             if(this.boolContainerVisible==false)
             {
                 this.deplier();
+                this.spectaclesPeindre();
 
             }
             else{
@@ -607,8 +579,6 @@ class Container{
         let domC2 = $(`<div class='col-12 col-md-6 col-lg-4' data-name='calendrier' data-divCalendrierNo='1' >`+this.calendriers[1].calendrier+`</div>`);
         let domFiltre = $(`<div class='col-12 col-lg-4' data-name='legende-calendrier'><div class="row justify-content-around" data-name=boutons>`+this.filtre()+`</div></div>`);
         let domEntete = $(`<div class='col-12' data-name='enteteContainer'>`+this.entete()+`</div>`);
-
-  
         let domDiv = dom1.find('div[data-name="row-calendrier"]');
         domDiv.append(domEntete).append(domFiltre).append(domC1).append(domC2);
 
@@ -664,43 +634,38 @@ class Container{
     activer(boolContainer)
     {
         if(boolContainer == false) // Switch à off
+        {
+            for(let i=0;i<this.calendriers.length;i++) // Supprime selection
             {
-
-                for(let i=0;i<this.calendriers.length;i++) // Supprime selection
-                {
-                    this.calendriers[i].supprimeSelection();
-                }
-
-                 $(".btn-date1").css("visibility","hidden"); // On cache les affichages date dans l'entête
-                 $(".btn-date2").css("visibility","hidden");
-          
+                this.calendriers[i].supprimeSelection();
             }
-            else{ // switch à on
-                
-                 if($(".btn-date1").text() != "date") // vérifier qu'une date a été choisi pour rendre les champs visible
-                 {
-                     $(".btn-date1").css("visibility","visible"); // Si saisit, on rend visible les champs
-                     $(".btn-date2").css("visibility","visible");
-                 }
-                 if(this.dernierSelection.length) // On sélectionne la saisie
-                 {
-                     let tmpSel = this.dernierSelection ;
+
+            $(".btn-date1").css("visibility","hidden"); // On cache les affichages date dans l'entête
+            $(".btn-date2").css("visibility","hidden");
+        }
+        else{ // switch à on
+            
+            if($(".btn-date1").text() != "date") // vérifier qu'une date a été choisi pour rendre les champs visible
+            {
+                $(".btn-date1").css("visibility","visible"); // Si saisit, on rend visible les champs
+                $(".btn-date2").css("visibility","visible");
+            }
+
+            if(this.dernierSelection.length) // On sélectionne la saisie
+            {
+                let tmpSel = this.dernierSelection ;
+
+                if (tmpSel[0].cal==tmpSel[1].cal) { // Sélection sur un seul calendrier
+                    this.calendriers[tmpSel[0].cal].selectionne(tmpSel[0].no,tmpSel[1].no);
         
-                     if (tmpSel[0].cal==tmpSel[1].cal) {
-                         // Sélection sur un seul calendrier
-                         this.calendriers[tmpSel[0].cal].selectionne(tmpSel[0].no,tmpSel[1].no);
-                
-                     } else {
-                  
-                             this.calendriers[tmpSel[0].cal].selectionne ( tmpSel[0].no , -1);
-                             this.calendriers[tmpSel[1].cal].selectionne (           -1 , tmpSel[1].no);
-                             // sélection à cheval sur 2 calendrier
-                  
-                     }  
-                 }
-          
-             
-            }
+                } 
+                else{ // sélection à cheval sur 2 calendrier
+                    this.calendriers[tmpSel[0].cal].selectionne ( tmpSel[0].no , -1);
+                    this.calendriers[tmpSel[1].cal].selectionne (           -1 , tmpSel[1].no);
+                }  
+            } 
+                       
+        }
     }
 
     // Container Class
@@ -710,9 +675,7 @@ class Container{
         // evt.no     = case où a eu lieu l'event
         // evt.numCal = case où a eu lieu l'event
         
-         // Container Class
-
-
+        // Container Class
         if(evt.event == "mouseDown")
         {
             // un début de clic a eu lieu sur une case d'un des calendriers
@@ -780,10 +743,10 @@ class Container{
         if(evt.event == "selectFin"  && (this.selectionEnCours)) {
             // on a relaché la souris en dehors du calendrier !
             this.selectionEnCours=false;
-
             this.dernierSelection = this.selectionTriée();
             this.date1 = this.calendriers[this.dernierSelection[0].cal ].dateWDDeCase(this.dernierSelection[0].no);
-            this.date2 = this.calendriers[this.dernierSelection[1].cal ].dateWDDeCase(this.dernierSelection[1].no) 
+            this.date2 = this.calendriers[this.dernierSelection[1].cal ].dateWDDeCase(this.dernierSelection[1].no);
+
             let evt = {
                 event : "SelectionFaite",
                 date1 : this.date1,
@@ -814,18 +777,19 @@ class Container{
             this.replier();
         }
 
-         // Container Class
+        // Container Class
         if(evt.event == "mouseHover")
         {
             // on balade la souris sur une des cases du calendrier
-
-            if(!this.selectionEnCours) {
-                // pas de sélection en cours...
-                this.fire({
-                event : "SelectionJhesite",
-                // ... par exemple envoyer date survolée
-                // ...
-            });
+            if(!this.selectionEnCours) { // pas de sélection en cours...
+                let dateHover = $(document).find('div[data-divcalendrierno='+evt.cal+'] td').eq(evt.no).attr("data-datewd");
+                let evtPeriode = {
+                    event : "SelectionJhesite",
+                    date1 : dateHover,
+                    date2 : dateHover
+                    // ... par exemple envoyer date survolée
+                }
+                this.fire(evtPeriode);
                 return;
             }
             // sinon étendre la sélection
@@ -844,24 +808,16 @@ class Container{
 
                 if (tmpSel[0].cal==tmpSel[1].cal) {
                     // Sélection sur un seul calendrier
-
                     this.calendriers[tmpSel[0].cal].selectionne(tmpSel[0].no,tmpSel[1].no);
-                    
-
-                } else {
-                    
-                        this.calendriers[tmpSel[0].cal].selectionne ( tmpSel[0].no , -1);
-                        this.calendriers[tmpSel[1].cal].selectionne (           -1 , tmpSel[1].no);
-                        // sélection à cheval sur 2 calendriers
-
-                    
+                } 
+                else{ // sélection à cheval sur 2 calendriers
+                    this.calendriers[tmpSel[0].cal].selectionne ( tmpSel[0].no , -1);
+                    this.calendriers[tmpSel[1].cal].selectionne (           -1 , tmpSel[1].no);    
                 }
 
                 let cal = this.sel[1].cal;
                 let no = this.sel[1].no;
-
                 let date2WD = $('div[data-divcalendrierno='+cal+'] td').eq(no).attr("data-datewd");
-                // this.date2 =date2WD;
 
                 var date2 = DateAdapInfo.versDateJS(date2WD)
                 var date1 = DateAdapInfo.versDateJS(this.date1);
@@ -877,20 +833,14 @@ class Container{
                     event : "SelectionExtension",
                     date1 : DateAdapInfo.versDateWeb(date1),
                     date2 : DateAdapInfo.versDateWeb(date2),
-                    // ...
                 });
             }
 
                         
         }
 
-        
-        //@TODO
         // Container Class
-        if(evt.event == "dateAChangé") {
-                // un calendrier a changé sa date ( mois prec ou suivnant)
-                // normalement il s'est mis à jour tout seul
-                // du coup supprimer sa sélection
+        if(evt.event == "dateAChangé") { // Génération d'un autre calendrier avec nouvelle date
 
                 let currentDate = new Date();
                 let nextCalendrier =0;
@@ -937,12 +887,9 @@ class Container{
                 }
                 this.calendriers[evt.sender.numero].dateRecalcule(evt.sender.date);
                 
-                // Repeindre les jours où il y a des spectacles
+                // Repeindre les jours où il y a des spectacles sur nouveau calendrier
                 this.spectaclesPeindre();
 
-                // calculer nouvelleDate pour 2eme calendrier
-                // actualiser le 2eme calendrier 
-                //  -->cal[autre].dateRecalcule(nouvelleDate)
                 this.fire({
                     event:"Changement de mois",
                     // autres infos..
@@ -1012,7 +959,6 @@ class Container{
             this.boolActif = true;
             checkbox.prop("checked",this.boolActif);
             
-
             if(btn == "jourencours")
             {
                 this.onAujourdhuiCaseNo();
@@ -1073,7 +1019,6 @@ class Container{
         $(".btn-date2").html(affichageD2);
 
         this.fire(evt);
-
         this.replier();
  
     }
@@ -1335,8 +1280,6 @@ class EcouteurApplication  {
     constructor(){
 
         const calendrier1 = new Calendrier(0,new Date());
-        // const calendrier2 = new Calendrier(1,new Date("2023","1","1"));
-        
         let appCal = new Container(calendrier1,null,false)
         appCal.subscribe(this)
         
@@ -1369,8 +1312,6 @@ class EcouteurApplication  {
             console.log(evt);
         }
     }
-   
-   
 }
 
 // Application
@@ -1378,12 +1319,8 @@ class EcouteurApplication  {
 
 var appEcouteur=new EcouteurApplication();
 
-
 </script>
 
-
-
 </body>
-
 
 </html>

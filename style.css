@@ -164,15 +164,21 @@ i{
     background-color: rgb(204, 204, 204);
 }
 .cal-selection:hover{
-    background-color: #1d1d1d;
+    background-color: #1d1d1d7d;
 }
 
 .cal-selection{
-    background-color: #1d1d1d82;
+    background-color: #1d1d1d55;
     color: #f1f1f1;
 }
 .cal-spectacle{
-    color: purple;
+    color: rgb(189, 0, 189);
+}
+.day_before.cal-spectacle{
+    color: inherit;
+}
+.day_before.cal-spectacle.cal-selection{
+    color: #f1f1f1;
 }
 
 /*************** toggle switch ***************/
