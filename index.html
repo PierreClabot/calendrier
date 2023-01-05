@@ -157,7 +157,7 @@ class Calendrier
             this.fire(evtPeriode);
         });
 
-        $("body").on('mouseup',window,function(event){
+        $(document).on('mouseup',function(event){
             let evtPeriode={
                  evtSrc : event,
                  event : "selectFin",
@@ -560,7 +560,7 @@ class Container{
         $("#periode-selecteur").append(this.domSelecteur()); // Ajouter le container
 
         $(window).mouseup(()=>{
-         this.selectionEnCours = false;   
+         this.selectionEnCours = false; 
         });
         
         let checkbox = $(document).find('.checkbox');
@@ -751,7 +751,7 @@ class Container{
                 date1 : this.calendriers[tmpSel[0].cal ].dateWDDeCase(tmpSel[0].no),
                 date2 : this.calendriers[tmpSel[1].cal ].dateWDDeCase(tmpSel[1].no) 
             });
-            console.log("here");
+
             this.replier();
         }
 
