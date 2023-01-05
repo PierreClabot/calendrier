@@ -157,7 +157,7 @@ class Calendrier
             this.fire(evtPeriode);
         });
 
-        $(document).on('mouseup',function(event){
+        $(window).on('mouseup',function(event){
             let evtPeriode={
                  evtSrc : event,
                  event : "selectFin",
@@ -252,7 +252,7 @@ class Calendrier
         let dateMonth = dateCal.getMonth()+1;
         let dateDay = dateCal.getDate();
 
-        let calendrierEntete = "<table data-calendrierNo="+numero+" data-calMois="+dateMonth+" data-calYear="+dateYear+"><thead><tr><th colspan='1' class='moisPrec' ><i class='fa-solid fa-arrow-left'></i></th><th colspan='5'>"+tabMois[dateMonth-1]+" - "+dateCal.getFullYear()+"</th><th colspan='1'  class='moisSuiv'><i class='fa-solid fa-arrow-right'></i></th></tr><tr><th>lu</th><th>ma</th><th>me</th><th>je</th><th>ve</th><th>sa</th><th>di</th></tr></thead>";
+        let calendrierEntete = "<table data-calendrierNo="+numero+" data-calMois="+dateMonth+" data-calYear="+dateYear+"><thead><tr><th colspan='1' class='moisPrec' ><i class='fa-solid fa-arrow-left'></i></th><th colspan='5'>"+tabMois[dateMonth-1]+" - "+dateCal.getFullYear()+"</th><th colspan='1'  class='moisSuiv'><i class='fa-solid fa-arrow-right'></i></th></tr><tr><th>lun</th><th>mar</th><th>mer</th><th>jeu</th><th>ven</th><th>sam</th><th>dim</th></tr></thead>";
         let calendrierRows =calendrierEntete+"<tr>";
 
         let moisPrecedent = dateMonth -1;
@@ -560,7 +560,7 @@ class Container{
         $("#periode-selecteur").append(this.domSelecteur()); // Ajouter le container
 
         $(window).mouseup(()=>{
-         this.selectionEnCours = false; 
+         this.selectionEnCours = false;   
         });
         
         let checkbox = $(document).find('.checkbox');
@@ -745,12 +745,32 @@ class Container{
         {
             // on a relaché la souris d'une des cases d'un des calendriers
             this.selectionEnCours = false;
-        
-            this.fire({
+            this.sel = this.selectionTriée();
+            let evt={
                 event : "SelectionFaite",
-                date1 : this.calendriers[tmpSel[0].cal ].dateWDDeCase(tmpSel[0].no),
-                date2 : this.calendriers[tmpSel[1].cal ].dateWDDeCase(tmpSel[1].no) 
-            });
+                date1 : this.calendriers[this.sel[0].cal ].dateWDDeCase(this.sel[0].no),
+                date2 : this.calendriers[this.sel[1].cal ].dateWDDeCase(this.sel[1].no) 
+            }
+            this.fire(evt);
+            let date1JS = DateAdapInfo.versDateJS(evt.date1);
+            let date2JS = DateAdapInfo.versDateJS(evt.date2);
+
+            let affichageD1 = date1JS.getDate().toString().padStart(2, '0')+"/"+(date1JS.getMonth() + 1).toString().padStart(2, '0')+"/"+date1JS.getFullYear();
+            let affichageD2 = date2JS.getDate().toString().padStart(2, '0')+"/"+(date2JS.getMonth() + 1).toString().padStart(2, '0')+"/"+date2JS.getFullYear();
+
+            if(affichageD1 == affichageD2)
+            {
+                $(".btn-date2").css("display","none");
+            }
+            else
+            {
+                $(".btn-date2").css("display","block");
+                $(".btn-date2").css("visibility","visible")
+            }
+
+            $(".btn-date1").css("visibility","visible")
+            $(".btn-date1").html(affichageD1);
+            $(".btn-date2").html(affichageD2);
 
             this.replier();
         }
@@ -769,7 +789,7 @@ class Container{
                 date1 : this.date1,
                 date2 : this.date2
             }
-            
+
             let date1JS = DateAdapInfo.versDateJS(evt.date1);
             let date2JS = DateAdapInfo.versDateJS(evt.date2);
 
