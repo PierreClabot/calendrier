@@ -530,7 +530,7 @@ class Container{
         let dateCal2 = new Date(dateCal1.getFullYear(),dateCal1.getMonth()+1,"1")
         if(cal2 == null)
         {
-            cal2 = new Calendrier(2,dateCal2)
+            cal2 = new Calendrier(1,dateCal2)
         }
         this.calendriers.push(cal1);
         this.calendriers.push(cal2);
@@ -1315,6 +1315,7 @@ class EcouteurApplication  {
     constructor(){
 
         const calendrier1 = new Calendrier(0,new Date());
+        // const calendrier2 = new Calendrier(1,new Date("2023","1","1"));
         
         let appCal = new Container(calendrier1,null,false)
         appCal.subscribe(this)
