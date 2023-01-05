@@ -539,6 +539,7 @@ class Container{
         checkbox.change(()=>{ // On change l'état du bouton
 
             this.boolActif = !this.boolActif; // Inverse booléen
+            console.log(this.boolActif)
             this.activer(this.boolActif); 
             
             let evt={
@@ -650,6 +651,7 @@ class Container{
                 $(".btn-date1").css("visibility","visible"); // Si saisit, on rend visible les champs
                 $(".btn-date2").css("visibility","visible");
             }
+            console.log("on",this.dernierSelection);
 
             if(this.dernierSelection.length) // On sélectionne la saisie
             {
@@ -709,11 +711,13 @@ class Container{
             // on a relaché la souris d'une des cases d'un des calendriers
             this.selectionEnCours = false;
             this.sel = this.selectionTriée();
+            this.dernierSelection = this.selectionTriée();
             let evt={
                 event : "SelectionFaite",
                 date1 : this.calendriers[this.sel[0].cal ].dateWDDeCase(this.sel[0].no),
                 date2 : this.calendriers[this.sel[1].cal ].dateWDDeCase(this.sel[1].no) 
             }
+
             this.fire(evt);
             let date1JS = DateAdapInfo.versDateJS(evt.date1);
             let date2JS = DateAdapInfo.versDateJS(evt.date2);
@@ -785,8 +789,8 @@ class Container{
                 let dateHover = $(document).find('div[data-divcalendrierno='+evt.cal+'] td').eq(evt.no).attr("data-datewd");
                 let evtPeriode = {
                     event : "SelectionJhesite",
-                    date1 : dateHover,
-                    date2 : dateHover
+                    // date1 : dateHover,
+                    // date2 : dateHover
                     // ... par exemple envoyer date survolée
                 }
                 this.fire(evtPeriode);
@@ -808,16 +812,24 @@ class Container{
 
                 if (tmpSel[0].cal==tmpSel[1].cal) {
                     // Sélection sur un seul calendrier
+
                     this.calendriers[tmpSel[0].cal].selectionne(tmpSel[0].no,tmpSel[1].no);
-                } 
-                else{ // sélection à cheval sur 2 calendriers
-                    this.calendriers[tmpSel[0].cal].selectionne ( tmpSel[0].no , -1);
-                    this.calendriers[tmpSel[1].cal].selectionne (           -1 , tmpSel[1].no);    
+                    
+
+                } else {
+                    
+                        this.calendriers[tmpSel[0].cal].selectionne ( tmpSel[0].no , -1);
+                        this.calendriers[tmpSel[1].cal].selectionne (           -1 , tmpSel[1].no);
+                        // sélection à cheval sur 2 calendriers
+
+                    
                 }
 
                 let cal = this.sel[1].cal;
                 let no = this.sel[1].no;
+
                 let date2WD = $('div[data-divcalendrierno='+cal+'] td').eq(no).attr("data-datewd");
+                // this.date2 =date2WD;
 
                 var date2 = DateAdapInfo.versDateJS(date2WD)
                 var date1 = DateAdapInfo.versDateJS(this.date1);
@@ -833,14 +845,20 @@ class Container{
                     event : "SelectionExtension",
                     date1 : DateAdapInfo.versDateWeb(date1),
                     date2 : DateAdapInfo.versDateWeb(date2),
+                    // ...
                 });
             }
 
                         
         }
 
+        
+        //@TODO
         // Container Class
-        if(evt.event == "dateAChangé") { // Génération d'un autre calendrier avec nouvelle date
+        if(evt.event == "dateAChangé") {
+                // un calendrier a changé sa date ( mois prec ou suivnant)
+                // normalement il s'est mis à jour tout seul
+                // du coup supprimer sa sélection
 
                 let currentDate = new Date();
                 let nextCalendrier =0;
@@ -887,9 +905,12 @@ class Container{
                 }
                 this.calendriers[evt.sender.numero].dateRecalcule(evt.sender.date);
                 
-                // Repeindre les jours où il y a des spectacles sur nouveau calendrier
+                // Repeindre les jours où il y a des spectacles
                 this.spectaclesPeindre();
 
+                // calculer nouvelleDate pour 2eme calendrier
+                // actualiser le 2eme calendrier 
+                //  -->cal[autre].dateRecalcule(nouvelleDate)
                 this.fire({
                     event:"Changement de mois",
                     // autres infos..
@@ -959,6 +980,7 @@ class Container{
             this.boolActif = true;
             checkbox.prop("checked",this.boolActif);
             
+
             if(btn == "jourencours")
             {
                 this.onAujourdhuiCaseNo();
@@ -1019,6 +1041,7 @@ class Container{
         $(".btn-date2").html(affichageD2);
 
         this.fire(evt);
+
         this.replier();
  
     }
@@ -1280,6 +1303,8 @@ class EcouteurApplication  {
     constructor(){
 
         const calendrier1 = new Calendrier(0,new Date());
+        // const calendrier2 = new Calendrier(1,new Date("2023","1","1"));
+        
         let appCal = new Container(calendrier1,null,false)
         appCal.subscribe(this)
         
@@ -1312,6 +1337,8 @@ class EcouteurApplication  {
             console.log(evt);
         }
     }
+   
+   
 }
 
 // Application
@@ -1319,8 +1346,12 @@ class EcouteurApplication  {
 
 var appEcouteur=new EcouteurApplication();
 
+
 </script>
 
+
+
 </body>
+
 
 </html>
