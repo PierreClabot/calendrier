@@ -136,7 +136,6 @@ class Calendrier
         }).on('click','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] .moisSuiv',(event)=>{
             let jour = "1";
             let currentDate = new Date();
-
             if(((this.date.getMonth()+1) == currentDate.getMonth())&&(this.date.getFullYear() == currentDate.getFullYear()))
             {
                 jour = currentDate.getDate();
@@ -144,7 +143,6 @@ class Calendrier
             let nouvelleDate = new Date(this.date.getFullYear(),this.date.getMonth()+1,jour);
             this.date = nouvelleDate;
             this.dateRecalcule(nouvelleDate);
-            
             let evtPeriode={
                 evtSrc : event,
                 event : "dateAChangé",
@@ -190,6 +188,7 @@ class Calendrier
                 no    :  parseInt(this.getAttribute("no"),10)
             };
             tobjCal.fire(evtPeriode);
+
         }).on('touchstart','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){ // Portable
             $(".btn_active").toggleClass('btn_active',false);
             let evtPeriode={
@@ -227,7 +226,6 @@ class Calendrier
             };
             
             tobjCal.fire(evtPeriode);
-
         })
 
     }
@@ -241,22 +239,20 @@ class Calendrier
         let firstDay = this.getFirstDayMonth();
         let nbjours = this.getNbJours();
         let calendrierJours ="";
-
         let dateYear = dateCal.getFullYear();
         let dateMonth = dateCal.getMonth()+1;
         let dateDay = dateCal.getDate();
-
         let calendrierEntete = "<table data-calendrierNo="+numero+" data-calMois="+dateMonth+" data-calYear="+dateYear+"><thead><tr><th colspan='1' class='moisPrec' ><i class='fa-solid fa-arrow-left'></i></th><th colspan='5'>"+tabMois[dateMonth-1]+" - "+dateCal.getFullYear()+"</th><th colspan='1'  class='moisSuiv'><i class='fa-solid fa-arrow-right'></i></th></tr><tr><th>lun</th><th>mar</th><th>mer</th><th>jeu</th><th>ven</th><th>sam</th><th>dim</th></tr></thead>";
         let calendrierRows =calendrierEntete+"<tr>";
-
         let moisPrecedent = dateMonth -1;
         if(moisPrecedent<=0){
             moisPrecedent = 12;
         }
-        let nbjoursmoisprecedent = nbjours[moisPrecedent-1];
 
+        let nbjoursmoisprecedent = nbjours[moisPrecedent-1];
         let jour = 0 ; 
         let jouravant = 0;
+
         for(let i=firstDay;i>0;i--)
         {
             jouravant++;
@@ -294,10 +290,10 @@ class Calendrier
             let tmpDate=new Date(dateYear,dateMonth-1,(dateDay-i));
             let tmpDateWD=DateAdapInfo.versDateWeb(tmpDate);
             calendrierJours += `<td class="day_before"  data-datewd="${tmpDateWD}" no="${cpt}" numCal="${this.numero}">${(dateDay-i)}</td>`;
-
             cpt++;
 
         }   
+
         jour = 0;
         for(let i=joursPasses.length;i<nbjours[this.date.getMonth()];i++){
             
@@ -309,11 +305,8 @@ class Calendrier
             let tmpDate=new Date(dateYear,dateMonth-1,(dateDay+jour));
             let tmpDateWD=DateAdapInfo.versDateWeb(tmpDate);
             calendrierJours += `<td class="mois_courant" data-datewd="${tmpDateWD}" no="${cpt}" numCal="${this.numero}">${(i+1)}</td>`;
-
             cpt++;
             jour++;
-
-
         }
         let jourafter = 1
         for(let i=cpt;i%7 != 0 ; i++)
@@ -363,17 +356,12 @@ class Calendrier
         for(let i=-1;i<11;i++)
         {
             let month = (this.date.getMonth()+i)%12;
-
             let year = this.date.getFullYear()+Math.floor((this.date.getMonth()+i)/12);
-
             let nbjours = new Date(year,month+1,-1).getDate()+1;
-
             tabnbjours.splice(month,0,nbjours);
-
         }
 
         return tabnbjours;
-        
     }
 
     // Calendrier Class
@@ -451,8 +439,8 @@ class Calendrier
             $(this).toggleClass("cal-spectacle",false);
           }
         });
-
     }
+
     dateWDDeCase(no)
     {
         let date = $('div[data-divcalendrierno="'+this.numero+'"]').find('td').eq(no).attr("data-datewd");
@@ -521,6 +509,7 @@ class Container{
         this.dernierSelection = [];
         this.date1 = -1;
         this.date2 = -1;
+        this.bouton = -1;
 
         // du container
         this.observers = [];
@@ -539,7 +528,6 @@ class Container{
         checkbox.change(()=>{ // On change l'état du bouton
 
             this.boolActif = !this.boolActif; // Inverse booléen
-            console.log(this.boolActif)
             this.activer(this.boolActif); 
             
             let evt={
@@ -618,6 +606,7 @@ class Container{
         let dateWD = DateAdapInfo.versDateWeb(date);
         let calendrier;
         let numero;
+
         for(let i=0;i<this.calendriers.length;i++)
         {
             $(document).find("div[data-divcalendrierno="+i+"] td").each(function(){
@@ -634,6 +623,11 @@ class Container{
     // Container class
     activer(boolContainer)
     {
+        let bouton = $('input.btn_active');
+        if(bouton.length > 0) // On vérifie que l'objet jquery ne soit pas vide
+        {
+            this.bouton = bouton;
+        }
         if(boolContainer == false) // Switch à off
         {
             for(let i=0;i<this.calendriers.length;i++) // Supprime selection
@@ -641,11 +635,12 @@ class Container{
                 this.calendriers[i].supprimeSelection();
             }
 
+            $(".btn_active").toggleClass('btn_active',false); // Supprime le btn active pour l'actualiser
             $(".btn-date1").css("visibility","hidden"); // On cache les affichages date dans l'entête
             $(".btn-date2").css("visibility","hidden");
         }
         else{ // switch à on
-            
+            $(this.bouton).toggleClass('btn_active',true); // Supprime le btn active pour l'actualiser
             if($(".btn-date1").text() != "date") // vérifier qu'une date a été choisi pour rendre les champs visible
             {
                 $(".btn-date1").css("visibility","visible"); // Si saisit, on rend visible les champs
@@ -700,7 +695,6 @@ class Container{
                 date1 : this.date1,
                 date2 : this.date2,
                 // ... par exemple ajouter propriété date:date choisie
-                // ...
             });
 
         }
@@ -711,7 +705,7 @@ class Container{
             // on a relaché la souris d'une des cases d'un des calendriers
             this.selectionEnCours = false;
             this.sel = this.selectionTriée();
-            this.dernierSelection = this.selectionTriée();
+            this.dernierSelection = this.sel;
             let evt={
                 event : "SelectionFaite",
                 date1 : this.calendriers[this.sel[0].cal ].dateWDDeCase(this.sel[0].no),
@@ -789,8 +783,8 @@ class Container{
                 let dateHover = $(document).find('div[data-divcalendrierno='+evt.cal+'] td').eq(evt.no).attr("data-datewd");
                 let evtPeriode = {
                     event : "SelectionJhesite",
-                    // date1 : dateHover,
-                    // date2 : dateHover
+                    date1 : dateHover,
+                    date2 : dateHover
                     // ... par exemple envoyer date survolée
                 }
                 this.fire(evtPeriode);
@@ -1333,6 +1327,10 @@ class EcouteurApplication  {
             console.log(evt);
         }
         if(evt.event == "Activation")
+        {
+            console.log(evt);
+        }
+        if(evt.event == "SelectionJhesite")
         {
             console.log(evt);
         }
