@@ -390,7 +390,7 @@ class Calendrier
                   evtSrc : event,
                   event : "dateChange", 
                   nouvelleDate  :  nouvelleDate 
-          };
+        };
         this.fire(evtPeriode);
     }
 
@@ -410,7 +410,7 @@ class Calendrier
            if ( (tmpDateWd>=dateAI1.dateWD) && (tmpDateWd<=dateAI2.dateWD) ) { noMax=no; }
         });
         
-        return{ no1:noMin , no2:noMax }
+        return{ no1:noMin , no2:noMax };
     }        
 
     // Calendrier Class
@@ -428,7 +428,6 @@ class Calendrier
         let selc='div[data-divcalendrierno="'+this.numero+'"]>table';
         let cal = $(selc).eq(0);
         let tcal=this;
-
         cal.find('td').each(function() {
           let dateWD=$(this).attr("data-datewd");
           if (tcal.spectaclesDates.indexOf(dateWD)>-1) {
@@ -506,7 +505,7 @@ class Container{
         this.dernierSelection = [];
         this.date1 = -1;
         this.date2 = -1;
-        this.bouton = -1;
+        this.bouton = -1; // Pour le filtre
 
         // du container
         this.observers = [];
