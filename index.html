@@ -831,6 +831,7 @@ class Container{
                 // normalement il s'est mis à jour tout seul
                 // du coup supprimer sa sélection
 
+                
                 let currentDate = new Date();
                 let nextCalendrier =0;
                 if(evt.sender.numero < (this.calendriers.length-1))
@@ -981,6 +982,7 @@ class Container{
         let date1JS = DateAdapInfo.versDateJS(evt.date1);
         let date2JS = DateAdapInfo.versDateJS(evt.date2);
 
+
         let affichageD1 = date1JS.getDate().toString().padStart(2, '0')+"/"+(date1JS.getMonth() + 1).toString().padStart(2, '0')+"/"+date1JS.getFullYear();
         let affichageD2 = date2JS.getDate().toString().padStart(2, '0')+"/"+(date2JS.getMonth() + 1).toString().padStart(2, '0')+"/"+date2JS.getFullYear();
 
@@ -1012,7 +1014,6 @@ class Container{
         this.sel[1] = this.caseDate(date);
         for(let i=0;(i<this.calendriers.length);i++)
         {
-
             if(this.calendriers[i].date.getMonth()==date.getMonth())
             {
                 this.selectionnePeriode(i,date,date);
@@ -1027,7 +1028,6 @@ class Container{
             $('div[data-divcalendrierno=0]').append(newDomJours);
             this.selectionnePeriode(0,date,date);
         }
-
     }
 
     // Container Class
@@ -1072,16 +1072,12 @@ class Container{
         let year = dateJ1.getFullYear()+Math.floor(dateJ1.getMonth()/12);
         let nbJoursMois = new Date(year,month+1,-1).getDate()+1;
         let dateJ2 = new Date(year,month,nbJoursMois); // Dernier jour du mois actuel
-
         this.sel[0] = this.caseDate(dateJ1);
         this.sel[1] = this.caseDate(dateJ2);
-
         this.supprimeSelection();
 
         for(let i=0;(i<this.calendriers.length);i++)
         {
-
-
             if(this.calendriers[i].date.getMonth()==dateJ1.getMonth())
             {
                 this.selectionnePeriode(i,dateJ1,dateJ2);
@@ -1169,7 +1165,7 @@ class Container{
         let evt={
             event:"PeriodeSelection"
         }
-        this.fire(evt)
+        this.fire(evt);
     }  
 
     // Container Class
@@ -1179,7 +1175,6 @@ class Container{
         // dateJ2=fin du mois
         // this.selectionnePeriode(0,dateJ1,dateJ2);
         // this.selectionnePeriode(1,dateJ3,dateJ4); (mois +1 ??)
-
     }  
 
     // Container Class
@@ -1189,7 +1184,6 @@ class Container{
         // dateJ2=fin du mois
         // this.selectionnePeriode(0,dateJ1,dateJ2);
         // this.selectionnePeriode(1,dateJ3,dateJ4); (mois +1 ??)
-
     }      
 
     // Container Class
@@ -1234,26 +1228,15 @@ class Container{
         $('div[data-name="legende-calendrier"]').css("display","none");
         this.boolContainerVisible = !this.boolContainerVisible;
     }
-
 }
-
-
-
-
-
-
 
 class EcouteurApplication  {
     
     //EcouteurApplication Class
     constructor(){
-
         const calendrier1 = new Calendrier(0,new Date());
-        // const calendrier2 = new Calendrier(1,new Date("2023","1","1"));
-        
         let appCal = new Container(calendrier1,null,false)
-        appCal.subscribe(this)
-        
+        appCal.subscribe(this)  
     }
 
     //EcouteurApplicatin Class
@@ -1262,8 +1245,6 @@ class EcouteurApplication  {
         $('#PERIODEECOUTEUR').html('Event reçu <br>'+evt.event);
         // selon evt.event
         // traiter evt.date1 ou date 2 , etcc...
-        
-
         if(evt.event == "SelectionDebut")
         {
             console.log(evt);
@@ -1287,8 +1268,6 @@ class EcouteurApplication  {
             console.log(evt);
         }
     }
-   
-   
 }
 
 // Application
