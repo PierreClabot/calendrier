@@ -324,7 +324,7 @@ class Calendrier
             calendrierJours += `<td class="day_after" data-name="day_after"  data-datewd="${tmpDateWD}" no="${cpt}" numCal="${this.numero}">${jourafter}</td>`;
             this.dernierNo = cpt;
             cpt++;
-            jourafter++
+            jourafter++;
         }
         calendrierRows += calendrierJours+"</tr></table>";
         return calendrierRows;
@@ -361,7 +361,7 @@ class Calendrier
             tabnbjours.splice(month,0,nbjours);
         }
 
-        return tabnbjours;
+        return tabnbjours; // tableau nombre de jours par mois
     }
 
     // Calendrier Class
@@ -369,9 +369,7 @@ class Calendrier
         
         if(n1<0){ n1 = 0; }
 
-        if(n2<0){
-            n2 = this.dernierNo;
-        }
+        if(n2<0){ n2 = this.dernierNo; }
 
         for(let i=n1;i<=n2;i++)
         {
@@ -382,7 +380,7 @@ class Calendrier
     // Calendrier Class
     // appelée par le conteneur
     dateRecalcule(nouvelleDate) {
-        //@TODO -- FAIT 
+
         this.date = nouvelleDate;
         let newDomJours = this.generateTab(this.numero,nouvelleDate);
         $('div[data-divcalendrierno='+this.numero+']>table').remove();
@@ -505,7 +503,6 @@ class Container{
         this.sel.push({cal:-1,no:-1});
         this.thisContainer = this;
         this.ajouteGestionFiltre();
-
         this.dernierSelection = [];
         this.date1 = -1;
         this.date2 = -1;
@@ -516,7 +513,6 @@ class Container{
         this.boolActif = boolActif;
         this.boolContainerVisible = false;
         this.spectaclesAjoute(["20221230","20230106","20221220","20221221","20221227","20230111","20230112","20230310"]);
-        
         $("#periode-selecteur").append(this.domSelecteur()); // Ajouter le container
 
         $(window).mouseup(()=>{
@@ -536,12 +532,9 @@ class Container{
                 date1 : this.date1,
                 date2 : this.date2
             }
-            this.fire(evt); // On prévient l'état actif ou non
-         
+            this.fire(evt); // On prévient l'état actif ou non         
          })
 
-
-        
         $('#periode-selecteur').on("click",".icone-calendrier",()=>{
             if(this.boolContainerVisible==false)
             {
@@ -576,7 +569,7 @@ class Container{
     
     // Container Class
     affichageCalendrierNo(no){
-        return this.calendriers[no]
+        return this.calendriers[no];
     }
     entete()
     {
@@ -646,7 +639,6 @@ class Container{
                 $(".btn-date1").css("visibility","visible"); // Si saisit, on rend visible les champs
                 $(".btn-date2").css("visibility","visible");
             }
-            console.log("on",this.dernierSelection);
 
             if(this.dernierSelection.length) // On sélectionne la saisie
             {
@@ -785,7 +777,6 @@ class Container{
                     event : "SelectionJhesite",
                     date1 : dateHover,
                     date2 : dateHover
-                    // ... par exemple envoyer date survolée
                 }
                 this.fire(evtPeriode);
                 return;
@@ -806,28 +797,18 @@ class Container{
 
                 if (tmpSel[0].cal==tmpSel[1].cal) {
                     // Sélection sur un seul calendrier
-
                     this.calendriers[tmpSel[0].cal].selectionne(tmpSel[0].no,tmpSel[1].no);
-                    
-
                 } else {
-                    
                         this.calendriers[tmpSel[0].cal].selectionne ( tmpSel[0].no , -1);
                         this.calendriers[tmpSel[1].cal].selectionne (           -1 , tmpSel[1].no);
                         // sélection à cheval sur 2 calendriers
-
-                    
                 }
 
                 let cal = this.sel[1].cal;
                 let no = this.sel[1].no;
-
                 let date2WD = $('div[data-divcalendrierno='+cal+'] td').eq(no).attr("data-datewd");
-                // this.date2 =date2WD;
-
-                var date2 = DateAdapInfo.versDateJS(date2WD)
                 var date1 = DateAdapInfo.versDateJS(this.date1);
-
+                var date2 = DateAdapInfo.versDateJS(date2WD)
                 if(date1>date2)
                 {
                     let dateSwap = date1;
@@ -841,13 +822,9 @@ class Container{
                     date2 : DateAdapInfo.versDateWeb(date2),
                     // ...
                 });
-            }
-
-                        
+            }        
         }
 
-        
-        //@TODO
         // Container Class
         if(evt.event == "dateAChangé") {
                 // un calendrier a changé sa date ( mois prec ou suivnant)
@@ -879,9 +856,7 @@ class Container{
                     // Si l'event envoyé est "precedent" (lors de l'appui sur l'icone), mois décrémenté
                     if(evt.mois == "precedent")
                     {
-                        this.calendriers[nextCalendrier].dateRecalcule(new Date(dateChange.getFullYear(),dateChange.getMonth()-1,"1"));
-                        
-                        
+                        this.calendriers[nextCalendrier].dateRecalcule(new Date(dateChange.getFullYear(),dateChange.getMonth()-1,"1"));        
                     }
                 }
 
@@ -901,10 +876,6 @@ class Container{
                 
                 // Repeindre les jours où il y a des spectacles
                 this.spectaclesPeindre();
-
-                // calculer nouvelleDate pour 2eme calendrier
-                // actualiser le 2eme calendrier 
-                //  -->cal[autre].dateRecalcule(nouvelleDate)
                 this.fire({
                     event:"Changement de mois",
                     // autres infos..
@@ -929,9 +900,7 @@ class Container{
                 tmpSel[1]=Object.assign({},tmpSel[0]);
                 tmpSel[0]=tmpSwap;
             }
-
         return tmpSel;
-            
     }
     // Container Class
     subscribe(fn)
@@ -956,25 +925,20 @@ class Container{
         this.observers.forEach(function (item) {
             evt.sender = thisCal;
             item.onPeriodeEvent(evt);
-
         });
     }
-
 
     // Container Class
     ajouteGestionFiltre() {
         $(document).on('click','div[data-name=legende-calendrier] input[type=submit]',(evt)=>{
 
             let btn = evt.target.getAttribute("data-calbtn"); // Récupère la valeur du bouton
-
             $(".btn_active").toggleClass('btn_active',false); // Supprime le btn active pour l'actualiser
             evt.target.classList.add('btn_active');
-
             let checkbox = $(document).find('.checkbox');
             this.boolActif = true;
             checkbox.prop("checked",this.boolActif);
             
-
             if(btn == "jourencours")
             {
                 this.onAujourdhuiCaseNo();
@@ -1035,13 +999,11 @@ class Container{
         $(".btn-date2").html(affichageD2);
 
         this.fire(evt);
-
         this.replier();
- 
     }
 
     // Container Class
-    onAujourdhuiCaseNo() {
+    onAujourdhuiCaseNo(){
 
         let date = new Date();
         let boolMoisAffiche = false;
@@ -1084,14 +1046,12 @@ class Container{
         this.supprimeSelection();
         for(let i=0;(i<this.calendriers.length);i++)
         {
-
             if(this.calendriers[i].date.getMonth()==date.getMonth())
             {
                 this.selectionnePeriode(i,date,dateSemaine);
                 boolMoisAffiche = true;
                 return;
             }
-
         }
         if(!boolMoisAffiche)
         {
@@ -1147,7 +1107,6 @@ class Container{
         let date2 = new Date(date.getFullYear(),date.getMonth(),(date.getDate()+days));
         let boolMoisAffiche = false;
         this.supprimeSelection();
-
         this.sel[0] = this.caseDate(date);
         this.sel[1] = this.caseDate(date2);
 
@@ -1185,15 +1144,12 @@ class Container{
         }
 
         let dateJ2 = new Date(dateJ1.getFullYear(),dateJ1.getMonth(),+dateJ1.getDate()+1);
-
         this.sel[0] = this.caseDate(dateJ1);
         this.sel[1] = this.caseDate(dateJ2);
-
         this.supprimeSelection();
 
         for(let i=0;(i<this.calendriers.length);i++)
         {
-
             if(this.calendriers[i].date.getMonth()==date.getMonth())
             {
                 this.selectionnePeriode(i,dateJ1,dateJ2);
@@ -1211,13 +1167,9 @@ class Container{
         }
 
         let evt={
-            event:"PeriodeSelection",
-            date1 : xxxx,
-            date2 : yyyyy
+            event:"PeriodeSelection"
         }
         this.fire(evt)
-
-
     }  
 
     // Container Class
