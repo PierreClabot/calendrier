@@ -686,7 +686,6 @@ class Container{
                 event : "SelectionDebut",
                 date1 : this.date1,
                 date2 : this.date2,
-                // ... par exemple ajouter propriété date:date choisie
             });
 
         }
@@ -831,7 +830,7 @@ class Container{
                 // normalement il s'est mis à jour tout seul
                 // du coup supprimer sa sélection
 
-                
+
                 let currentDate = new Date();
                 let nextCalendrier =0;
                 if(evt.sender.numero < (this.calendriers.length-1))
@@ -869,7 +868,6 @@ class Container{
 
                     if(dateCal < currentDate )
                     {
-
                         $('div[data-divcalendrierno=0]').find('td').toggleClass('day_before',true); // Pour le mois passé en cliquant sur mois précédent
                     }
                 }
