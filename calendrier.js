@@ -156,12 +156,12 @@ class Calendrier
             tobjCal.fire(evtPeriode);
 
         }).on('mousedown','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
-            
             $(".btn_active").toggleClass('btn_active',false); // Supprime le btn active si cliqué -- saisie manuelle
             let evtPeriode={
                 evtSrc : evt,
                 event : "mouseDown",
-                no    :  parseInt(this.getAttribute("no"),10)
+                no    :  parseInt(this.getAttribute("no"),10),
+                cal    :  parseInt(this.getAttribute("numCal"),10)
             };
             tobjCal.fire(evtPeriode);
 
@@ -176,7 +176,7 @@ class Calendrier
              let clientX = evt.touches[0].clientX;
              let clientY = evt.touches[0].clientY;
             this.derniereCaseTouchMove = document.elementFromPoint(clientX, clientY);
-            console.log(this.derniereCaseTouchMove);
+            //console.log(this.derniereCaseTouchMove);
             tobjCal.fire(evtPeriode); 
 
         }).on('touchmove','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',(evt)=>{ // Portable
@@ -185,7 +185,7 @@ class Calendrier
                 let clientX = evt.touches[0].clientX;
                 let clientY = evt.touches[0].clientY;
                 let caseTouchMove = document.elementFromPoint(clientX, clientY);
-                console.log(caseTouchMove);
+                //console.log(caseTouchMove);
                 let parent = caseTouchMove.parentNode
 
                 if(!$(caseTouchMove).hasClass("case"))
@@ -202,10 +202,9 @@ class Calendrier
                         no    :  parseInt(caseTouchMove.getAttribute("no"),10),
                         cal : parseInt(caseTouchMove.getAttribute("numCal"),10)
                     };
-                    console.log("this.plageselection",this.plageselection)
+                    // console.log("this.plageselection",this.plageselection)
                     if(!isNaN(evtPeriode.no) && (this.plageselection))
                     {
-                        console.log("here");
                         tobjCal.fire(evtPeriode);
                     }
                 }
@@ -528,15 +527,15 @@ class Container{
             };
             this.fire(evtPeriode);
         })
-        $(document).on('click','div[data-name=heureRpr]',(evt)=>{
-            console.log("target",evt.target);
-            let evtPeriode = {
-                event : "ChoixSpectacle",
-                idRepr : $(evt.target).attr('idrpr'),
-                date : $(evt.target).attr('data-datewd')
-            };
-            this.fire(evtPeriode);
-        })
+        // $(document).on('click','div[data-name=heureRpr]',(evt)=>{
+        //     console.log("target",evt.target);
+        //     let evtPeriode = {
+        //         event : "ChoixSpectacle",
+        //         idRepr : $(evt.target).attr('idrpr'),
+        //         date : $(evt.target).attr('data-datewd')
+        //     };
+        //     this.fire(evtPeriode);
+        // })
         // $(document).on('click',(evt)=>{
         //     console.log("target",evt.target);
         //     let domHeure = $(document).find("div[data-name=heureRpr]");
@@ -588,7 +587,7 @@ class Container{
                         date2 : -1
                     }
                     
-                    this.fire(evtPeriode);  
+                    // this.fire(evtPeriode);  
                     this.supprimeDate();
                 }
 
@@ -604,14 +603,32 @@ class Container{
             this.activer(this.boolActif); 
 
             this.sel = this.selectionTriée();
-            
-            let evt={
-                event : "Activation",
-                actif : this.boolActif,
-                date1 : this.calendriers[this.sel[0].cal ].dateWDDeCase(this.sel[0].no),
-                date2 : this.calendriers[this.sel[1].cal ].dateWDDeCase(this.sel[1].no) 
+            let sel = false;
+            let evt;
+            if((this.sel[0].cal > -1 ) || (this.sel[1].cal > -1))
+            {
+                sel = true;
             }
-            this.fire(evt); // On prévient l'état actif ou non         
+            if(sel)
+            {
+                evt={
+                    event : "Activation",
+                    actif : this.boolActif,
+                    date1 : this.calendriers[this.sel[0].cal ].dateWDDeCase(this.sel[0].no),
+                    date2 : this.calendriers[this.sel[1].cal ].dateWDDeCase(this.sel[1].no) 
+                } 
+            }
+            else
+            {
+                evt={
+                    event : "Activation",
+                    actif : this.boolActif,
+                    date1 : -1,
+                    date2 : -1 
+                } 
+            }
+            this.fire(evt); // On prévient l'état actif ou non  
+       
          })
 
         if(this.boolContainerVisible)
@@ -893,7 +910,7 @@ class Container{
                 let date2JS = DateAdapInfo.versDateJS(evtPeriode.date2);
                 this.afficheDatesEntete(date1JS,date2JS);
                 this.fire(evtPeriode);
-                //this.replier(); 
+                this.replier(); 
             }
 
             this.boolClicCalendrier = false;
@@ -948,7 +965,7 @@ class Container{
                     date2 : this.date2
                 }
 
-                this.fire(evt);
+                // this.fire(evt);
 
                 let date1JS = DateAdapInfo.versDateJS(evt.date1);
                 let date2JS = DateAdapInfo.versDateJS(evt.date2);
@@ -1195,7 +1212,7 @@ class Container{
         let date2JS = DateAdapInfo.versDateJS(evt.date2);
         this.afficheDatesEntete(date1JS,date2JS);
 
-        this.fire(evt);
+        //this.fire(evt);
         this.replier();
 
     }
