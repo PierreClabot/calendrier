@@ -175,8 +175,8 @@ class Calendrier
              };
              let clientX = evt.touches[0].clientX;
              let clientY = evt.touches[0].clientY;
-             // this.derniereCaseTouchMove = document.elementFromPoint(clientX, clientY);
-             tobjCal.fire(evtPeriode); 
+            this.derniereCaseTouchMove = document.elementFromPoint(clientX, clientY);
+            tobjCal.fire(evtPeriode); 
 
         }).on('touchmove','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',(evt)=>{ // Portable
 
@@ -189,7 +189,7 @@ class Calendrier
 
                 if(!$(caseTouchMove).hasClass("case"))
                 {
-                    caseTouchMove = caseTouchMove.parentNode
+                    caseTouchMove = caseTouchMove.parentNode;
                 }
                 
                 // console.log(($(this.derniereCaseTouchMove).attr("data-datewd")));
@@ -215,7 +215,7 @@ class Calendrier
                 }
             
 
-        }).on('touchend','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',(evt)=>{ // Portable
+        }).on('touchend','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){ // Portable
             console.log(this.derniereCaseTouchMove);
             let evtPeriode={
                 evtSrc : evt,
@@ -522,6 +522,14 @@ class Container{
             this.boolClicCalendrier = true;
         })
         $(document).on('click','div[data-name=heureRpr]',(evt)=>{
+            let evtPeriode = {
+                event : "ChoixSpectacle",
+                idRepr : $(evt.target).attr('idrpr'),
+                date : $(evt.target).attr('data-datewd')
+            };
+            this.fire(evtPeriode);
+        })
+        $(document).on('touchend','div[data-name=heureRpr]',(evt)=>{
             let evtPeriode = {
                 event : "ChoixSpectacle",
                 idRepr : $(evt.target).attr('idrpr'),
