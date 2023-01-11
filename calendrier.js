@@ -184,11 +184,18 @@ class Calendrier
                 let clientX = evt.touches[0].clientX;
                 let clientY = evt.touches[0].clientY;
                 let caseTouchMove = document.elementFromPoint(clientX, clientY);
+
+                let parent = caseTouchMove.parentNode
+
+                if(!$(caseTouchMove).hasClass("case"))
+                {
+                    caseTouchMove = caseTouchMove.parentNode
+                }
+                
                 // console.log(($(this.derniereCaseTouchMove).attr("data-datewd")));
                 // console.log("this.dernierCaseTouchMove",this.derniereCaseTouchMove)
                 // console.log("case TouchMove",caseTouchMove);
-                console.log("this",this)
-                if((this.derniereCaseTouchMove != caseTouchMove) )
+                if((this.derniereCaseTouchMove != caseTouchMove))
                 {
                     console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
                     this.derniereCaseTouchMove = caseTouchMove;
@@ -265,7 +272,7 @@ class Calendrier
             } 
             let tmpDate=new Date((dateYear-indiceAnnee),moisPrecedent-1,(nbjoursmoisprecedent-jour));
              let tmpDateWD=DateAdapInfo.versDateWeb(tmpDate);           
-              calendrierJours = `<td class="day_before"  data-datewd="${tmpDateWD}" no="${(jouravant-1-i)}" numCal="${this.numero}">${(nbjoursmoisprecedent-jour)}</td>`+calendrierJours;
+              calendrierJours = `<td class="case day_before"  data-datewd="${tmpDateWD}" no="${(jouravant-1-i)}" numCal="${this.numero}">${(nbjoursmoisprecedent-jour)}</td>`+calendrierJours;
             
             jour++;
             cpt++;
@@ -281,7 +288,7 @@ class Calendrier
             }
             let tmpDate=new Date(dateYear,dateMonth-1,(dateDay-i));
             let tmpDateWD=DateAdapInfo.versDateWeb(tmpDate);
-            calendrierJours += `<td class="day_before"  data-datewd="${tmpDateWD}" no="${cpt}" numCal="${this.numero}">${(dateDay-i)}</td>`;
+            calendrierJours += `<td class="case day_before"  data-datewd="${tmpDateWD}" no="${cpt}" numCal="${this.numero}">${(dateDay-i)}</td>`;
             cpt++;
 
         }   
@@ -296,7 +303,7 @@ class Calendrier
             }
             let tmpDate=new Date(dateYear,dateMonth-1,(dateDay+jour));
             let tmpDateWD=DateAdapInfo.versDateWeb(tmpDate);
-            calendrierJours += `<td class="mois_courant" data-datewd="${tmpDateWD}" no="${cpt}" numCal="${this.numero}">${(i+1)}</td>`;
+            calendrierJours += `<td class="case mois_courant" data-datewd="${tmpDateWD}" no="${cpt}" numCal="${this.numero}">${(i+1)}</td>`;
             cpt++;
             jour++;
         }
@@ -313,7 +320,7 @@ class Calendrier
             let tmpDate=new Date(year,moisSuivant-1,(jourafter));
             let tmpDateWD=DateAdapInfo.versDateWeb(tmpDate);
             
-            calendrierJours += `<td class="day_after" data-name="day_after"  data-datewd="${tmpDateWD}" no="${cpt}" numCal="${this.numero}">${jourafter}</td>`;
+            calendrierJours += `<td class="case day_after" data-name="day_after"  data-datewd="${tmpDateWD}" no="${cpt}" numCal="${this.numero}">${jourafter}</td>`;
             this.dernierNo = cpt;
             cpt++;
             jourafter++;
@@ -826,6 +833,7 @@ class Container{
         {
             $(".btn_active").toggleClass('btn_active',false); // Supprime le btn active si cliqué -- saisie manuelle
             let evtPeriode;
+            console.log("evt",evt);
             if(this.boolPlageSelection)
             {
                 // on a relaché la souris d'une des cases d'un des calendriers
@@ -1010,7 +1018,7 @@ class Container{
                 // un calendrier a changé sa date ( mois prec ou suivnant)
                 // normalement il s'est mis à jour tout seul
                 // du coup supprimer sa sélection
-
+                this.afficheHeureRepresentation();
                 let currentDate = new Date();
                 let nextCalendrier =0;
 
