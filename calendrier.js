@@ -176,6 +176,7 @@ class Calendrier
              let clientX = evt.touches[0].clientX;
              let clientY = evt.touches[0].clientY;
             this.derniereCaseTouchMove = document.elementFromPoint(clientX, clientY);
+            console.log(this.derniereCaseTouchMove);
             tobjCal.fire(evtPeriode); 
 
         }).on('touchmove','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',(evt)=>{ // Portable
@@ -184,7 +185,7 @@ class Calendrier
                 let clientX = evt.touches[0].clientX;
                 let clientY = evt.touches[0].clientY;
                 let caseTouchMove = document.elementFromPoint(clientX, clientY);
-
+                console.log(caseTouchMove);
                 let parent = caseTouchMove.parentNode
 
                 if(!$(caseTouchMove).hasClass("case"))
@@ -192,9 +193,6 @@ class Calendrier
                     caseTouchMove = caseTouchMove.parentNode;
                 }
                 
-                // console.log(($(this.derniereCaseTouchMove).attr("data-datewd")));
-                // console.log("this.dernierCaseTouchMove",this.derniereCaseTouchMove)
-                // console.log("case TouchMove",caseTouchMove);
                 if((this.derniereCaseTouchMove != caseTouchMove))
                 {
                     this.derniereCaseTouchMove = caseTouchMove;
@@ -220,7 +218,6 @@ class Calendrier
                 no    :  parseInt(this.derniereCaseTouchMove.getAttribute("no"),10),
                 cal : parseInt(this.derniereCaseTouchMove.getAttribute("numCal"),10)
             };
-            
             tobjCal.fire(evtPeriode);
         })
 
@@ -518,14 +515,40 @@ class Container{
         $(document).on("mousedown",'div[data-name="calendrier"] td',function(){
             this.boolClicCalendrier = true;
         })
+
+
         $(document).on('click','div[data-name=heureRpr]',(evt)=>{
+            console.log("target",evt.target);
+            // evt.preventDefault();
+            // evt.stopPropagation();
             let evtPeriode = {
                 event : "ChoixSpectacle",
                 idRepr : $(evt.target).attr('idrpr'),
                 date : $(evt.target).attr('data-datewd')
             };
             this.fire(evtPeriode);
-        })        
+        })
+        $(document).on('click','div[data-name=heureRpr]',(evt)=>{
+            console.log("target",evt.target);
+            let evtPeriode = {
+                event : "ChoixSpectacle",
+                idRepr : $(evt.target).attr('idrpr'),
+                date : $(evt.target).attr('data-datewd')
+            };
+            this.fire(evtPeriode);
+        })
+        // $(document).on('click',(evt)=>{
+        //     console.log("target",evt.target);
+        //     let domHeure = $(document).find("div[data-name=heureRpr]");
+
+        //     let evtPeriode = {
+        //         event : "ChoixSpectacle",
+        //         idRepr : $(evt.target).attr('idrpr'),
+        //         date : $(evt.target).attr('data-datewd')
+        //     };
+        //     this.fire(evtPeriode);
+        // })
+
         // $(document).on('tap','div[data-name=heureRpr]',(evt)=>{
         //     let evtPeriode = {
         //         event : "ChoixSpectacle",
@@ -569,8 +592,6 @@ class Container{
                     this.supprimeDate();
                 }
 
-                
-
             }
 
         });
@@ -602,7 +623,6 @@ class Container{
             this.activer(this.boolContainerVisible);
             this.replier();
         }
-
         $('#periode-selecteur').on("click",".icone-calendrier",()=>{
             if(this.boolContainerVisible==false)
             {
@@ -838,7 +858,6 @@ class Container{
         {
             $(".btn_active").toggleClass('btn_active',false); // Supprime le btn active si cliqué -- saisie manuelle
             let evtPeriode;
-            console.log("this",this);
             if(this.boolPlageSelection)
             {
                 // on a relaché la souris d'une des cases d'un des calendriers
@@ -873,8 +892,8 @@ class Container{
                 let date1JS = DateAdapInfo.versDateJS(evtPeriode.date1);
                 let date2JS = DateAdapInfo.versDateJS(evtPeriode.date2);
                 this.afficheDatesEntete(date1JS,date2JS);
-                this.replier();
                 this.fire(evtPeriode);
+                //this.replier(); 
             }
 
             this.boolClicCalendrier = false;
