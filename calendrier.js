@@ -526,14 +526,14 @@ class Container{
             };
             this.fire(evtPeriode);
         })        
-        $(document).on('tap','div[data-name=heureRpr]',(evt)=>{
-            let evtPeriode = {
-                event : "ChoixSpectacle",
-                idRepr : $(evt.target).attr('idrpr'),
-                date : $(evt.target).attr('data-datewd')
-            };
-            this.fire(evtPeriode);
-        })
+        // $(document).on('tap','div[data-name=heureRpr]',(evt)=>{
+        //     let evtPeriode = {
+        //         event : "ChoixSpectacle",
+        //         idRepr : $(evt.target).attr('idrpr'),
+        //         date : $(evt.target).attr('data-datewd')
+        //     };
+        //     this.fire(evtPeriode);
+        // })
 
 
         $(window).on("mouseup",(evt)=>{
