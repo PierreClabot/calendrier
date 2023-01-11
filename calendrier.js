@@ -900,7 +900,6 @@ class Container{
                     date1 : this.calendriers[this.sel[0].cal ].dateWDDeCase(this.sel[0].no),
                     date2 : this.calendriers[this.sel[1].cal ].dateWDDeCase(this.sel[1].no) 
                 }
-                
 
             }
 
