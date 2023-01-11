@@ -197,9 +197,7 @@ class Calendrier
                 // console.log("case TouchMove",caseTouchMove);
                 if((this.derniereCaseTouchMove != caseTouchMove))
                 {
-                    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
                     this.derniereCaseTouchMove = caseTouchMove;
-                    console.log(this.derniereCaseTouchMove);
                     let evtPeriode={
                         evtSrc : evt,
                         event : "mouseHover",
@@ -216,7 +214,6 @@ class Calendrier
             
 
         }).on('touchend','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){ // Portable
-            console.log(this.derniereCaseTouchMove);
             let evtPeriode={
                 evtSrc : evt,
                 event : "mouseUp",
@@ -528,8 +525,8 @@ class Container{
                 date : $(evt.target).attr('data-datewd')
             };
             this.fire(evtPeriode);
-        })
-        $(document).on('touchend','div[data-name=heureRpr]',(evt)=>{
+        })        
+        $(document).on('tap','div[data-name=heureRpr]',(evt)=>{
             let evtPeriode = {
                 event : "ChoixSpectacle",
                 idRepr : $(evt.target).attr('idrpr'),
@@ -537,6 +534,7 @@ class Container{
             };
             this.fire(evtPeriode);
         })
+
 
         $(window).on("mouseup",(evt)=>{
             
@@ -574,8 +572,7 @@ class Container{
                 
 
             }
-            
-            // @TODO Vérifier que le clic soit sur un des calendriers
+
         });
         
         let checkbox = $(document).find('.checkbox');
@@ -841,7 +838,7 @@ class Container{
         {
             $(".btn_active").toggleClass('btn_active',false); // Supprime le btn active si cliqué -- saisie manuelle
             let evtPeriode;
-            console.log("evt",evt);
+            console.log("this",this);
             if(this.boolPlageSelection)
             {
                 // on a relaché la souris d'une des cases d'un des calendriers
@@ -925,7 +922,7 @@ class Container{
                 this.dernierSelection = this.selectionTriée();
                 this.date1 = this.calendriers[this.dernierSelection[0].cal ].dateWDDeCase(this.dernierSelection[0].no);
                 this.date2 = this.calendriers[this.dernierSelection[1].cal ].dateWDDeCase(this.dernierSelection[1].no);
-
+                console.log("this",this)
                 let evt = {
                     event : "SelectionFaite",
                     date1 : this.date1,
