@@ -910,7 +910,7 @@ class Container{
                 let date2JS = DateAdapInfo.versDateJS(evtPeriode.date2);
                 this.afficheDatesEntete(date1JS,date2JS);
                 this.fire(evtPeriode);
-                this.replier(); 
+                // this.replier(); 
             }
 
             this.boolClicCalendrier = false;
