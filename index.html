@@ -34,9 +34,10 @@
     constructor(){
         let cal2 = new Date("2023","1","1");
 
-        let data1={date:"20230109", idSpc : 494, tblRpr : [{idRpr:4252, heure : '10:00'},{idRpr:4258, heure:'18:00'}] };
+        let data1={date:"20230119", idSpc : 494, tblRpr : [{idRpr:4252, heure : '10:00'},{idRpr:4258, heure:'18:00'}] };
         let data2={date:"20230110", idSpc : 495, tblRpr : [{idRpr:4252, heure : '20:00'}] };
-        let tbldata = [data1,data2];
+        let data3={};
+        let tbldata = [data1,data2,data3];
 
 
         let appCal = new Container(new Date(),null,false,true,tbldata,"#periode-selecteur");

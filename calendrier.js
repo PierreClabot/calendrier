@@ -508,8 +508,9 @@ class Container{
         this.observers = [];
         this.boolContainerVisible = boolContainerVisible;
         this.spectaclesAjoute(tblData);
+
         $(this.chaDomPlace).append(this.domSelecteur()); // Ajouter le container
-        this.afficheHeureRepresentation(); // Afficher les heures envoyés dans le container
+         // Afficher les heures envoyés dans le container
 
         $(document).on("mousedown",'div[data-name="calendrier"] td',function(){
             this.boolClicCalendrier = true;
@@ -644,6 +645,8 @@ class Container{
             if(this.boolContainerVisible==false)
             {
                 this.deplier();
+                this.supprimeAffichageRepresentation();
+                this.afficheHeureRepresentation();
                 this.spectaclesPeindre();
 
             }
@@ -653,26 +656,7 @@ class Container{
         })
     }
     // Container Class
-    afficheHeureRepresentation()
-    {
-        for(let i=0;i<this.tblData.length;i++)
-        {   
-            let dateRpr = this.tblData[i].date;
-            let dateJS = DateAdapInfo.versDateJS(dateRpr);
-            let nbRp = this.tblData[i].tblRpr.length;
-            let caseDate = this.caseDate(dateJS);
-            let caseJour = $('td[no='+caseDate.no+'][numCal='+caseDate.cal+']');
-            let domHeure = ""
-            for(let rpr = 0;rpr<nbRp;rpr++)
-            {
-                let heureRpr = this.tblData[i].tblRpr[rpr].heure;
-                let idRpr = this.tblData[i].tblRpr[rpr].idRpr;
-                domHeure += '<div data-name=heureRpr cal='+caseDate.cal+' no='+caseDate.no+' data-datewd='+dateRpr+' idRpr='+idRpr+'>'+heureRpr+'</div>'
-            }
-            caseJour.append(domHeure);
-            
-        }
-    }
+
     // Container Class
     modeUnCalendrier()
     {
@@ -802,6 +786,44 @@ class Container{
                        
         }
     }
+    
+    afficheHeureRepresentation()
+    {
+        for(let i=0;i<this.tblData.length;i++)
+        {   
+            if(!(Object.keys(this.tblData[i]).length === 0))
+            {
+                let dateRpr = this.tblData[i].date;
+                let dateJS = DateAdapInfo.versDateJS(dateRpr);
+                let nbRp = this.tblData[i].tblRpr.length;
+                let caseDate = this.caseDate(dateJS);
+                let caseJour = $('td[no='+caseDate.no+'][numCal='+caseDate.cal+']');
+                let domHeure = ""
+                for(let rpr = 0;rpr<nbRp;rpr++)
+                {
+                    let heureRpr = this.tblData[i].tblRpr[rpr].heure;
+                    let idRpr = this.tblData[i].tblRpr[rpr].idRpr;
+                    domHeure += '<div data-name=heureRpr cal='+caseDate.cal+' no='+caseDate.no+' data-datewd='+dateRpr+' idRpr='+idRpr+'>'+heureRpr+'</div>'
+                }
+                caseJour.addClass("cal-spectacle",true);
+                caseJour.append(domHeure);
+                console.log(caseJour);
+            }    
+
+        }
+    }
+    supprimeAffichageRepresentation(){
+        for(let i=0;i<this.tblData.length;i++)
+        {   
+            if(!(Object.keys(this.tblData[i]).length === 0))
+            {
+                let dateRpr = this.tblData[i].date;
+                $('td[data-datewd='+dateRpr+'] div').remove();
+            }    
+
+        }
+    }
+
     supprimeDate()
     {
         $(".btn-date1").css("visibility","hidden")
