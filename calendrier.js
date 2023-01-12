@@ -369,9 +369,6 @@ class Calendrier
 
         let n1=this.caseDate(date1);
         let n2=this.caseDate(date2);
-
-        console.log("n1",n1);
-        console.log("n2",n2);
         this.selectionne(n1,n2);
 
     }
@@ -590,7 +587,6 @@ class Container{
 
             this.boolActif = !this.boolActif; // Inverse booléen
             this.activer(this.boolActif); 
-            console.log("this.sel",this.sel)
             this.sel = this.selectionTriée();
             let sel = false;
             let evt;
@@ -667,7 +663,7 @@ class Container{
         let domEntete = $(`<div class='col-12' data-name='enteteContainer'>`+this.entete()+`</div>`);
         let domDiv = dom1.find('div[data-name="row-calendrier"]');
         domDiv.append(domEntete).append(domFiltre).append(domC1).append(domC2);
-        console.log("Je me génère");
+
         return dom1;
     }
     
@@ -781,7 +777,6 @@ class Container{
                 let nbRp = this.tblData[i].tblRpr.length;
                 let caseDate = this.caseDate(dateJS);
                 let caseJour = $('td[no='+caseDate.no+'][numCal='+caseDate.cal+']');
-                console.log(caseJour);
                 let domHeure = ""
                 for(let rpr = 0;rpr<nbRp;rpr++)
                 {
