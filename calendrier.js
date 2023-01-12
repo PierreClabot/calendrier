@@ -1214,7 +1214,6 @@ class Container{
                 this.calendriers[i].selectionneDate(date,date);
                 this.afficheDatesEntete(date,date);
                 boolMoisAffiche = true;
-                return;
             }
         }
         if(!boolMoisAffiche)
@@ -1225,6 +1224,14 @@ class Container{
             this.calendriers[0].selectionneDate(date,date);
             this.afficheDatesEntete(date,date);
         }
+
+        let evtPeriode = {
+            event:"SelectionFaite",
+            date1 : DateAdapInfo.versDateWeb(date),
+            date2 : DateAdapInfo.versDateWeb(date),
+        }
+
+        this.fire(evtPeriode);
     }
 
     // Container Class
@@ -1248,7 +1255,6 @@ class Container{
                 this.calendriers[i].selectionneDate(date,dateSemaine);
                 this.afficheDatesEntete(date,dateSemaine);
                 boolMoisAffiche = true;
-                return;
             }
         }
         if(!boolMoisAffiche)
@@ -1259,6 +1265,13 @@ class Container{
             this.calendriers[0].selectionneDate(date,dateSemaine);
             this.afficheDatesEntete(date,dateSemaine);
         }
+
+        let evtPeriode = {
+            event:"SelectionFaite",
+            date1 : DateAdapInfo.versDateWeb(date),
+            date2 : DateAdapInfo.versDateWeb(dateSemaine),
+        }
+        this.fire(evtPeriode);
     }
 
     // Container Class
@@ -1280,7 +1293,6 @@ class Container{
                 this.calendriers[i].selectionneDate(dateJ1,dateJ2);
                 this.afficheDatesEntete(dateJ1,dateJ2);
                 boolMoisAffiche = true;
-                return;
             }
         }
 
@@ -1292,6 +1304,14 @@ class Container{
             this.calendriers[0].selectionneDate(dateJ1,dateJ2);
             this.afficheDatesEntete(dateJ1,dateJ2);
         }
+
+        let evtPeriode = {
+            event:"SelectionFaite",
+            date1 : DateAdapInfo.versDateWeb(dateJ1),
+            date2 : DateAdapInfo.versDateWeb(dateJ2),
+        }
+        this.fire(evtPeriode);
+
     }    
 
     // Container Class
@@ -1311,7 +1331,6 @@ class Container{
                 this.calendriers[i].selectionneDate(date,date2);
                 this.afficheDatesEntete(date,date2);
                 boolMoisAffiche = true;
-                return;
             }
         }
         if(!boolMoisAffiche)
@@ -1322,6 +1341,13 @@ class Container{
             this.calendriers[0].selectionneDate(date,date2);
             this.afficheDatesEntete(date,date2);
         }
+
+        let evtPeriode = {
+            event:"SelectionFaite",
+            date1 : DateAdapInfo.versDateWeb(date),
+            date2 : DateAdapInfo.versDateWeb(date2),
+        }
+        this.fire(evtPeriode);
     }
 
     // Container Class
@@ -1349,7 +1375,6 @@ class Container{
                 this.calendriers[i].selectionneDate(dateJ1,dateJ2);
                 this.afficheDatesEntete(dateJ1,dateJ2);
                 boolMoisAffiche = true;
-                return;
             }
         }
 
@@ -1362,10 +1387,12 @@ class Container{
             this.afficheDatesEntete(dateJ1,dateJ2);
         }
 
-        let evt={
-            event:"PeriodeSelection"
+        let evtPeriode = {
+            event:"SelectionFaite",
+            date1 : DateAdapInfo.versDateWeb(dateJ1),
+            date2 : DateAdapInfo.versDateWeb(dateJ2),
         }
-        this.fire(evt);
+        this.fire(evtPeriode);
     }  
 
     // Container Class
