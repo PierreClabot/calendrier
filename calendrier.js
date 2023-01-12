@@ -645,7 +645,7 @@ class Container{
 
             this.boolActif = !this.boolActif; // Inverse booléen
             this.activer(this.boolActif); 
-
+            console.log("this.sel",this.sel)
             this.sel = this.selectionTriée();
             let sel = false;
             let evt;
@@ -686,11 +686,8 @@ class Container{
         }
         $('#periode-selecteur').on("click",".icone-calendrier",()=>{
             if(this.boolContainerVisible==false)
-            {
-                
+            { 
                 this.deplier();
-                // this.spectaclesPeindre();
-
             }
             else{
                 this.replier();
@@ -815,7 +812,7 @@ class Container{
 
             if(this.dernierSelection.length) // On sélectionne la saisie
             {
-                let tmpSel = this.dernierSelection ;
+                let tmpSel = this.sel ;
 
                 if (tmpSel[0].cal==tmpSel[1].cal) { // Sélection sur un seul calendrier
                     this.calendriers[tmpSel[0].cal].selectionne(tmpSel[0].no,tmpSel[1].no);
