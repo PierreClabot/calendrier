@@ -564,6 +564,7 @@ class Container{
             console.log("target",evt.target);
             // evt.preventDefault();
             // evt.stopPropagation();
+            $("td.cal-selection").toggleClass("cal-selection",false);
             let evtPeriode = {
                 event : "ChoixSpectacle",
                 idRepr : $(evt.target).attr('idrpr'),
@@ -809,8 +810,8 @@ class Container{
                 $(".btn-date1").css("visibility","visible"); // Si saisit, on rend visible les champs
                 $(".btn-date2").css("visibility","visible");
             }
-
-            if(this.dernierSelection.length) // On sélectionne la saisie
+            console.log(this.sel);
+            if(this.sel[0].cal != -1) // On vérifie si y a eu une saisie
             {
                 let tmpSel = this.sel ;
 
@@ -1121,6 +1122,8 @@ class Container{
                 // un calendrier a changé sa date ( mois prec ou suivnant)
                 // normalement il s'est mis à jour tout seul
                 // du coup supprimer sa sélection
+                this.sel[0] = {cal:-1,no:-1};
+                this.sel[1] = {cal:-1,no:-1};
                 
                 let currentDate = new Date();
                 let nextCalendrier =0;
