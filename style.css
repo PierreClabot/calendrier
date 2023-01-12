@@ -168,6 +168,7 @@ table[data-calendrierno] {
 .day_before.cal-spectacle.cal-selection{
     color: #f1f1f1;
 }
+
 div[data-name="heureRpr"]{
     background-color:#d9d9d999;
     color: #1d1d1d;
@@ -178,7 +179,11 @@ div[data-name="heureRpr"]{
 div[data-name="heureRpr"]:hover{
     background-color: #1d1d1d;
     color: #f1f1f1;
+}
 
+.day_before div[data-name="heureRpr"]
+{
+    display: none;
 }
 
 /*************** toggle switch ***************/
