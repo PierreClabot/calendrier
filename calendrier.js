@@ -369,6 +369,46 @@ class Calendrier
         }
     }
 
+    selectionneDate(date1,date2)
+    {
+        this.supprimeSelection()
+        let dateCal1=this.dateWDDeCase(0);
+        let dateCal2=this.dateWDDeCase(this.dernierNo);
+        
+        let dateCal1JS = DateAdapInfo.versDateJS(dateCal1);
+        let dateCal2JS = DateAdapInfo.versDateJS(dateCal2);
+        if(date2<dateCal1JS)
+        {
+            return;
+        }
+        if(date1>dateCal2JS)
+        {
+            return;
+        }
+
+        let n1=this.caseDate(date1);
+        let n2=this.caseDate(date2);
+
+        console.log("n1",n1);
+        console.log("n2",n2);
+        this.selectionne(n1,n2);
+
+    }
+
+    caseDate(date)
+    {
+        let dateWD = DateAdapInfo.versDateWeb(date);
+        let numero = -1;
+
+        $(document).find("div[data-divcalendrierno="+this.numero+"] td").each(function(){
+            if(this.getAttribute("data-datewd") == dateWD )
+            {
+                numero = parseInt(this.getAttribute("no"));
+            }
+        })
+        return numero
+    }
+
     // Calendrier Class
     // appelée par le conteneur
     dateRecalcule(nouvelleDate) {
@@ -416,20 +456,21 @@ class Calendrier
     }
 
     // Calendrier Class
-    spectaclesPeindre() {
-        let selc='div[data-divcalendrierno="'+this.numero+'"]>table';
-        let cal = $(selc).eq(0);
-        let tcal=this;
-        cal.find('td').each(function() {
-          let dateWD=$(this).attr("data-datewd");
-          if (tcal.spectaclesDates.indexOf(dateWD)>-1) {
-            $(this).toggleClass("cal-spectacle",true);
-          } else {
-            $(this).toggleClass("cal-spectacle",false);
-          }
-        });
-    }
+    // spectaclesPeindre() {
+    //     let selc='div[data-divcalendrierno="'+this.numero+'"]>table';
+    //     let cal = $(selc).eq(0);
+    //     let tcal=this;
+    //     cal.find('td').each(function() {
+    //       let dateWD=$(this).attr("data-datewd");
+    //       if (tcal.spectaclesDates.indexOf(dateWD)>-1) {
+    //         $(this).toggleClass("cal-spectacle",true);
+    //       } else {
+    //         $(this).toggleClass("cal-spectacle",false);
+    //       }
+    //     });
+    // }
 
+    // Calendrier Class
     dateWDDeCase(no)
     {
         let date = $('div[data-divcalendrierno="'+this.numero+'"]').find('td').eq(no).attr("data-datewd");
@@ -508,9 +549,11 @@ class Container{
         this.observers = [];
         this.boolContainerVisible = boolContainerVisible;
         this.spectaclesAjoute(tblData);
+        
 
         $(this.chaDomPlace).append(this.domSelecteur()); // Ajouter le container
          // Afficher les heures envoyés dans le container
+        this.afficheHeureRepresentation();
 
         $(document).on("mousedown",'div[data-name="calendrier"] td',function(){
             this.boolClicCalendrier = true;
@@ -644,10 +687,9 @@ class Container{
         $('#periode-selecteur').on("click",".icone-calendrier",()=>{
             if(this.boolContainerVisible==false)
             {
+                
                 this.deplier();
-                this.supprimeAffichageRepresentation();
-                this.afficheHeureRepresentation();
-                this.spectaclesPeindre();
+                // this.spectaclesPeindre();
 
             }
             else{
@@ -685,7 +727,7 @@ class Container{
         let domEntete = $(`<div class='col-12' data-name='enteteContainer'>`+this.entete()+`</div>`);
         let domDiv = dom1.find('div[data-name="row-calendrier"]');
         domDiv.append(domEntete).append(domFiltre).append(domC1).append(domC2);
-
+        console.log("Je me génère");
         return dom1;
     }
     
@@ -716,11 +758,12 @@ class Container{
     {
         return `<input class="col-5 col-sm-3 col-lg-12" type=submit data-calbtn="jourencours" value="Aujourd'hui" /><input class="col-5 col-sm-3 col-lg-12" type=submit data-calbtn="semaineencours" value="Cette semaine" /><input type=submit class="col-5 col-sm-3 col-lg-12" data-calbtn="joursprochains" value="3 prochains jours" /><input type=submit class="col-5 col-sm-3 col-lg-12" data-calbtn="weekendprochain" value="Le weekend prochain" /><input type=submit class="col-5 col-sm-3 col-lg-12" data-calbtn="moisencours" value="Ce mois" /><input type=submit class="col-5 col-sm-3 col-lg-12" value="Quelle période ?" />`;
     }
+    // Container Class
     caseDate(date)
     {
         let dateWD = DateAdapInfo.versDateWeb(date);
         let calendrier;
-        let numero;
+        let numero = -1;
 
         for(let i=0;i<this.calendriers.length;i++)
         {
@@ -798,6 +841,7 @@ class Container{
                 let nbRp = this.tblData[i].tblRpr.length;
                 let caseDate = this.caseDate(dateJS);
                 let caseJour = $('td[no='+caseDate.no+'][numCal='+caseDate.cal+']');
+                console.log(caseJour);
                 let domHeure = ""
                 for(let rpr = 0;rpr<nbRp;rpr++)
                 {
@@ -805,7 +849,7 @@ class Container{
                     let idRpr = this.tblData[i].tblRpr[rpr].idRpr;
                     domHeure += '<div data-name=heureRpr cal='+caseDate.cal+' no='+caseDate.no+' data-datewd='+dateRpr+' idRpr='+idRpr+'>'+heureRpr+'</div>'
                 }
-                caseJour.addClass("cal-spectacle",true);
+                caseJour.toggleClass("cal-spectacle",true);
                 caseJour.append(domHeure);
                 console.log(caseJour);
             }    
@@ -1080,7 +1124,7 @@ class Container{
                 // un calendrier a changé sa date ( mois prec ou suivnant)
                 // normalement il s'est mis à jour tout seul
                 // du coup supprimer sa sélection
-                this.afficheHeureRepresentation();
+                
                 let currentDate = new Date();
                 let nextCalendrier =0;
 
@@ -1120,12 +1164,13 @@ class Container{
 
                     }
                 }
-
+                $('input.btn_active').toggleClass('btn_active',false);
+                this.supprimeDate();
                 let dateChange = evt.sender.date;
                 this.calendriers[evt.sender.numero].supprimeSelection();  
                 
                 // Repeindre les jours où il y a des spectacles
-                this.spectaclesPeindre();
+                this.afficheHeureRepresentation();
                 this.fire({
                     event:"Changement de mois",
                     // autres infos..
@@ -1214,27 +1259,35 @@ class Container{
     } 
 
     // Container Class
-    selectionnePeriode(ncal,n1,n2) {
+    selectionnePeriode(ncal,date1,date2) {
+        this.calendriers[ncal].selectionnePeriode(date1,date2);
+
+        // let n1 = this.calendriers[ncal].dateWDDeCase(date1);
+        // let cases = this.calendriers[ncal].casesJourAjour(n1,n2);
+        // this.calendriers[ncal].selectionne(cases.no1, cases.no2);
+        // this.dernierSelection = this.selectionTriée();
+        // console.log(this.dernierSelection);
+        // this.date1 = this.calendriers[ncal].dateWDDeCase(n1) ; // date au format WD
+
+        // this.date2 = this.calendriers[this.dernierSelection[1].cal ].dateWDDeCase(this.dernierSelection[1].no) ;
 
 
-        let cases = this.calendriers[ncal].casesJourAjour(n1,n2);
-        this.calendriers[ncal].selectionne(cases.no1, cases.no2);
-        this.dernierSelection = this.selectionTriée();
-        this.date1 = this.calendriers[this.dernierSelection[0].cal ].dateWDDeCase(this.dernierSelection[0].no) ; // date au format WD
-        this.date2 = this.calendriers[this.dernierSelection[1].cal ].dateWDDeCase(this.dernierSelection[1].no) ;
-        let evt = {
-            event:"SelectionFaite",
-            date1 : this.date1,
-            date2 : this.date2 
-        }
 
         // Pour affichage JJ/MM/AAAA dans l'entête )
         let date1JS = DateAdapInfo.versDateJS(evt.date1);
         let date2JS = DateAdapInfo.versDateJS(evt.date2);
         this.afficheDatesEntete(date1JS,date2JS);
 
-        //this.fire(evt);
+        let evt = {
+            event:"SelectionFaite",
+            date1 : this.date1,
+            date2 : this.date2 
+        }
+
+
+        this.fire(evt);
         this.replier();
+
 
     }
 
@@ -1250,7 +1303,9 @@ class Container{
         {
             if((this.calendriers[i] != null) && (this.calendriers[i].date.getMonth()==date.getMonth()))
             {
-                this.selectionnePeriode(i,date,date);
+                // this.selectionnePeriode(i,date,date);
+                this.calendriers[i].selectionneDate(date,date);
+                this.afficheDatesEntete(date,date);
                 boolMoisAffiche = true;
                 return;
             }
@@ -1260,7 +1315,9 @@ class Container{
             let newDomJours = this.calendriers[0].generateTab(0,date);
             $('div[data-divcalendrierno=0]>table').remove();
             $('div[data-divcalendrierno=0]').append(newDomJours);
-            this.selectionnePeriode(0,date,date);
+            //this.selectionnePeriode(0,date,date);
+            this.calendriers[0].selectionneDate(date,date);
+            this.afficheDatesEntete(date,date);
         }
     }
 
@@ -1282,7 +1339,8 @@ class Container{
         {
             if((this.calendriers[i] != null) && (this.calendriers[i].date.getMonth()==date.getMonth()))
             {
-                this.selectionnePeriode(i,date,dateSemaine);
+                this.calendriers[i].selectionneDate(date,dateSemaine);
+                this.afficheDatesEntete(date,dateSemaine);
                 boolMoisAffiche = true;
                 return;
             }
@@ -1292,7 +1350,8 @@ class Container{
             let newDomJours = this.calendriers[0].generateTab(0,date);
             $('div[data-divcalendrierno=0]>table').remove();
             $('div[data-divcalendrierno=0]').append(newDomJours);
-            this.selectionnePeriode(0,date,dateSemaine);
+            this.calendriers[0].selectionneDate(date,dateSemaine);
+            this.afficheDatesEntete(date,dateSemaine);
         }
 
     }
@@ -1314,7 +1373,8 @@ class Container{
         {
             if((this.calendriers[i] != null) && (this.calendriers[i].date.getMonth()==dateJ1.getMonth()))
             {
-                this.selectionnePeriode(i,dateJ1,dateJ2);
+                this.calendriers[i].selectionneDate(dateJ1,dateJ2);
+                this.afficheDatesEntete(dateJ1,dateJ2);
                 boolMoisAffiche = true;
                 return;
             }
@@ -1325,7 +1385,8 @@ class Container{
             let newDomJours = this.calendriers[0].generateTab(0,dateJ1);
             $('div[data-divcalendrierno=0]>table').remove();
             $('div[data-divcalendrierno=0]').append(newDomJours);
-            this.selectionnePeriode(0,dateJ1,dateJ2);
+            this.calendriers[0].selectionneDate(dateJ1,dateJ2);
+            this.afficheDatesEntete(dateJ1,dateJ2);
         }
             
     }    
@@ -1344,7 +1405,8 @@ class Container{
         {
             if((this.calendriers[i] != null) && (this.calendriers[i].date.getMonth()==date.getMonth()))
             {   
-                this.selectionnePeriode(i,date,date2);
+                this.calendriers[i].selectionneDate(date,date2);
+                this.afficheDatesEntete(date,date2);
                 boolMoisAffiche = true;
                 return;
             }
@@ -1354,7 +1416,8 @@ class Container{
             let newDomJours = this.calendriers[0].generateTab(0,date);
             $('div[data-divcalendrierno=0]>table').remove();
             $('div[data-divcalendrierno=0]').append(newDomJours);
-            this.selectionnePeriode(0,date,date2);
+            this.calendriers[0].selectionneDate(date,date2);
+            this.afficheDatesEntete(date,date2);
         }
 
     }
@@ -1382,7 +1445,8 @@ class Container{
         {
             if((this.calendriers[i] != null) && (this.calendriers[i].date.getMonth()==date.getMonth()))
             {
-                this.selectionnePeriode(i,dateJ1,dateJ2);
+                this.calendriers[i].selectionneDate(dateJ1,dateJ2);
+                this.afficheDatesEntete(dateJ1,dateJ2);
                 boolMoisAffiche = true;
                 return;
             }
@@ -1393,7 +1457,8 @@ class Container{
             let newDomJours = this.calendriers[0].generateTab(0,date);
             $('div[data-divcalendrierno=0]>table').remove();
             $('div[data-divcalendrierno=0]').append(newDomJours);
-            this.selectionnePeriode(0,dateJ1,dateJ2);
+            this.calendriers[0].selectionneDate(dateJ1,dateJ2);
+            this.afficheDatesEntete(dateJ1,dateJ2);
         }
 
         let evt={
@@ -1446,23 +1511,24 @@ class Container{
                 this.calendriers[i].spectaclesAjoute(tblDates);
             }
         }
-        this.spectaclesPeindre();
+        //  this.spectaclesPeindre();
     }
 
    // Container Class
-   spectaclesPeindre(){
-        for(let i = 0;i<this.calendriers.length;i++)
-        {
-            if(this.calendriers[i] != null)
-            {
-                this.calendriers[i].spectaclesPeindre();
-            }
-        }
-    }
+//    spectaclesPeindre(){
+//         for(let i = 0;i<this.calendriers.length;i++)
+//         {
+//             if(this.calendriers[i] != null)
+//             {
+//                 this.calendriers[i].spectaclesPeindre();
+//             }
+//         }
+//     }
 
     // Container class
     deplier()
     {
+    
         $('div[data-name="calendrier"]').css("display","block");
         if(this.boolPlageSelection){ // Affichage des filtres uniquement si plageSélection
             $('div[data-name="legende-calendrier"]').css("display","block");
