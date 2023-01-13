@@ -132,24 +132,32 @@ class Calendrier
                 };
                 tobjCal.fire(evtPeriode);
             }
-        }).on('mouseup','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
-            let evtPeriode={
-                 evtSrc : evt,
-                 event : "mouseUp",
-                 no    :  parseInt(this.getAttribute("no"),10),
-                 cal    :  parseInt(this.getAttribute("numCal"),10)
-             };
-            tobjCal.fire(evtPeriode);
+        }).on('mouseup touchend','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
 
-        }).on('mousedown','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
-            $(".btn_active").toggleClass('btn_active',false); // Supprime le btn active si cliqué -- saisie manuelle
             let evtPeriode={
                 evtSrc : evt,
-                event : "mouseDown",
+                event : "mouseUp",
                 no    :  parseInt(this.getAttribute("no"),10),
                 cal    :  parseInt(this.getAttribute("numCal"),10)
             };
             tobjCal.fire(evtPeriode);
+            console.log("fire",evtPeriode);
+            return;
+
+        }).on('mousedown','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){
+            $(".btn_active").toggleClass('btn_active',false); // Supprime le btn active si cliqué -- saisie manuelle
+            let evtPeriode;
+            if(evt.handleObj.type == "mousedown")
+            {
+                evtPeriode={
+                    evtSrc : evt,
+                    event : "mouseDown",
+                    no    :  parseInt(this.getAttribute("no"),10),
+                    cal    :  parseInt(this.getAttribute("numCal"),10)
+                };
+                tobjCal.fire(evtPeriode);
+                return;
+            }            
 
         }).on('touchstart','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){ // Portable
             $(".btn_active").toggleClass('btn_active',false);
@@ -194,16 +202,18 @@ class Calendrier
                 }
             
 
-        }).on('touchend','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){ // Portable
-            let evtPeriode={
-                evtSrc : evt,
-                event : "mouseUp",
-                no    :  parseInt(this.derniereCaseTouchMove.getAttribute("no"),10),
-                cal : parseInt(this.derniereCaseTouchMove.getAttribute("numCal"),10)
-            };
-            tobjCal.fire(evtPeriode);
         })
-
+    /* 
+    .on('touchend','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt){ // Portable
+                let evtPeriode={
+                    evtSrc : evt,
+                    event : "mouseUp",
+                    no    :  parseInt(this.derniereCaseTouchMove.getAttribute("no"),10),
+                    cal : parseInt(this.derniereCaseTouchMove.getAttribute("numCal"),10)
+                };
+                tobjCal.fire(evtPeriode);
+            })
+    */
     }
     
     // Calendrier Class
@@ -545,6 +555,7 @@ class Container{
                 date : $(evt.target).attr('data-datewd')
             };
             this.fire(evtPeriode);
+            this.replier();
         })
 
         $(window).on("mouseup",(evt)=>{
@@ -867,6 +878,10 @@ class Container{
         {
             $(".btn_active").toggleClass('btn_active',false); // Supprime le btn active si cliqué -- saisie manuelle
             let evtPeriode;
+            if($(evt.evtSrc.target).attr("data-name")=="heureRpr")
+            {
+                return;
+            }
             if(this.boolPlageSelection)
             {
                 // on a relaché la souris d'une des cases d'un des calendriers
@@ -924,7 +939,9 @@ class Container{
             else{ // sélection à cheval sur 2 calendriers
                     this.calendriers[tmpSel[0].cal].selectionne ( tmpSel[0].no , -1);
                     this.calendriers[tmpSel[1].cal].selectionne (           -1 , tmpSel[1].no);
-            }   
+            }  
+    
+             
         }
 
         // Container Class
