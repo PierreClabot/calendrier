@@ -179,6 +179,7 @@ class Calendrier
                 if((this.derniereCaseTouchMove != caseTouchMove))
                 {
                     this.derniereCaseTouchMove = caseTouchMove;
+                    console.log(this.derniereCaseTouchMove);
                     let evtPeriode={
                         evtSrc : evt,
                         event : "mouseHover",
@@ -457,9 +458,9 @@ class Calendrier
 
     // Calendrier Class
     // parametre date="20221205" YYYYMMDD
-    spectaclesAjoute(tblDates) {    
-        this.spectaclesDates=tblDates;
-    }
+    // spectaclesAjoute(tblDates) {    
+    //     this.spectaclesDates=tblDates;
+    // }
     
     // Calendrier Class
     subscribe(obj)
@@ -526,12 +527,10 @@ class Container{
         // du container
         this.observers = [];
         this.boolContainerVisible = boolContainerVisible;
-        this.spectaclesAjoute(tblData);
+        // this.spectaclesAjoute(tblData);
         
-
         $(this.chaDomPlace).append(this.domSelecteur()); // Ajouter le container
-         // Afficher les heures envoyés dans le container
-        this.afficheHeureRepresentation();
+        this.afficheHeureRepresentation(); // Afficher les heures envoyés dans le container
 
         $(document).on("mousedown",'div[data-name="calendrier"] td',function(){
             this.boolClicCalendrier = true;
@@ -797,7 +796,6 @@ class Container{
                 let dateRpr = this.tblData[i].date;
                 $('td[data-datewd='+dateRpr+'] div').remove();
             }    
-
         }
     }
 
@@ -846,7 +844,6 @@ class Container{
                 {
                     this.calendriers[i].supprimeSelection();
                 }
-                
             }
             this.boolClicCalendrier = true;
             this.sel[0] = { cal:evt.numCal,no: evt.no};
@@ -901,7 +898,8 @@ class Container{
                 let date2JS = DateAdapInfo.versDateJS(evtPeriode.date2);
                 this.afficheDatesEntete(date1JS,date2JS);
                 this.fire(evtPeriode);
-                // this.replier(); 
+                console.log(evt);
+                this.replier(); 
             }
 
             this.boolClicCalendrier = false;
@@ -920,17 +918,14 @@ class Container{
             }
 
             let tmpSel = this.selectionTriée();
-            if (tmpSel[0].cal==tmpSel[1].cal) {
-                // Sélection sur un seul calendrier
+            if (tmpSel[0].cal==tmpSel[1].cal) { // Sélection sur un seul calendrier
                 this.calendriers[tmpSel[0].cal].selectionne(tmpSel[0].no,tmpSel[1].no);
-            } else {
+            } 
+            else{ // sélection à cheval sur 2 calendriers
                     this.calendriers[tmpSel[0].cal].selectionne ( tmpSel[0].no , -1);
                     this.calendriers[tmpSel[1].cal].selectionne (           -1 , tmpSel[1].no);
-                    // sélection à cheval sur 2 calendriers
-            }
-            
+            }   
         }
-
 
         // Container Class
         if(evt.event == "selectFin"  && (this.selectionEnCours)) {
@@ -960,10 +955,8 @@ class Container{
                 let date1JS = DateAdapInfo.versDateJS(evt.date1);
                 let date2JS = DateAdapInfo.versDateJS(evt.date2);
                 this.afficheDatesEntete(date1JS,date2JS);
-
                 this.replier();
-            }
-            
+            }   
         }
 
         // Container Class
@@ -1195,8 +1188,6 @@ class Container{
 
         this.fire(evt);
         this.replier();
-
-
     }
 
     // Container Class
@@ -1276,6 +1267,7 @@ class Container{
 
     // Container Class
     onCeMois() {
+
         let dateJ1 = new Date(); // Date actuelle
         let month = dateJ1.getMonth();
         let boolMoisAffiche = false;
@@ -1430,17 +1422,17 @@ class Container{
     
 
    // Container Class
-   spectaclesAjoute(tblDates){
-        this.spectaclesDates=tblDates
-        for(let i = 0;i<this.calendriers.length;i++)
-        {
-            if(this.calendriers[i] != null)
-            {
-                this.calendriers[i].spectaclesAjoute(tblDates);
-            }
-        }
-        //  this.spectaclesPeindre();
-    }
+//    spectaclesAjoute(tblDates){
+//         this.spectaclesDates=tblDates
+//         for(let i = 0;i<this.calendriers.length;i++)
+//         {
+//             if(this.calendriers[i] != null)
+//             {
+//                 this.calendriers[i].spectaclesAjoute(tblDates);
+//             }
+//         }
+//         //  this.spectaclesPeindre();
+//     }
 
     // Container Class
     //spectaclesPeindre(){
