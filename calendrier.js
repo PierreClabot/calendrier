@@ -794,6 +794,7 @@ class Container{
             }    
         }
     }
+    
     supprimeAffichageRepresentation(){
         for(let i=0;i<this.tblData.length;i++)
         {   
