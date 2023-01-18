@@ -31,7 +31,6 @@ body{
     margin: 0 0.5rem;
 }
 .icones{
-
     display: flex;
     width: 40%;
     align-items: center;
@@ -186,7 +185,7 @@ div[data-name="heureRpr"]:hover{
     display: none;
 }
 
-/*************** toggle switch ***************/
+/************** toggle switch **************/
 /* The switch - the box around the slider */
 .switch {
     position: relative;
@@ -248,4 +247,11 @@ div[data-name="heureRpr"]:hover{
   
   .slider.round:before {
     border-radius: 50%;
+  }
+
+  .ticket-mur-bouton{
+    width: 50% !important;
+    padding: 0.2rem 0 !important;
+    margin: 0.5rem auto !important;
+    box-shadow: 3px 3px 5px var(--color-shadow-btn-reserver);
   }

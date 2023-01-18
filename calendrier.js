@@ -467,12 +467,6 @@ class Calendrier
     }
 
     // Calendrier Class
-    // parametre date="20221205" YYYYMMDD
-    // spectaclesAjoute(tblDates) {    
-    //     this.spectaclesDates=tblDates;
-    // }
-    
-    // Calendrier Class
     subscribe(obj)
     {
         this.observers.push(obj);
@@ -555,6 +549,7 @@ class Container{
                 date : $(evt.target).attr('data-datewd')
             };
             this.fire(evtPeriode);
+            this.supprimeDate();
             this.replier();
         })
 
