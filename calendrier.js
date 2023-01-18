@@ -702,7 +702,7 @@ class Container{
     // Container Class
     filtre()
     {
-        return `<input class="col-5 col-sm-3 col-lg-12" type=submit data-calbtn="jourencours" value="Aujourd'hui" /><input class="col-5 col-sm-3 col-lg-12" type=submit data-calbtn="semaineencours" value="Cette semaine" /><input type=submit class="col-5 col-sm-3 col-lg-12" data-calbtn="joursprochains" value="3 prochains jours" /><input type=submit class="col-5 col-sm-3 col-lg-12" data-calbtn="weekendprochain" value="Le weekend prochain" /><input type=submit class="col-5 col-sm-3 col-lg-12" data-calbtn="moisencours" value="Ce mois" /><input type=submit class="col-5 col-sm-3 col-lg-12" value="Quelle période ?" />`;
+        return `<input class="col-5 col-sm-3 col-lg-12" type=submit data-calbtn="jourencours" value="Aujourd'hui" /><input class="col-5 col-sm-3 col-lg-12" type=submit data-calbtn="semaineencours" value="Cette semaine" /><input type=submit class="col-5 col-sm-3 col-lg-12" data-calbtn="joursprochains" value="3 prochains jours" /><input type=submit class="col-5 col-sm-3 col-lg-12" data-calbtn="weekendprochain" value="Le weekend prochain" /><input type=submit class="col-5 col-sm-3 col-lg-12" data-calbtn="moisencours" value="Ce mois" />`;
     }
     // Container Class
     caseDate(date)
