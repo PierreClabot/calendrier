@@ -187,7 +187,6 @@ class Calendrier
                 if((this.derniereCaseTouchMove != caseTouchMove))
                 {
                     this.derniereCaseTouchMove = caseTouchMove;
-                    console.log(this.derniereCaseTouchMove);
                     let evtPeriode={
                         evtSrc : evt,
                         event : "mouseHover",
@@ -307,10 +306,10 @@ class Calendrier
             let tmpDateWD=DateAdapInfo.versDateWeb(tmpDate);
             
             calendrierJours += `<td class="case day_after" data-name="day_after"  data-datewd="${tmpDateWD}" no="${cpt}" numCal="${this.numero}">${jourafter}</td>`;
-            this.dernierNo = cpt;
             cpt++;
             jourafter++;
         }
+        this.dernierNo = cpt-1;
         calendrierRows += calendrierJours+"</tr></table>";
         return calendrierRows;
     }
@@ -363,10 +362,9 @@ class Calendrier
     // Calendrier Class
     selectionneDate(date1,date2)
     {
-        this.supprimeSelection()
+        // this.supprimeSelection()
         let dateCal1=this.dateWDDeCase(0);
         let dateCal2=this.dateWDDeCase(this.dernierNo);
-        
         let dateCal1JS = DateAdapInfo.versDateJS(dateCal1);
         let dateCal2JS = DateAdapInfo.versDateJS(dateCal2);
         if(date2<dateCal1JS)
@@ -406,7 +404,7 @@ class Calendrier
         let newDomJours = this.generateTab(this.numero,nouvelleDate);
         $('div[data-divcalendrierno='+this.numero+']>table').remove();
         $('div[data-divcalendrierno='+this.numero+']').append(newDomJours);
-        
+
         let evtPeriode={
                   evtSrc : event,
                   event : "dateChange", 
@@ -444,20 +442,9 @@ class Calendrier
         return this.numCalendrier ;
     }
 
-    // Calendrier Class
-    // spectaclesPeindre() {
-    //     let selc='div[data-divcalendrierno="'+this.numero+'"]>table';
-    //     let cal = $(selc).eq(0);
-    //     let tcal=this;
-    //     cal.find('td').each(function() {
-    //       let dateWD=$(this).attr("data-datewd");
-    //       if (tcal.spectaclesDates.indexOf(dateWD)>-1) {
-    //         $(this).toggleClass("cal-spectacle",true);
-    //       } else {
-    //         $(this).toggleClass("cal-spectacle",false);
-    //       }
-    //     });
-    // }
+    getDateCal(){
+        return this.date ;
+    }
 
     // Calendrier Class
     dateWDDeCase(no)
@@ -834,6 +821,93 @@ class Container{
     }
 
     // Container Class
+    fctCalVal_cha(){
+        let tabMoisCal = [];
+        let dateCal;
+        let dateCal1 = null;
+        let dateCal2 = null;
+        if(this.modeUnCalendrier())
+        {
+            dateCal = this.calendriers[0].getDateCal();
+            tabMoisCal.push(dateCal)
+        }
+        else
+        {
+            for(let i=0;i<this.calendriers.length ; i++)
+            {
+                dateCal = this.calendriers[i].getDateCal();
+                tabMoisCal.push(dateCal)
+            }
+        }
+        if(tabMoisCal[0])
+        {
+            dateCal1 = DateAdapInfo.versDateWeb(tabMoisCal[0]);
+        }
+        if(tabMoisCal[1])
+        {
+            dateCal2 = DateAdapInfo.versDateWeb(tabMoisCal[1]);
+        }
+        let btnFiltre = $(".btn_active").attr("data-calbtn");
+
+        let dataContainer = {
+            dateCal1 : dateCal1,
+            dateCal2 : dateCal2,
+            selection : this.boolPlageSelection,
+            actif : this.boolContainerVisible,
+            date1 : this.date1,
+            date2 : this.date2,
+            boutonfiltre : btnFiltre
+        }
+        return JSON.stringify(dataContainer);
+    }
+    // stringify
+    // pars
+    pcdCalVal(data){
+
+
+        let dataContainer = JSON.parse(data);
+
+        this.boolContainerVisible=dataContainer.actif;
+        if(this.boolContainerVisible)
+        {
+            this.deplier();
+        }
+        this.boolPlageSelection = dataContainer.selection;
+        this.date1 = dataContainer.date1;
+        this.date2 = dataContainer.date2;
+
+        if(dataContainer.boutonfiltre)
+        {
+            $("input[data-calbtn="+dataContainer.boutonfiltre+"]").toggleClass("btn_active",true);
+        }
+
+        this.calendriers[0].dateRecalcule(DateAdapInfo.versDateJS(dataContainer.dateCal1));
+        if(!this.modeUnCalendrier())
+        {
+            this.calendriers[1].dateRecalcule(DateAdapInfo.versDateJS(dataContainer.dateCal2));
+        }
+        
+        for(let i=0;i<this.calendriers.length;i++)
+        {
+            if(this.modeUnCalendrier())
+            {
+                this.calendriers[0].selectionneDate(DateAdapInfo.versDateJS(dataContainer.date1),DateAdapInfo.versDateJS(dataContainer.date2));
+                // this.calendriers[0].selectionneDate(dataContainer.date1,dataContainer.date2);
+            }
+            else
+            {
+                // this.calendriers[0].selectionneDate(DateAdapInfo.versDateJS(dataContainer.date1),DateAdapInfo.versDateJS(dataContainer.date2));
+                this.calendriers[i].selectionneDate(DateAdapInfo.versDateJS(dataContainer.date1),DateAdapInfo.versDateJS(dataContainer.date2));
+                // this.calendriers[i].selectionneDate(dataContainer.date1,dataContainer.date2);
+            }
+
+        }
+        this.afficheDatesEntete(DateAdapInfo.versDateJS(this.date1),DateAdapInfo.versDateJS(this.date2))
+    }
+
+    // Container Class
+
+    // Container Class
     onCalendrierEvent(evt){
 
         // Container Class
@@ -874,6 +948,7 @@ class Container{
         {
             $(".btn_active").toggleClass('btn_active',false); // Supprime le btn active si cliqué -- saisie manuelle
             let evtPeriode;
+
             if($(evt.evtSrc.target).attr("data-name")=="heureRpr")
             {
                 return;
@@ -908,6 +983,10 @@ class Container{
                 let date1JS = DateAdapInfo.versDateJS(evtPeriode.date1);
                 let date2JS = DateAdapInfo.versDateJS(evtPeriode.date2);
                 this.afficheDatesEntete(date1JS,date2JS);
+
+                this.date1 = evtPeriode.date1;
+                this.date2 = evtPeriode.date2;
+
                 this.fire(evtPeriode);
                 console.log(evt);
                 this.replier(); 
@@ -1071,11 +1150,19 @@ class Container{
                             nouvelleDate = new Date(dateCal1.getFullYear(),dateCal1.getMonth()-1,"1");
                             if(nouvelleDate < new Date())
                             {
+                                let currentDate = new Date();
+                                nouvelleDate = currentDate;
                                 let dateCal2 = new Date(nouvelleDate.getFullYear(),(nouvelleDate.getMonth()+1),"1");
+                                
+                                // if((currentDate.getMonth()==dateCal2.getMonth()) && (currentDate.getFullYear()==currentDate.getFullYear()))
+                                // {
+                                //     let dateCal2 = new Date();
+                                // }
                                 this.calendriers[0].dateRecalcule(nouvelleDate);
                                 this.calendriers[1].dateRecalcule(dateCal2);
                                 boolUpdate = true;
                             }
+
                         }
                         if(evt.mois == "suivant")
                         {
@@ -1098,6 +1185,7 @@ class Container{
                 this.calendriers[evt.sender.numero].supprimeSelection();  
                 
                 // Repeindre les jours où il y a des spectacles
+                this.supprimeAffichageRepresentation();
                 this.afficheHeureRepresentation();
                 this.fire({
                     event:"Changement de mois",
@@ -1164,7 +1252,7 @@ class Container{
             
             if(btn == "jourencours")
             {
-                this.onAujourdhuiCaseNo();
+                this.onAujourdhuiCaseNo();     
             }
             if(btn == "semaineencours")
             {
@@ -1235,6 +1323,9 @@ class Container{
             date2 : DateAdapInfo.versDateWeb(date),
         }
 
+        this.date1 = DateAdapInfo.versDateWeb(date);
+        this.date2 = DateAdapInfo.versDateWeb(date);
+
         this.fire(evtPeriode);
     }
 
@@ -1275,6 +1366,9 @@ class Container{
             date1 : DateAdapInfo.versDateWeb(date),
             date2 : DateAdapInfo.versDateWeb(dateSemaine),
         }
+        this.date1 = DateAdapInfo.versDateWeb(date);
+        this.date2 = DateAdapInfo.versDateWeb(dateSemaine);
+
         this.fire(evtPeriode);
     }
 
@@ -1315,6 +1409,10 @@ class Container{
             date1 : DateAdapInfo.versDateWeb(dateJ1),
             date2 : DateAdapInfo.versDateWeb(dateJ2),
         }
+
+        this.date1 = DateAdapInfo.versDateWeb(dateJ1);
+        this.date2 = DateAdapInfo.versDateWeb(dateJ2);
+
         this.fire(evtPeriode);
 
     }    
@@ -1352,6 +1450,10 @@ class Container{
             date1 : DateAdapInfo.versDateWeb(date),
             date2 : DateAdapInfo.versDateWeb(date2),
         }
+
+        this.date1 = DateAdapInfo.versDateWeb(date);
+        this.date2 = DateAdapInfo.versDateWeb(date2);
+
         this.fire(evtPeriode);
     }
 
@@ -1397,6 +1499,10 @@ class Container{
             date1 : DateAdapInfo.versDateWeb(dateJ1),
             date2 : DateAdapInfo.versDateWeb(dateJ2),
         }
+
+        this.date1 = DateAdapInfo.versDateWeb(dateJ1);
+        this.date2 = DateAdapInfo.versDateWeb(dateJ2);
+
         this.fire(evtPeriode);
     }  
 
@@ -1433,31 +1539,6 @@ class Container{
         }
     }
     
-
-   // Container Class
-//    spectaclesAjoute(tblDates){
-//         this.spectaclesDates=tblDates
-//         for(let i = 0;i<this.calendriers.length;i++)
-//         {
-//             if(this.calendriers[i] != null)
-//             {
-//                 this.calendriers[i].spectaclesAjoute(tblDates);
-//             }
-//         }
-//         //  this.spectaclesPeindre();
-//     }
-
-    // Container Class
-    //spectaclesPeindre(){
-    //     for(let i = 0;i<this.calendriers.length;i++)
-    //     {
-    //         if(this.calendriers[i] != null)
-    //         {
-    //             this.calendriers[i].spectaclesPeindre();
-    //         }
-    //     }
-    //}
-
     // Container class
     deplier()
     {

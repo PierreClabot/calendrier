@@ -24,9 +24,12 @@
         <div id="PERIODEECOUTEUR"></div>
 
    </div>
+   <a href="test.html" class="test" href="">Changement de page</a>
 
 <script src="calendrier.js"></script>
 <script>
+
+
     class EcouteurApplication  {
     
     //EcouteurApplication Class
@@ -40,6 +43,12 @@
 
 
         let appCal = new Container(new Date(),null,false,true,tbldata,"#periode-selecteur");
+        this.appCal = appCal;
+        //  $(".test").on("click",function(){
+        //      localStorage.setItem("dataContainer",appCal.fctCalVal_cha())
+        //  })
+         console.log(localStorage.getItem("dataContainer"));
+         appCal.pcdCalVal(localStorage.getItem("dataContainer"));
         appCal.subscribe(this);  
     }
 
@@ -61,6 +70,7 @@
         
         if(evt.event == "SelectionFaite")
         {
+            localStorage.setItem("dataContainer",this.appCal.fctCalVal_cha());
             console.log(evt);
         }
         if(evt.event == "Activation")
