@@ -1,0 +1,257 @@
+body{
+    width: 100%;
+}
+*,::after,::before{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/******** ENTETE CONTAINER *********/
+.row-selection{
+    background-color: #1d1d1d;
+    color: #f1f1f1;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    width: 100%;
+}
+.btn-date1{
+    visibility: hidden;
+}
+.dates{
+    display: flex;
+    width: 60%;
+    justify-content: space-around;
+    align-items: center;
+}
+.dates div{
+    margin: 0 0.5rem;
+}
+.icones{
+    display: flex;
+    width: 40%;
+    align-items: center;
+    justify-content: flex-end;
+}
+.icone-calendrier{
+    cursor: pointer;
+}
+
+.icones div{
+    margin: 0 2rem;
+}
+
+/************ CALENDRIER *************/
+div[data-name="container-calendrier"]
+{
+    display: block;
+}
+div[data-name="enteteContainer"]
+{
+    width: 100%;
+    padding: 0 !important;
+}
+
+div[data-name="legende-calendrier"]
+{
+    display: none;
+    margin-bottom: 1rem;
+}
+
+div[data-name="boutons"]>input[type=submit].btn_active
+{
+    background-color: #1d1d1d82 !important;
+}
+div[data-name="boutons"]>input[type=submit]
+{
+    margin: 0.2rem;
+    border: none;
+    outline: none;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    border: #1d1d1d solid 1px;
+    background-color: rgb(213, 213, 213) ;
+    color: #1d1d1d ;
+    font-size: 0.8rem;
+}
+div[data-name="boutons"]>input[type=submit]:hover
+{
+    background-color: rgb(193, 193, 193);
+}
+
+div[data-name="calendrier"]
+{
+    display: none;
+    user-select: none;
+    margin-bottom: 1rem;
+}
+#calendrier{
+    user-select: none;
+}
+
+table {
+    text-align: center;
+    background-color: #e3e3e3;   
+    width: 100%;
+    border: black solid 1px;
+}
+.moisSuiv, .moisPrec{
+    cursor: pointer;
+    background-color: #8e1b2c;
+    margin: auto;
+}
+table thead{
+    border-bottom : solid 1px black ;
+    background-color: #1d1d1d;
+    color: #f1f1f1;
+}
+table tbody td {
+    width: 14%;
+    touch-action: none;
+}
+.day_before
+{
+    opacity: 0.5;
+}
+.day_after{
+    opacity: 0.5;
+}
+div[data-name=heureRpr]
+{
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+table[data-calendrierno] {
+    margin:auto;
+}
+
+@media screen and (max-width :992px) {
+
+    div[data-name="container-calendrier"]
+    {   
+        flex-direction: column !important;
+        
+    }
+}
+@media (max-width :576px) {
+
+    div[data-name="boutons"]>input[type=submit]
+    {   
+        font-size: 0.7rem;
+        width: 40%;
+    }
+}
+
+
+.mois_courant:hover, .day_after:hover{
+    background-color: rgb(204, 204, 204);
+}
+.cal-selection:hover{
+    background-color: #1d1d1d7d;
+}
+
+.cal-selection{
+    background-color: #1d1d1d55;
+    color: #f1f1f1;
+}
+.cal-spectacle{
+    color: rgb(199, 0, 0);
+}
+.day_before.cal-spectacle{
+    color: inherit;
+}
+.day_before.cal-spectacle.cal-selection{
+    color: #f1f1f1;
+}
+
+div[data-name="heureRpr"]{
+    background-color:#d9d9d999;
+    color: #1d1d1d;
+    margin-bottom: 0.3rem;
+    border: #1d1d1d solid 1px;
+    transition: background-color 0.5s;
+}
+div[data-name="heureRpr"]:hover{
+    background-color: #1d1d1d;
+    color: #f1f1f1;
+}
+
+.day_before div[data-name="heureRpr"]
+{
+    display: none;
+}
+
+/************** toggle switch **************/
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 3rem;
+    margin-bottom: 0 ;
+  }
+  
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 1rem;
+    width: 1rem;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #8e1b2c;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #8e1b2c;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(1.5rem);
+    -ms-transform: translateX(1.5rem);
+    transform: translateX(1.5rem);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius:20%;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+  .ticket-mur-bouton{
+    width: 50% !important;
+    padding: 0.2rem 0 !important;
+    margin: 0.5rem auto !important;
+    box-shadow: 3px 3px 5px var(--color-shadow-btn-reserver);
+  }
