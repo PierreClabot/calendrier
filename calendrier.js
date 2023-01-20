@@ -80,7 +80,6 @@ class Calendrier
         let moisPrec = document.querySelector('.moisPrec');
         document.addEventListener('click',(event)=>{
 
-            // $(document).on('click','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] .moisPrec',(event) JQUERY
             if((event.target.getAttribute('class')) && (event.target.getAttribute('class').search('moisPrec') >= 0))
             {
                 
@@ -107,7 +106,6 @@ class Calendrier
 
         })
         document.addEventListener('click',(event)=>{
-            // .on('click','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] .moisSuiv',(event)
             if((event.target.getAttribute('class')) && (event.target.getAttribute('class').search('moisSuiv') >= 0))
             {
                 let jour = "1";
@@ -126,7 +124,6 @@ class Calendrier
         });
 
         window.addEventListener('mouseup',function(event){
-            // $(window).on('mouseup',function(event)
             let evtPeriode={
                  evtSrc : event,
                  event : "selectFin",
@@ -136,7 +133,6 @@ class Calendrier
         });
 
         document.addEventListener('mouseover',function(evt){
-            //$(document).on('mouseover','div[data-name="calendrier"][data-divcalendrierno="'+this.numero+'"] td',function(evt)
             if((evt.target.getAttribute('class')) && (evt.target.getAttribute('class').search('case') >= 0))
             {
                 if(boolplageselection)
@@ -181,7 +177,6 @@ class Calendrier
                 };
 
                 tobjCal.fire(evtPeriode);
-                // console.log("TOUCH END");
                 return;
             } 
             
@@ -223,7 +218,6 @@ class Calendrier
                  let clientY = evt.touches[0].clientY;
                 this.derniereCaseTouchMove = document.elementFromPoint(clientX, clientY);
                 tobjCal.fire(evtPeriode); 
-                // console.log("TOUCH START");
             }
 
         })
@@ -571,7 +565,6 @@ class Container{
         // du container
         this.observers = [];
         this.boolContainerVisible = boolContainerVisible;
-        // this.spectaclesAjoute(tblData);
         
         this.domSelecteur();
         this.ajouteGestionFiltre();
@@ -584,9 +577,6 @@ class Container{
                 this.bouton = -1;
             }
         })
-        // $(document).on("mousedown",'div[data-name="calendrier"] td',function(){
-        //     this.boolClicCalendrier = true;
-        // })
 
         document.addEventListener('click',(evt)=>{
             if((evt.target.getAttribute('data-name')) && (evt.target.getAttribute('data-name') == "heureRpr"))
@@ -641,7 +631,6 @@ class Container{
         })
         
         let checkbox = document.querySelector('.checkbox');
-        // let checkbox = $(document).find('.checkbox');
         checkbox.checked = false;
         checkbox.addEventListener("change",()=>{
             this.boolActif = !this.boolActif; // Inverse booléen
@@ -673,38 +662,6 @@ class Container{
             }
             this.fire(evt); // On prévient l'état actif ou non  
         })
-        // checkbox.change(()=>{ // On change l'état du bouton
-
-        //     this.boolActif = !this.boolActif; // Inverse booléen
-        //     this.activer(this.boolActif); 
-        //     this.sel = this.selectionTriée();
-        //     let sel = false;
-        //     let evt;
-        //     if((this.sel[0].cal > -1 ) || (this.sel[1].cal > -1))
-        //     {
-        //         sel = true;
-        //     }
-        //     if(sel)
-        //     {
-        //         evt={
-        //             event : "Activation",
-        //             actif : this.boolActif,
-        //             date1 : this.calendriers[this.sel[0].cal ].dateWDDeCase(this.sel[0].no),
-        //             date2 : this.calendriers[this.sel[1].cal ].dateWDDeCase(this.sel[1].no) 
-        //         } 
-        //     }
-        //     else
-        //     {
-        //         evt={
-        //             event : "Activation",
-        //             actif : this.boolActif,
-        //             date1 : -1,
-        //             date2 : -1 
-        //         } 
-        //     }
-        //     this.fire(evt); // On prévient l'état actif ou non  
-       
-        //  })
 
         if(this.boolContainerVisible)
         {
@@ -725,15 +682,6 @@ class Container{
                 this.replier();
             }
         })
-        // $('#periode-selecteur').on("click",".icone-calendrier",()=>{
-        //     if(this.boolContainerVisible==false)
-        //     { 
-        //         this.deplier();
-        //     }
-        //     else{
-        //         this.replier();
-        //     }
-        // })
     }
     // Container Class
     modeUnCalendrier()
@@ -819,13 +767,6 @@ class Container{
                     numero = parseInt(evt.getAttribute("no"));
                 }
             })
-            // $(document).find("div[data-divcalendrierno="+i+"] td").each(function(){
-            //     if(this.getAttribute("data-datewd") == dateWD )
-            //     {
-            //         calendrier = i;
-            //         numero = parseInt(this.getAttribute("no"));
-            //     }
-            // })
         }
         return {cal: calendrier, no: numero}
     }
@@ -861,14 +802,10 @@ class Container{
             
             document.querySelector(".btn-date1").style.visibility = "hidden";
             document.querySelector(".btn-date2").style.visibility = "hidden";
-            // $(".btn_active").toggleClass('btn_active',false); // Supprime le btn active pour l'actualiser
-            // $(".btn-date1").css("visibility","hidden"); // On cache les affichages date dans l'entête
-            // $(".btn-date2").css("visibility","hidden");
         }
         else{ // switch à entête à on
             if(this.bouton != -1)
             {
-                // console.log(this.bouton)
                 this.bouton.classList.add("btn_active");
             }
             
@@ -877,8 +814,6 @@ class Container{
             {
                 document.querySelector(".btn-date1").style.visibility = "visible";
                 document.querySelector(".btn-date2").style.visibility = "visible";
-                // $(".btn-date1").css("visibility","visible"); // Si saisit, on rend visible les champs
-                // $(".btn-date2").css("visibility","visible");
             }
 
             if(this.sel[0].cal != -1) // On vérifie si y a eu une saisie
@@ -909,7 +844,6 @@ class Container{
                 let nbRp = this.tblData[i].tblRpr.length;
                 let caseDate = this.caseDate(dateJS);
                 let caseJour = document.querySelector('td[no="'+caseDate.no+'"][numCal="'+caseDate.cal+'"]');
-                // let caseJour = $('td[no='+caseDate.no+'][numCal='+caseDate.cal+']');
                 let domHeure = ""
                 for(let rpr = 0;rpr<nbRp;rpr++)
                 {
@@ -917,7 +851,6 @@ class Container{
                     let idRpr = this.tblData[i].tblRpr[rpr].idRpr;
                     domHeure += '<div data-name=heureRpr cal='+caseDate.cal+' no='+caseDate.no+' data-datewd='+dateRpr+' idRpr='+idRpr+'>'+heureRpr+'</div>'
                 }
-                // caseJour.toggleClass("cal-spectacle",true);
                 if(caseJour){
                     caseJour.classList.add("cal-spectacle");
                     caseJour.insertAdjacentHTML('beforeend',domHeure);
@@ -933,10 +866,7 @@ class Container{
             if(!(Object.keys(this.tblData[i]).length === 0))
             {
                 let dateRpr = this.tblData[i].date;
-                // console.log(dateRpr); // @TODO ?? remove
                 let affiche = document.querySelector("td[data-datewd='"+dateRpr+"'] div");
-                // console.log("affiche",affiche)
-                // $('td[data-datewd='+dateRpr+'] div').remove();
             }    
         }
     }
@@ -954,29 +884,18 @@ class Container{
         let affichageD1 = date1JS.getDate().toString().padStart(2, '0')+"/"+(date1JS.getMonth() + 1).toString().padStart(2, '0')+"/"+date1JS.getFullYear();
         let affichageD2 = date2JS.getDate().toString().padStart(2, '0')+"/"+(date2JS.getMonth() + 1).toString().padStart(2, '0')+"/"+date2JS.getFullYear();
 
-        //console.log("affichageD1",affichageD1);
-        //console.log("affichageD2",affichageD2)
         if(affichageD1 == affichageD2)
         {
-            // console.log("test");
             document.querySelector(".btn-date2").style.display = "none";
         }
         else
         {
-            // $(".btn-date2").css("display","block");
-            // $(".btn-date2").css("visibility","visible")
             document.querySelector(".btn-date2").style.display = "block";
             document.querySelector(".btn-date2").style.visibility = "visible";
         }
-
-        // console.log(document.querySelector(".btn-date1"))
         document.querySelector(".btn-date1").style.visibility = "visible";
         document.querySelector(".btn-date1").innerHTML = affichageD1;
         document.querySelector(".btn-date2").innerHTML = affichageD2;
-
-        // $(".btn-date1").css("visibility","visible")
-        // $(".btn-date1").html(affichageD1);
-        // $(".btn-date2").html(affichageD2);
     }
 
     // Container Class
@@ -998,7 +917,7 @@ class Container{
                 tabMoisCal.push(dateCal)
             }
         }
-        // console.log("TABMOISCAL",tabMoisCal);
+
         if(tabMoisCal[0])
         {
             dateCal1 = DateAdapInfo.versDateWeb(tabMoisCal[0]);
@@ -1007,8 +926,8 @@ class Container{
         {
             dateCal2 = DateAdapInfo.versDateWeb(tabMoisCal[1]);
         }
-        // let btnFiltre = $(".btn_active").attr("data-calbtn");
         let btnFiltre;
+
         if(document.querySelector(".btn_active"))
         {
             btnFiltre = document.querySelector(".btn_active").getAttribute("data-calbtn");
@@ -1024,16 +943,13 @@ class Container{
             date2 : this.date2,
             boutonfiltre : btnFiltre
         }
-        // console.log(dataContainer);
         return JSON.stringify(dataContainer);
     }
-    // stringify
-    // pars
+
     pcdCalVal(data){
 
 
         let dataContainer = JSON.parse(data);
-        // console.log(dataContainer);
         this.boolContainerVisible=dataContainer.actif;
         if(this.boolContainerVisible)
         {
@@ -1046,7 +962,6 @@ class Container{
         if(dataContainer.boutonfiltre)
         {
             document.querySelector("input[data-calbtn="+dataContainer.boutonfiltre+"]").classList.add("btn_active");
-            // $("input[data-calbtn="+dataContainer.boutonfiltre+"]").toggleClass("btn_active",true);
         }
 
         this.calendriers[0].dateRecalcule(DateAdapInfo.versDateJS(dataContainer.dateCal1));
@@ -1054,7 +969,6 @@ class Container{
         {
             this.calendriers[1].dateRecalcule(DateAdapInfo.versDateJS(dataContainer.dateCal2));
         }
-        // this.supprimeAffichageRepresentation();
         this.afficheHeureRepresentation();
         
         for(let i=0;i<this.calendriers.length;i++)
@@ -1062,13 +976,10 @@ class Container{
             if(this.modeUnCalendrier())
             {
                 this.calendriers[0].selectionneDate(DateAdapInfo.versDateJS(dataContainer.date1),DateAdapInfo.versDateJS(dataContainer.date2));
-                // this.calendriers[0].selectionneDate(dataContainer.date1,dataContainer.date2);
             }
             else
             {
-                // this.calendriers[0].selectionneDate(DateAdapInfo.versDateJS(dataContainer.date1),DateAdapInfo.versDateJS(dataContainer.date2));
                 this.calendriers[i].selectionneDate(DateAdapInfo.versDateJS(dataContainer.date1),DateAdapInfo.versDateJS(dataContainer.date2));
-                // this.calendriers[i].selectionneDate(dataContainer.date1,dataContainer.date2);
             }
 
         }
@@ -1112,7 +1023,7 @@ class Container{
 
         }
 
-         // Container Class
+        // Container Class
         if(evt.event == "mouseUp" && (this.selectionEnCours))
         {
             console.log("here");
@@ -1191,7 +1102,6 @@ class Container{
     
              
         }
-
 
         // Container Class
         if(evt.event == "selectFin"  && (this.selectionEnCours)) {
@@ -1329,11 +1239,6 @@ class Container{
                                 let currentDate = new Date();
                                 nouvelleDate = currentDate;
                                 let dateCal2 = new Date(nouvelleDate.getFullYear(),(nouvelleDate.getMonth()+1),"1");
-                                
-                                // if((currentDate.getMonth()==dateCal2.getMonth()) && (currentDate.getFullYear()==currentDate.getFullYear()))
-                                // {
-                                //     let dateCal2 = new Date();
-                                // }
                                 this.calendriers[0].dateRecalcule(nouvelleDate);
                                 this.calendriers[1].dateRecalcule(dateCal2);
                                 boolUpdate = true;
@@ -1547,8 +1452,6 @@ class Container{
             let newDomJours = this.calendriers[0].generateTab(0,date);
             document.querySelector("div[data-divcalendrierno='0']>table").remove();
             document.querySelector("div[data-divcalendrierno='0']").insertAdjacentHTML('beforeend',newDomJours)
-            // $('div[data-divcalendrierno=0]>table').remove();
-            // $('div[data-divcalendrierno=0]').append(newDomJours);
             this.calendriers[0].selectionneDate(date,dateSemaine);
             this.afficheDatesEntete(date,dateSemaine);
         }
@@ -1592,8 +1495,6 @@ class Container{
             let newDomJours = this.calendriers[0].generateTab(0,dateJ1);
             document.querySelector("div[data-divcalendrierno='0']>table").remove();
             document.querySelector("div[data-divcalendrierno='0']").insertAdjacentHTML('beforeend',newDomJours)
-            // $('div[data-divcalendrierno=0]>table').remove();
-            // $('div[data-divcalendrierno=0]').append(newDomJours);
             this.calendriers[0].selectionneDate(dateJ1,dateJ2);
             this.afficheDatesEntete(dateJ1,dateJ2);
         }
@@ -1635,8 +1536,6 @@ class Container{
             let newDomJours = this.calendriers[0].generateTab(0,date);
             document.querySelector("div[data-divcalendrierno='0']>table").remove();
             document.querySelector("div[data-divcalendrierno='0']").insertAdjacentHTML('beforeend',newDomJours)
-            // $('div[data-divcalendrierno=0]>table').remove();
-            // $('div[data-divcalendrierno=0]').append(newDomJours);
             this.calendriers[0].selectionneDate(date,date2);
             this.afficheDatesEntete(date,date2);
         }
@@ -1686,8 +1585,6 @@ class Container{
             let newDomJours = this.calendriers[0].generateTab(0,date);
             document.querySelector("div[data-divcalendrierno='0']>table").remove();
             document.querySelector("div[data-divcalendrierno='0']").insertAdjacentHTML('beforeend',newDomJours)
-            // $('div[data-divcalendrierno=0]>table').remove();
-            // $('div[data-divcalendrierno=0]').append(newDomJours);
             this.calendriers[0].selectionneDate(dateJ1,dateJ2);
             this.afficheDatesEntete(dateJ1,dateJ2);
         }
@@ -1725,11 +1622,9 @@ class Container{
         document.querySelectorAll("div[data-name='calendrier']").forEach((cal)=>{
             cal.style.display = "block";
         })
-        // document.querySelector("div[data-name='calendrier']").style.display = "block";
-        // $('div[data-name="calendrier"]').css("display","block");
+
         if(this.boolPlageSelection){ // Affichage des filtres uniquement si plageSélection
             document.querySelector("div[data-name='legende-calendrier']").style.display = "block";
-            // $('div[data-name="legende-calendrier"]').css("display","block");
         }
         this.boolContainerVisible = true;
     }
@@ -1740,11 +1635,7 @@ class Container{
         document.querySelectorAll("div[data-name='calendrier']").forEach((cal)=>{
             cal.style.display = "none";
         })
-        // document.querySelector("div[data-name='calendrier']").style.display = "none";
         document.querySelector("div[data-name='legende-calendrier']").style.display = "none";
-        // $('div[data-name="calendrier"]').css("display","none");
-        // $('div[data-name="legende-calendrier"]').css("display","none");
         this.boolContainerVisible = false;      
     }
 }
-
