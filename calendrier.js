@@ -207,7 +207,6 @@ class Calendrier
         
             if((evt.target.getAttribute('class')) && (evt.target.getAttribute('class').search('case') >= 0))
             {
-                // @TODO  $(".btn_active").toggleClass('btn_active',false);
                 let evtPeriode={
                      evtSrc : evt,
                      event : "mouseDown",
@@ -418,12 +417,6 @@ class Calendrier
         let n2=this.caseDate(date2);
         this.selectionne(n1,n2);
 
-        let evtPeriode={ // xxxxxxxxxxxxxxxxxxxxxx
-            event : "mouseUp",
-            date1 : date1,
-            date2 : date2 
-        } 
-        this.fire(evtPeriode);
     }
 
     caseDate(date)
@@ -465,8 +458,8 @@ class Calendrier
         let dateAI2=new DateAdapInfo(date2);
         let cal = document.querySelectorAll('div[data-divcalendrierno="'+this.numero+'"]>table')[0];
         cal.querySelectorAll('td').each(function(evt) {
-           let tmpDateWd = $(evt).attr('data-datewd');
-           let no=parseInt($(evt).attr('no'),10);
+           let tmpDateWd = evt.getAttribute('data-datewd');
+           let no=parseInt(evt.getAttribute('no'),10);
 
            if ( (tmpDateWd>=dateAI1.dateWD) && (tmpDateWd<=dateAI2.dateWD) && (noMin==-1) ) { noMin=no; }
            if ( (tmpDateWd>=dateAI1.dateWD) && (tmpDateWd<=dateAI2.dateWD) ) { noMax=no; }
@@ -477,7 +470,6 @@ class Calendrier
 
     // Calendrier Class
     supprimeSelection(){
-        // $('div[data-name="calendrier"] td').removeClass('cal-selection');
         let cal = document.querySelectorAll('div[data-name="calendrier"] td').forEach(function(evt)
         {
             evt.classList.remove('cal-selection');
@@ -774,7 +766,6 @@ class Container{
     // Container class
     activer(boolContainer)
     {
-        // let bouton = $('input.btn_active');
         let bouton = document.querySelector(".btn_active");
         
         if(bouton) // On vérifie que l'objet jquery ne soit pas vide
@@ -809,7 +800,6 @@ class Container{
                 this.bouton.classList.add("btn_active");
             }
             
-            $(this.bouton).toggleClass('btn_active',true); // Supprime le btn active pour l'actualiser
             if(document.querySelector(".btn-date1").innerHTML != "date") // vérifier qu'une date a été choisi pour rendre les champs visible
             {
                 document.querySelector(".btn-date1").style.visibility = "visible";
@@ -984,6 +974,14 @@ class Container{
 
         }
         this.afficheDatesEntete(DateAdapInfo.versDateJS(this.date1),DateAdapInfo.versDateJS(this.date2))
+
+        let evtPeriode = {
+            event : "SelectionFaite",
+            date1 : this.date1,
+            date2 : this.date2
+        }
+
+        this.fire(evtPeriode);
     }
 
     // Container Class
@@ -1013,7 +1011,6 @@ class Container{
             this.date2 = this.date1;
             this.boolActif = true;
             document.querySelector(".checkbox").checked = this.boolActif;
-            // $('.checkbox').prop("checked",this.boolActif);
             
             this.fire({
                 event : "SelectionDebut",
@@ -1031,7 +1028,6 @@ class Container{
             {
                 document.querySelector(".btn_active").classList.remove("btn_active");
             }
-            // $(".btn_active").toggleClass('btn_active',false); // Supprime le btn active si cliqué -- saisie manuelle
             let evtPeriode;
 
             if(evt.evtSrc.target.getAttribute("data-name")=="heureRpr")
@@ -1111,7 +1107,6 @@ class Container{
 
             if(this.modeUnCalendrier())
             {
-                // @TODO traitement éventuel
                 return 
             }
 
@@ -1141,7 +1136,6 @@ class Container{
             // on balade la souris sur une des cases du calendrier
             if(!this.selectionEnCours) { // pas de sélection en cours...
                 let dateHover = document.querySelectorAll("div[data-divcalendrierno='"+evt.cal+"'] td")[evt.no].getAttribute("data-datewd");
-                // let dateHover = $(document).find('div[data-divcalendrierno='+evt.cal+'] td').eq(evt.no).attr("data-datewd");
                 let evtPeriode = {
                     event : "SelectionJhesite",
                     date1 : dateHover,
@@ -1183,7 +1177,6 @@ class Container{
                 let cal = this.sel[1].cal;
                 let no = this.sel[1].no;
                 let date2WD = document.querySelectorAll("div[data-divcalendrierno='"+cal+"'] td")[no].getAttribute("data-datewd");
-                // let date2WD = $('div[data-divcalendrierno='+cal+'] td').eq(no).attr("data-datewd");
                 var date1 = DateAdapInfo.versDateJS(this.date1);
                 var date2 = DateAdapInfo.versDateJS(date2WD)
                 if(date1>date2)
@@ -1264,7 +1257,6 @@ class Container{
                 {
                     document.querySelector(".btn_active").classList.remove("btn_active")
                 }
-                // $('input.btn_active').toggleClass('btn_active',false);
                 this.supprimeDate();
                 let dateChange = evt.sender.date;
                 this.calendriers[evt.sender.numero].supprimeSelection();  
@@ -1334,14 +1326,10 @@ class Container{
                 {
                     document.querySelector(".btn_active").classList.remove("btn_active");
                 }
-                
-                // $(".btn_active").toggleClass('btn_active',false); // Supprime le btn active pour l'actualiser
-                evt.target.classList.add('btn_active');
+                                evt.target.classList.add('btn_active');
                 let checkbox = document.querySelector(".checkbox");
-                // let checkbox = $(document).find('.checkbox');
                 this.boolActif = true;
                 checkbox.checked = this.boolActif;
-                // checkbox.prop("checked",this.boolActif);
                 
                 if(btn == "jourencours")
                 {
