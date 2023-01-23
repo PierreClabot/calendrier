@@ -80,7 +80,7 @@ class Calendrier
         let moisPrec = document.querySelector('.moisPrec');
         document.addEventListener('click',(event)=>{
 
-            if((event.target.getAttribute('class')) && (event.target.getAttribute('class').search('moisPrec') >= 0))
+            if((event.target.getAttribute('class')) && (event.target.getAttribute('class').search('moisPrec') >= 0) && (tobjCal.numero == event.target.getAttribute("numCal")) )
             {
                 
                 let jour = "1";
@@ -94,6 +94,8 @@ class Calendrier
 
                 this.date = nouvelleDate;
                 this.dateRecalcule(nouvelleDate);
+                this.supprimeAffichageRepresentation();
+
                 let evtPeriode={
                     evtSrc : event,
                     event : "dateAChangé",
@@ -106,13 +108,13 @@ class Calendrier
 
         })
         document.addEventListener('click',(event)=>{
-            if((event.target.getAttribute('class')) && (event.target.getAttribute('class').search('moisSuiv') >= 0))
+            if((event.target.getAttribute('class')) && (event.target.getAttribute('class').search('moisSuiv') >= 0) && (tobjCal.numero == event.target.getAttribute("numCal")) )
             {
                 let jour = "1";
                 let nouvelleDate = new Date(this.date.getFullYear(),this.date.getMonth()+1,jour);
                 this.date = nouvelleDate;
                 this.dateRecalcule(nouvelleDate);
-
+                this.supprimeAffichageRepresentation();
                 let evtPeriode={
                     evtSrc : event,
                     event : "dateAChangé",
@@ -265,7 +267,7 @@ class Calendrier
         let dateYear = dateCal.getFullYear();
         let dateMonth = dateCal.getMonth()+1;
         let dateDay = dateCal.getDate();
-        let calendrierEntete = "<table data-calendrierNo="+numero+" data-calMois="+dateMonth+" data-calYear="+dateYear+"><thead><tr><th colspan='1' class='moisPrec' ><i class='fa-solid fa-angles-left moisPrec'></i></th><th colspan='5'>"+tabMois[dateMonth-1]+" - "+dateCal.getFullYear()+"</th><th colspan='1'  class='moisSuiv'><i class='fa-solid fa-angles-right moisSuiv'></i></th></tr><tr><th>lun</th><th>mar</th><th>mer</th><th>jeu</th><th>ven</th><th>sam</th><th>dim</th></tr></thead>";
+        let calendrierEntete = "<table data-calendrierNo="+numero+" data-calMois="+dateMonth+" data-calYear="+dateYear+"><thead><tr><th colspan='1' numCal="+this.numero+" class='moisPrec' ><i numCal="+this.numero+" class='fa-solid fa-angles-left moisPrec'></i></th><th colspan='5'>"+tabMois[dateMonth-1]+" - "+dateCal.getFullYear()+"</th><th colspan='1'  numCal="+this.numero+" class='moisSuiv'><i numCal="+this.numero+" class='fa-solid fa-angles-right moisSuiv'></i></th></tr><tr><th>lun</th><th>mar</th><th>mer</th><th>jeu</th><th>ven</th><th>sam</th><th>dim</th></tr></thead>";
         let calendrierRows =calendrierEntete+"<tr>";
         let moisPrecedent = dateMonth -1;
         if(moisPrecedent<=0){
@@ -477,6 +479,17 @@ class Calendrier
 
     }
 
+    supprimeAffichageRepresentation(){
+        let cal = document.querySelectorAll('div[data-name="heureRpr"]').forEach(function(evt)
+        {
+            evt.parentNode.removeChild(evt);
+        });
+        cal = document.querySelectorAll('div[data-name="representations"]').forEach(function(evt)
+        {
+            evt.parentNode.removeChild(evt);
+        });
+    }
+
     // Calendrier Class
     getNumeroCalendrier(){
         return this.numCalendrier ;
@@ -524,7 +537,7 @@ class Calendrier
 class Container{
 
     // Container Class
-    constructor(date1,date2,boolContainerVisible,boolPlageSelection,tblData,chaDomPlace){
+    constructor(date1,date2,boolContainerVisible,boolPlageSelection,boolDetailsRepresentation,tblData,chaDomPlace){
 
         let cal1 = new Calendrier(0,date1,boolPlageSelection,tblData);
         let cal2 = null;
@@ -539,6 +552,7 @@ class Container{
         this.tblData = tblData;
         this.boolPlageSelection = boolPlageSelection;
         this.chaDomPlace = chaDomPlace;
+        this.boolDetailsRepresentation = boolDetailsRepresentation;
         this.calendriers[0].subscribe(this);
         if(this.calendriers[1] != null)
         {
@@ -558,7 +572,7 @@ class Container{
         this.observers = [];
         this.boolContainerVisible = boolContainerVisible;
         
-        this.domSelecteur();
+        this.domSelecteur("","col-12 col-md-12 col-lg-8");
         this.ajouteGestionFiltre();
         this.afficheHeureRepresentation(); // Afficher les heures envoyés dans le container
 
@@ -681,24 +695,36 @@ class Container{
         return this.calendriers[1] == null ;
     }
     // Container Class
-    domSelecteur()
+    domSelecteur(chaBootstrapBtn,chaBootstrapUnCal,chaBootstrapPlusieursCals)
     {
+        let bootstrapBtn = chaBootstrapBtn;
+        let bootsrapCal = "" ;
+        if(this.modeUnCalendrier())
+        {
+            chaBootstrapUnCal == "" || chaBootstrapUnCal == null ? bootsrapCal = "col-12 col-md-12 col-lg-8" : bootsrapCal = chaBootstrapUnCal
+        }
+        else
+        {
+            chaBootstrapPlusieursCals == "" || chaBootstrapPlusieursCals == null ? bootsrapCal = "col-12 col-md-6 col-lg-4" : bootsrapCal = chaBootstrapPlusieursCals;
+            
+        }
+
+
         let dom1 =`<div class="container-fluid" data-name='container'>
             <div class="row" data-name="row-calendrier">
             </div>
         </div>`;
-
+        // 1 cal : col-12 col-md-12 col-lg-8
         document.querySelector(this.chaDomPlace).insertAdjacentHTML('beforeend',dom1);
 
-        let domC1 = `<div class='col-12 col-md-6 col-lg-4' data-name='calendrier' data-divCalendrierNo='0' >`+this.calendriers[0].calendrier+`</div>`;
+        let domC1 = `<div class='${bootsrapCal}' data-name='calendrier' data-divCalendrierNo='0' >`+this.calendriers[0].calendrier+`</div>`;
         let domC2;
+
         if(this.calendriers[1] != null)
         {
-            domC1 = `<div class='col-12 col-md-6 col-lg-4' data-name='calendrier' data-divCalendrierNo='0' >`+this.calendriers[0].calendrier+`</div>`;
-            domC2 = `<div class='col-12 col-md-6 col-lg-4' data-name='calendrier' data-divCalendrierNo='1' >`+this.calendriers[1].calendrier+`</div>`;
-        }
-        else{
-            domC1 = `<div class='col-12 col-md-12 col-lg-8' data-name='calendrier' data-divCalendrierNo='0' >`+this.calendriers[0].calendrier+`</div>`;
+            // 2 cal : col-12 col-md-6 col-lg-4
+            domC1 = `<div class='${bootsrapCal}' data-name='calendrier' data-divCalendrierNo='0' >`+this.calendriers[0].calendrier+`</div>`;
+            domC2 = `<div class='${bootsrapCal}' data-name='calendrier' data-divCalendrierNo='1' >`+this.calendriers[1].calendrier+`</div>`;
         }
 
         let domFiltre = `<div class='col-12 col-lg-4' data-name='legende-calendrier'><div class="row justify-content-around" data-name=boutons>`+this.filtre()+`</div></div>`;
@@ -760,7 +786,7 @@ class Container{
                 }
             })
         }
-        return {cal: calendrier, no: numero}
+        return { cal: calendrier, no: numero }
     }
 
     // Container class
@@ -825,6 +851,7 @@ class Container{
     
     afficheHeureRepresentation()
     {
+
         for(let i=0;i<this.tblData.length;i++)
         {   
             if(!(Object.keys(this.tblData[i]).length === 0))
@@ -834,12 +861,18 @@ class Container{
                 let nbRp = this.tblData[i].tblRpr.length;
                 let caseDate = this.caseDate(dateJS);
                 let caseJour = document.querySelector('td[no="'+caseDate.no+'"][numCal="'+caseDate.cal+'"]');
-                let domHeure = ""
+                let domHeure = "";
                 for(let rpr = 0;rpr<nbRp;rpr++)
                 {
                     let heureRpr = this.tblData[i].tblRpr[rpr].heure;
                     let idRpr = this.tblData[i].tblRpr[rpr].idRpr;
-                    domHeure += '<div data-name=heureRpr cal='+caseDate.cal+' no='+caseDate.no+' data-datewd='+dateRpr+' idRpr='+idRpr+'>'+heureRpr+'</div>'
+                    if(this.boolDetailsRepresentation)
+                    {
+                        domHeure += '<div data-name=heureRpr cal='+caseDate.cal+' no='+caseDate.no+' data-datewd='+dateRpr+' idRpr='+idRpr+'>'+heureRpr+'</div>'
+                    }
+                    else{
+                        domHeure = `<div data-name=representations></div>`;
+                    }
                 }
                 if(caseJour){
                     caseJour.classList.add("cal-spectacle");
@@ -907,7 +940,6 @@ class Container{
                 tabMoisCal.push(dateCal)
             }
         }
-
         if(tabMoisCal[0])
         {
             dateCal1 = DateAdapInfo.versDateWeb(tabMoisCal[0]);
@@ -959,6 +991,7 @@ class Container{
         {
             this.calendriers[1].dateRecalcule(DateAdapInfo.versDateJS(dataContainer.dateCal2));
         }
+        this.supprimeAffichageRepresentation();
         this.afficheHeureRepresentation();
         
         for(let i=0;i<this.calendriers.length;i++)
@@ -1023,7 +1056,6 @@ class Container{
         // Container Class
         if(evt.event == "mouseUp" && (this.selectionEnCours))
         {
-            console.log("here");
             if(document.querySelector(".btn_active"))
             {
                 document.querySelector(".btn_active").classList.remove("btn_active");
