@@ -132,6 +132,10 @@ div[data-name="representations"]
     margin: 5px auto;
     border-radius: 100% ;
 }
+.day_before div[data-name="representations"]
+{
+    display: none;
+}
 
 table[data-calendrierno] {
     margin:auto;
