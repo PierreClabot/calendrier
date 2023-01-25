@@ -538,22 +538,22 @@ class Calendrier
 class Container{
 
     // Container Class
-    constructor(date1,date2,boolContainerVisible,boolPlageSelection,boolDetailsRepresentation,tblData,chaDomPlace){
+    constructor(objContainer){
 
-        let cal1 = new Calendrier(0,date1,boolPlageSelection,tblData);
+        let cal1 = new Calendrier(0,objContainer.date1,objContainer.boolPlageSelection,objContainer.tblData);
         let cal2 = null;
-        if(date2 != null)
+        if(objContainer.date2 != null)
         {
-            cal2 = new Calendrier(1,date2,boolPlageSelection,tblData);
+            cal2 = new Calendrier(1,objContainer.date2,objContainer.boolPlageSelection,objContainer.tblData);
         }
         this.spectaclesDates=[];
         this.calendriers=[]
         this.calendriers.push(cal1);
         this.calendriers.push(cal2);
-        this.tblData = tblData;
-        this.boolPlageSelection = boolPlageSelection;
-        this.chaDomPlace = chaDomPlace;
-        this.boolDetailsRepresentation = boolDetailsRepresentation;
+        this.tblData = objContainer.tblData;
+        this.boolPlageSelection = objContainer.boolPlageSelection;
+        this.chaDomPlace = objContainer.chaDomPlace;
+        this.boolDetailsRepresentation = objContainer.boolDetailsRepresentation;
         this.calendriers[0].subscribe(this);
         if(this.calendriers[1] != null)
         {
@@ -571,7 +571,7 @@ class Container{
         this.boolClicCalendrier = false;
         // du container
         this.observers = [];
-        this.boolContainerVisible = boolContainerVisible;
+        this.boolContainerVisible = objContainer.boolContainerVisible;
 
         this.domSelecteur("","col-12 col-md-12 col-lg-8");
         this.ajouteGestionFiltre();
@@ -818,7 +818,7 @@ class Container{
             document.querySelector(".btn-date1").style.visibility = "hidden";
             document.querySelector(".btn-date2").style.visibility = "hidden";
         }
-        else{ // switch à entête à on
+        else{ // switch entête à on
             if(this.bouton != -1)
             {
                 this.bouton.classList.add("btn_active");
@@ -1251,7 +1251,7 @@ class Container{
 
                 if(!this.modeUnCalendrier())
                 {
-                    if(this.calendriers[0].date.getMonth() == this.calendriers[1].date.getMonth())
+                    if((this.calendriers[0].date.getMonth() == this.calendriers[1].date.getMonth()) && (this.calendriers[0].date.getFullYear() == this.calendriers[1].date.getFullYear()))
                     {
                         let dateCal1 = this.calendriers[0].date;
                         let nouvelleDate;

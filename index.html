@@ -37,16 +37,19 @@
         let data2={date:"20230110", idSpc : 495, tblRpr : [{idRpr:4252, heure : '20:00'}] };
         let data3={};
         let tbldata = [data1,data2,data3];
-
-
-        let appCal = new Container(new Date(),null,false,true,false,tbldata,"#periode-selecteur");
-        this.appCal = appCal;
-        // console.log(appCal.fctCalVal_cha()); // xxxxxxxxxxxxx
-        // console.log(localStorage.getItem("dataContainer"));
         // localStorage.removeItem('dataContainer')
-        // document.querySelector(".test").addEventListener("click",function(){
-        //     localStorage.setItem("dataContainer",appCal.fctCalVal_cha());
-        // })
+        let objContainer = {
+            date1 : new Date() ,
+            date2 : new Date("2024","2","1") ,
+            boolContainerVisible : false, 
+            boolPlageSelection : true,
+            boolDetailsRepresentation : false,
+            chaDomPlace : "#periode-selecteur",
+            tblData : tbldata
+        }
+        // let appCal = new Container(new Date(),null,false,true,false,tbldata,"#periode-selecteur");
+        let appCal = new Container(objContainer);
+        this.appCal = appCal;
 
         if(localStorage.getItem("dataContainer"))
         {
